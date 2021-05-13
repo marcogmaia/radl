@@ -1,0 +1,6 @@
+12x12,terminal12x12_gs_ro.png,12,12
+16x16,terminal16x16_gs_alpha.png,16,16
+16x16cheepicus,Cheepicus_16x16.png,16,16
+12x12cheepicus,Cheepicus_12x12.png,12,12
+12x18,curses_vector_12x18.png,12,18
+8x16,VGA8x16.png,8,16

@@ -1,0 +1,52 @@
+Language: Cpp
+Standard: Cpp11
+
+UseTab: Never
+ContinuationIndentWidth: 4
+ColumnLimit: 80
+
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+BreakBeforeBinaryOperators: All
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeComma
+Cpp11BracedListStyle: true
+IndentWidth: 4
+NamespaceIndentation: None
+PointerAlignment: Left
+PointerBindsToType: true
+SortIncludes: false
+TabWidth: 4
+
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Always
+AlwaysBreakTemplateDeclarations: true
+
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: Never
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+
+IncludeBlocks: Regroup
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 2
+
+ReflowComments: true
+
+AlignConsecutiveMacros: true
+AlignTrailingComments: true
+
+AllowShortLambdasOnASingleLine: Empty
+
+# AlignAfterOpenBracket: AlwaysBreak
+# BinPackArguments: false
+# BinPackParameters: false

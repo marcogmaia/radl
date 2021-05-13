@@ -20,7 +20,7 @@
         {
             "label": "run",
             "type": "shell",
-            "command": "./radl",
+            "command": "./main",
             "options": {
                 "cwd": "${workspaceFolder}/build/"
             },

@@ -10,8 +10,19 @@ extern std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>
 color_from_hsv(const float hue, const float saturation, const float value);
 
 struct color_t {
+    /* RGB storage */
+    uint8_t r = 0x0;
+    uint8_t g = 0x0;
+    uint8_t b = 0x0;
+    uint8_t a = 0xFF;
+
     /* Default empty constructor */
     color_t() {}
+
+    // struct Color;
+    // inline operator Color() const {
+    //     return Color{r, g, b, a};
+    // }
 
     /* Convenience constructor from red/green/blue; accepts ints and casts them
      */
@@ -104,11 +115,6 @@ struct color_t {
         }
     }
 
-    /* RGB storage */
-    uint8_t r = 0x0;
-    uint8_t g = 0x0;
-    uint8_t b = 0x0;
-    uint8_t a = 0xFF;
 
     template <class Archive>
     void serialize(Archive& archive) {

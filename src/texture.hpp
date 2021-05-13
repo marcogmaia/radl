@@ -1,10 +1,8 @@
-#pragma once
-/* RLTK (RogueLike Tool Kit) 1.00
- * Copyright (c) 2016-Present, Bracket Productions.
- * Licensed under the MIT license - see LICENSE file.
- *
- * Provides RIAA wrapper for a texture.
+/*
+ * Provides RAII wrapper for a texture.
  */
+
+#pragma once
 
 #include <memory>
 #include <string>

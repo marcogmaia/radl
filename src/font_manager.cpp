@@ -1,11 +1,13 @@
-#include "font_manager.hpp"
-#include "texture_resources.hpp"
-#include <unordered_map>
-#include <stdexcept>
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
+#include <stdexcept>
+#include <unordered_map>
+#include <vector>
+
 #include "filesystem.hpp"
+#include "font_manager.hpp"
+#include "texture_resources.hpp"
 
 namespace radl {
 
@@ -23,7 +25,8 @@ std::vector<std::string> split(const std::string& str, const char& delimiter) {
     return internal;
 }
 
-std::unordered_map<std::string, rltk::bitmap_font> atlas;
+std::unordered_map<std::string, bitmap_font> atlas;
+
 }  // namespace font_detail
 
 bitmap_font* get_font(const std::string font_tag) {
@@ -51,13 +54,13 @@ inline void check_texture_exists(const std::string& texture_tag) {
 }
 
 void register_font(const std::string font_tag, const std::string filename,
-                   int width, int height) {
+                   int tile_width, int tile_height) {
     const std::string texture_tag = "font_tex_" + filename;
     check_for_duplicate_font(font_tag);
     register_texture(filename, texture_tag);
     check_texture_exists(texture_tag);
-    font_detail::atlas.emplace(
-        std::make_pair(font_tag, bitmap_font(texture_tag, width, height)));
+    font_detail::atlas.emplace(std::make_pair(
+        font_tag, bitmap_font(texture_tag, tile_width, tile_height)));
 }
 
 void register_font_directory(const std::string path) {

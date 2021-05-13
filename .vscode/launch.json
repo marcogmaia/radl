@@ -8,7 +8,7 @@
             "name": "game",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/radl",
+            "program": "${workspaceFolder}/build/main",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/",

@@ -13,12 +13,13 @@
 namespace radl {
 
 struct bitmap_font {
+    const std::string texture_tag;
+    const std::pair<int, int> character_size;
+    
     bitmap_font(const std::string tag, const int tile_width,
                 const int tile_height)
         : texture_tag(tag)
         , character_size({tile_width, tile_height}) {}
-    const std::string texture_tag;
-    const std::pair<int, int> character_size;
 };
 
 void register_font_directory(const std::string path);

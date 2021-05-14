@@ -2,29 +2,31 @@
 #include <stdexcept>
 #include "texture_resources.hpp"
 #include "texture.hpp"
+#include "raylib.h"
 
 namespace radl {
 
 namespace texture_detail {
 
-std::unordered_map<std::string, radl::texture> atlas;
+std::unordered_map<std::string, radl::texture_t> atlas;
 
 }
 
 void register_texture(const std::string& filename, const std::string& tag) {
-    auto finder = texture_detail::atlas.find(tag);
-    if(finder != texture_detail::atlas.end()) {
+    if(texture_detail::atlas.contains(tag)) {
         throw std::runtime_error("Duplicate resource tag: " + tag);
     }
-    texture_detail::atlas[tag] = radl::texture(filename);
+    texture_detail::atlas.emplace(std::make_pair(tag, filename));
 }
 
-Texture2D* get_texture(const std::string& tag) {
+Texture2D get_texture(const std::string& tag) {
     auto finder = texture_detail::atlas.find(tag);
+    texture_detail::atlas.contains(tag);
     if(finder == texture_detail::atlas.end()) {
         throw std::runtime_error("Unable to find resource tag: " + tag);
     }
-    return finder->second.tex.get();
+    return finder->second.texture;
 }
+
 
 }  // namespace radl

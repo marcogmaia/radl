@@ -48,7 +48,7 @@ inline void check_for_duplicate_font(const std::string& tag) {
 }
 
 inline void check_texture_exists(const std::string& texture_tag) {
-    if(get_texture(texture_tag) == nullptr) {
+    if(get_texture(texture_tag).id == 0) {
         throw std::runtime_error("No such texture resource: " + texture_tag);
     }
 }

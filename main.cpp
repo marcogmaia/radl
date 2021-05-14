@@ -1,3 +1,4 @@
+#include <fmt/format.h>
 #include "raylib.h"
 #include "color_t.hpp"
 #include "texture.hpp"
@@ -5,71 +6,49 @@
 #include "texture_resources.hpp"
 
 int main() {
-    //--------------------------------------------------------------------------------------
     const int screenWidth  = 800;
-    const int screenHeight = 450;
-
-    InitWindow(screenWidth, screenHeight,
-               "raylib [textures] example - image loading");
-
-    // NOTE: Textures MUST be loaded after Window initialization (OpenGL context
-    // is required)
-
-    // Image image = LoadImage(
-    //     "../resources/terminal16x16_gs_alpha.png");  // Loaded in CPU memory
-    //                                                  // (RAM)
-    // Texture2D texture = LoadTextureFromImage(
-    //     image);  // Image converted to texture, GPU memory (VRAM)
-
-    // UnloadImage(image);  // Once image has been converted to texture and
-    //                      // uploaded to VRAM, it can be unloaded from RAM
-    //---------------------------------------------------------------------------------------
+    const int screenHeight = 600;
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(screenWidth, screenHeight, "raylib [textures] - image loading");
 
     radl::register_font("16x16", "../resources/terminal16x16_gs_alpha.png", 16,
                         16);
-    radl::virtual_terminal vterm("16x16");
-    vterm.resize_chars(32, 32);
+    radl::virtual_terminal vterm("16x16");  // use font
+    vterm.resize_pixels(GetScreenWidth(), GetScreenHeight());
+
+    vterm.clear();
     vterm.set_char(1, 1,
-                   radl::vchar_t{
-                       '@',
-                       radl::color_t{255, 255, 0},
-                       radl::color_t{255, 255, 0, 0},
-                   });
+                   radl::vchar_t{'@', radl::color_t{255, 255, 0},
+                                 radl::color_t{255, 255, 0, 127}});
     vterm.set_char(2, 2,
-                   radl::vchar_t{
-                       '@',
-                       radl::color_t{0, 255, 0},
-                       radl::color_t{255, 255, 0, 0},
-                   });
+                   radl::vchar_t{'!', radl::color_t{0, 255, 0},
+                                 radl::color_t{255, 255, 0, 127}});
 
-    SetTargetFPS(144);
-
-    //
-    // radl::virtual_terminal vterm()
-
-
+    SetTargetFPS(200);
     // Main game loop
-    while(!WindowShouldClose())  // Detect window close button or ESC key
-    {
+    // Detect window close button or ESC key
+    while(!WindowShouldClose()) {
         // Update
+        if(IsWindowResized()) {
+            vterm.resize_pixels(GetScreenWidth(), GetScreenHeight());
+            vterm.clear();
+            vterm.set_char(1, 1,
+                           radl::vchar_t{'@', radl::color_t{255, 255, 0},
+                                         radl::color_t{255, 255, 0, 127}});
+            vterm.set_char(2, 2,
+                           radl::vchar_t{'@', radl::color_t{0, 255, 0},
+                                         radl::color_t{255, 0, 0, 127}});
+        }
 
         // Draw
         BeginDrawing();
-        // ClearBackground(BLACK);
+        ClearBackground(BLACK);
         vterm.render();
-        // auto& texture = *tex.tex;
-        // DrawTexture(texture, screenWidth / 2 - texture.width / 2,
-        //             screenHeight / 2 - texture.height / 2, WHITE);
-
-        // DrawTextureRec(texture, texrect, {0.F, 0.F}, PINK);
-        // DrawText("this IS a texture loaded from an image!", 300, 370, 10,
-        // GRAY);
+        auto screen_width = GetScreenWidth();
+        DrawFPS(screen_width - 100, 0);
         EndDrawing();
     }
-
     // De-Initialization
     CloseWindow();  // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
     return 0;
 }

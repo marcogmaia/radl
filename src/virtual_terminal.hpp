@@ -108,6 +108,7 @@ public:
     }
 
     void render();
+    void draw();
 };
 
 }  // namespace radl

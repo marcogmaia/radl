@@ -110,10 +110,10 @@ color_t greyscale(const color_t& col) {
     unsigned char green = col.g;
     unsigned char blue  = col.b;
 
-    float RED       = red / 255.0F;
-    float GREEN     = green / 255.0F;
-    float BLUE      = blue / 255.0F;
-    float luminance = 0.299f * RED + 0.587f * GREEN + 0.114f * BLUE;
+    float lred      = red / 255.0F;
+    float lgreen    = green / 255.0F;
+    float lblue     = blue / 255.0F;
+    float luminance = 0.299f * lred + 0.587f * lgreen + 0.114f * lblue;
 
     red   = static_cast<unsigned char>(luminance * 255.0F);
     green = static_cast<unsigned char>(luminance * 255.0F);
@@ -149,38 +149,37 @@ color_t darken(const int& amount, const color_t& col) {
     return color_t(red, green, blue);
 }
 
-/* Applies colored lighting effect; colors that don't exist remain dark. Lights
- * are from 0.0 to 1.0. */
+
 color_t apply_colored_light(const color_t& col,
                             const std::tuple<float, float, float>& light) {
     unsigned char red   = col.r;
     unsigned char green = col.g;
     unsigned char blue  = col.b;
 
-    float RED   = red / 255.0F;
-    float GREEN = green / 255.0F;
-    float BLUE  = blue / 255.0F;
+    float lred   = red / 255.0F;
+    float lgreen = green / 255.0F;
+    float lblue  = blue / 255.0F;
 
-    RED *= std::get<0>(light);
-    GREEN *= std::get<1>(light);
-    BLUE *= std::get<2>(light);
+    lred *= std::get<0>(light);
+    lgreen *= std::get<1>(light);
+    lblue *= std::get<2>(light);
 
-    if(RED > 1.0)
-        RED = 1.0;
-    if(RED < 0.0)
-        RED = 0.0;
-    if(GREEN > 1.0)
-        GREEN = 1.0;
-    if(GREEN < 0.0)
-        GREEN = 0.0;
-    if(BLUE > 1.0)
-        BLUE = 1.0;
-    if(BLUE < 0.0)
-        BLUE = 0.0;
+    if(lred > 1.0)
+        lred = 1.0;
+    if(lred < 0.0)
+        lred = 0.0;
+    if(lgreen > 1.0)
+        lgreen = 1.0;
+    if(lgreen < 0.0)
+        lgreen = 0.0;
+    if(lblue > 1.0)
+        lblue = 1.0;
+    if(lblue < 0.0)
+        lblue = 0.0;
 
-    red   = static_cast<unsigned char>(RED * 255.0F);
-    green = static_cast<unsigned char>(GREEN * 255.0F);
-    blue  = static_cast<unsigned char>(BLUE * 255.0F);
+    red   = static_cast<unsigned char>(lred * 255.0F);
+    green = static_cast<unsigned char>(lgreen * 255.0F);
+    blue  = static_cast<unsigned char>(lblue * 255.0F);
 
     return color_t(red, green, blue);
 }

@@ -3,6 +3,8 @@
 #include <tuple>
 #include <cereal/cereal.hpp>
 
+#include "raylib.h"
+
 namespace radl {
 
 /* Converts HSV into an RGB tuple */
@@ -19,10 +21,16 @@ struct color_t {
     /* Default empty constructor */
     color_t() {}
 
+    color_t(Color rlcolor)
+        : r{rlcolor.r}
+        , g{rlcolor.g}
+        , b{rlcolor.b}
+        , a{rlcolor.a} {}
+
     // struct Color;
-    // inline operator Color() const {
-    //     return Color{r, g, b, a};
-    // }
+    inline operator Color() const {
+        return Color{r, g, b, a};
+    }
 
     /* Convenience constructor from red/green/blue; accepts ints and casts them
      */
@@ -44,7 +52,7 @@ struct color_t {
         std::tie(r, g, b, a) = color_from_hsv(hue, saturation, value);
     }
 
-    /* Construct from an RGB tuple */
+    /* Construct from an RGBA tuple */
     color_t(const std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>& c) {
         std::tie(r, g, b, a) = c;
     }
@@ -122,12 +130,18 @@ struct color_t {
     }
 };
 
-/* Converts a color_t to an SFML color */
-// inline sf::Color color_to_sfml(const color_t& col) {
-//     return sf::Color(col.r, col.g, col.b, col.a);
-// }
 
-/* Converts a color_t to an RGB tuple */
+/**
+ * @brief  Converts a color_t to an raylib Color
+ *
+ * @param col
+ * @return Color
+ */
+inline Color color_to_rlcolor(const color_t& col) {
+    return Color(col.r, col.g, col.b, col.a);
+}
+
+/* Converts a color_t to an RGBA tuple */
 inline std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>
 color_to_rgba(const color_t& col) {
     return std::make_tuple(col.r, col.g, col.b, col.a);
@@ -142,13 +156,22 @@ extern color_t greyscale(const color_t& col);
 /* Darkens a color by the specified amount. */
 color_t darken(const int& amount, const color_t& col);
 
-/* Applies colored lighting effect; colors that don't exist remain dark. Lights
- * are from 0.0 to 1.0. */
+
+/**
+ * @brief Applies colored lighting effect; colors that don't exist remain dark.
+ * Lights are from 0.0 to 1.0.
+ *
+ * @param col color
+ * @param light
+ * @return color_t
+ */
 color_t apply_colored_light(const color_t& col,
                             const std::tuple<float, float, float>& light);
 
-/* Calculates an intermediate color on a linear RGB color ramp. Amount is from 0
- * to 1 */
-extern color_t lerp(const color_t& first, const color_t& second, float amount);
+/**
+ * @brief Calculates an intermediate color on a linear RGB color ramp. Amount is
+ * from 0.F to 1.F
+ */
+color_t lerp(const color_t& first, const color_t& second, float amount);
 
 }  // namespace radl

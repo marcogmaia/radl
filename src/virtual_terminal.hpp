@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "vchar.hpp"
 
+#include "colors.hpp"
 namespace radl {
 
 class virtual_terminal {
@@ -105,6 +106,31 @@ public:
      */
     inline std::string get_font_tag() noexcept {
         return font->texture_tag;
+    }
+
+    void print(int x, int y, const std::string& str,
+               const color_t& fg = colors::White,
+               const color_t& bg = colors::NONE) noexcept;
+
+
+    /**
+     * @brief Draw a box at x/y of size w/h, in color fg/bg (or black/white if
+     * not specified). If double_lines is true, it will use the two-line/thick
+     * box characters.
+     */
+    void box(const int x, const int y, const int w, const int h,
+             const color_t& fg, const color_t& bg,
+             bool double_lines = false) noexcept;
+
+    /**
+     * @brief Draw a box that encompasses the whole terminal boundary, in color
+     * fg/bg. If double_lines is set to true, then it will use the
+     * two-line/thick box characters.
+     */
+    inline void box(const color_t& fg = colors::White,
+                    const color_t& bg = colors::NONE,
+                    bool double_lines = false) noexcept {
+        box(0, 0, term_width - 1, term_height - 1, fg, bg, double_lines);
     }
 
     void render();

@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
+
 project(main)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 20)
 
-# find_package(raylib 3.5 REQUIRED) # Requires at least version 2.5.0
-cmake_policy(SET CMP0072 NEW)
+if(POLICY CMP0072)
+  cmake_policy(SET CMP0072 NEW)
+endif()
+find_package(OpenGL REQUIRED)
 include_directories(lib/raylib/src)
 include_directories(./src)
 add_subdirectory(lib/raylib)

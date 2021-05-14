@@ -5,6 +5,7 @@ add_library(
     radl
     "color_t.cpp"
     "virtual_terminal.cpp"
+    "virtual_terminal_sparse.cpp"
     "font_manager.cpp"
     "texture_resources.cpp"
 )

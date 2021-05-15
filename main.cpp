@@ -23,7 +23,10 @@ int main() {
     vterm.set_char(2, 2,
                    radl::vchar_t{'!', radl::color_t{0, 255, 0},
                                  radl::color_t{255, 255, 0, 127}});
+    vterm.print(3, 3, "Marco. A. G. Maia", BLUE, ORANGE);
+    RenderTexture2D render_backing = LoadRenderTexture(1920, 1080);
 
+    SetExitKey(KEY_NULL);
     SetTargetFPS(200);
     // Main game loop
     // Detect window close button or ESC key
@@ -38,17 +41,18 @@ int main() {
             vterm.set_char(2, 2,
                            radl::vchar_t{'@', radl::color_t{0, 255, 0},
                                          radl::color_t{255, 0, 0, 127}});
+            vterm.print(3, 3, "Marco. A. G. Maia", ORANGE, BLUE);
         }
 
         // Draw
         BeginDrawing();
         ClearBackground(BLACK);
-        vterm.render();
-        auto screen_width = GetScreenWidth();
-        DrawFPS(screen_width - 100, 0);
+        vterm.render(render_backing);
+        DrawFPS(GetScreenWidth() - 100, 0);
         EndDrawing();
     }
     // De-Initialization
+    UnloadRenderTexture(render_backing);
     CloseWindow();  // Close window and OpenGL context
     return 0;
 }

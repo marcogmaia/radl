@@ -37,27 +37,27 @@ private:
     }
 
 public:
-    gui_t(const int w, const int h)
+    gui_t(int w, int h)
         : screen_width(w)
         , screen_height(h) {}
-    void on_resize(const int w, const int h);
+    void on_resize(int w, int h);
     void render(RenderTexture2D& render_texture);
 
     // Specialization for adding console layers
-    void add_layer(const int handle, const int X, const int Y, const int W,
-                   const int H, std::string font_name,
+    void add_layer(int handle, int X, int Y, int W, int H,
+                   std::string font_name,
                    std::function<void(layer_t*, int, int)> resize_fun,
                    bool has_background = true, int order = -1);
 
     // Specialization for sparse layers
-    void add_sparse_layer(const int handle, const int X, const int Y,
-                          const int W, const int H, std::string font_name,
+    void add_sparse_layer(int handle, int X, int Y, int W, int H,
+                          std::string font_name,
                           std::function<void(layer_t*, int, int)> resize_fun,
                           int order = -1);
 
     // Specialization for adding owner-draw layers
     void add_owner_layer(
-        const int handle, const int X, const int Y, const int W, const int H,
+        int handle, int X, int Y, int W, int H,
         std::function<void(layer_t*, int, int)> resize_fun,
         std::function<void(layer_t*, RenderTexture2D&)> owner_draw_fun,
         int order = -1);

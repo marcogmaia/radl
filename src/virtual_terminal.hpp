@@ -1,3 +1,5 @@
+#pragma once
+
 #include "font_manager.hpp"
 #include "color_t.hpp"
 #include "raylib.h"

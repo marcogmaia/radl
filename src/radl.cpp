@@ -4,8 +4,8 @@
 
 namespace radl {
 
-std::unique_ptr<sf::RenderWindow> main_window;
-std::unique_ptr<virtual_terminal> console;
+RenderTexture2D main_texture = {0};
+std::unique_ptr<virtual_terminal> vterm;
 std::unique_ptr<gui_t> gui;
 
 namespace main_detail {
@@ -14,98 +14,96 @@ bool taking_screenshot          = false;
 std::string screenshot_filename = "";
 }  // namespace main_detail
 
-sf::RenderWindow* get_window() {
-    return main_window.get();
+RenderTexture2D& get_window() {
+    return main_texture;
 }
 
-void init(const config_simple& config) {
-    register_font_directory(config.font_path);
-    bitmap_font* font = get_font(config.root_font);
-    if(!config.fullscreen) {
-        main_window = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(config.width * font->character_size.first,
-                          config.height * font->character_size.second),
-            config.window_title,
-            sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
-    } else {
-        sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-        main_window           = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel),
-            config.window_title, sf::Style::Fullscreen);
-    }
-    main_detail::use_root_console = true;
+// void init(const config_simple& config) {
+//     register_font_directory(config.font_path);
+//     bitmap_font* font = get_font(config.root_font);
+//     if(!config.fullscreen) {
+//         main_texture = std::make_unique<sf::RenderWindow>(
+//             sf::VideoMode(config.width * font->character_size.first,
+//                           config.height * font->character_size.second),
+//             config.window_title,
+//             sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
+//     } else {
+//         sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+//         main_texture          = std::make_unique<sf::RenderWindow>(
+//             sf::VideoMode(desktop.width, desktop.height,
+//             desktop.bitsPerPixel), config.window_title,
+//             sf::Style::Fullscreen);
+//     }
+//     main_detail::use_root_console = true;
 
-    console = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-    sf::Vector2u size_pixels = main_window->getSize();
-    console->resize_pixels(size_pixels.x, size_pixels.y);
-}
+//     vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
+//     sf::Vector2u size_pixels = main_texture->getSize();
+//     vterm->resize_pixels(size_pixels.x, size_pixels.y);
+// }
 
-void init(const config_simple_px& config) {
-    register_font_directory(config.font_path);
-    if(!config.fullscreen) {
-        main_window = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(config.width_px, config.height_px),
-            config.window_title,
-            sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
-    } else {
-        sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-        main_window           = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel),
-            config.window_title, sf::Style::Fullscreen);
-    }
-    main_detail::use_root_console = true;
+// void init(const config_simple_px& config) {
+//     register_font_directory(config.font_path);
+//     if(!config.fullscreen) {
+//         main_texture = std::make_unique<sf::RenderWindow>(
+//             sf::VideoMode(config.width_px, config.height_px),
+//             config.window_title,
+//             sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
+//     } else {
+//         sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+//         main_texture          = std::make_unique<sf::RenderWindow>(
+//             sf::VideoMode(desktop.width, desktop.height,
+//             desktop.bitsPerPixel), config.window_title,
+//             sf::Style::Fullscreen);
+//     }
+//     main_detail::use_root_console = true;
 
-    console = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-    sf::Vector2u size_pixels = main_window->getSize();
-    console->resize_pixels(size_pixels.x, size_pixels.y);
-}
+//     vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
+//     sf::Vector2u size_pixels = main_texture->getSize();
+//     vterm->resize_pixels(size_pixels.x, size_pixels.y);
+// }
 
 void init(const config_advanced& config) {
+    int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
+    if(config.fullscreen) {
+        window_flags |= FLAG_FULLSCREEN_MODE;
+    }
+    InitWindow(config.width_px, config.height_px, config.window_title.c_str());
+    SetWindowState(window_flags);
+
+    main_texture = LoadRenderTexture(1920, 1080);
     register_font_directory(config.font_path);
 
-    sf::ContextSettings settings;
-    settings.antialiasingLevel = 4;
-    settings.depthBits         = 24;
-    settings.stencilBits       = 8;
-
-    if(!config.fullscreen) {
-        main_window = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(config.width_px, config.height_px),
-            config.window_title,
-            sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close,
-            settings);
-    } else {
-        sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-        main_window           = std::make_unique<sf::RenderWindow>(
-            sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel),
-            config.window_title, sf::Style::Fullscreen, settings);
-    }
     main_detail::use_root_console = false;
-
     gui = std::make_unique<gui_t>(config.width_px, config.height_px);
 }
 
-std::function<bool(sf::Event)> optional_event_hook = nullptr;
-std::function<void()> optional_display_hook        = nullptr;
+void terminate() {
+    if(main_texture.id != 0) {
+        UnloadRenderTexture(main_texture);
+    }
+}
+
+// std::function<bool(sf::Event)> optional_event_hook = nullptr;
+std::function<void()> optional_display_hook = nullptr;
 
 void run(std::function<void(double)> on_tick) {
     // reset_mouse_state();
 
     // double duration_ms = 0.0;
-    // while(main_window->isOpen()) {
+    // while(main_texture->isOpen()) {
     //     clock_t start_time = clock();
 
     //     sf::Event event;
-    //     while(main_window->pollEvent(event)) {
+    //     while(main_texture->pollEvent(event)) {
     //         bool handle_events = true;
     //         if(optional_event_hook) {
     //             handle_events = optional_event_hook(event);
     //         }
     //         if(handle_events) {
     //             if(event.type == sf::Event::Closed) {
-    //                 main_window->close();
+    //                 main_texture->close();
     //             } else if(event.type == sf::Event::Resized) {
-    //                 main_window->setView(sf::View(sf::FloatRect(
+    //                 main_texture->setView(sf::View(sf::FloatRect(
     //                     0.f, 0.f, static_cast<float>(event.size.width),
     //                     static_cast<float>(event.size.height))));
     //                 if(main_detail::use_root_console)
@@ -135,24 +133,24 @@ void run(std::function<void(double)> on_tick) {
     //         }
     //     }
 
-    //     main_window->clear();
+    //     main_texture->clear();
     //     // if (main_detail::use_root_console) console->clear();
 
     //     on_tick(duration_ms);
 
     //     if(main_detail::use_root_console) {
-    //         console->render(*main_window);
+    //         console->render(*main_texture);
     //     } else {
-    //         gui->render(*main_window);
+    //         gui->render(*main_texture);
     //     }
 
     //     if(optional_display_hook) {
-    //         main_window->pushGLStates();
-    //         main_window->resetGLStates();
+    //         main_texture->pushGLStates();
+    //         main_texture->resetGLStates();
     //         optional_display_hook();
-    //         main_window->popGLStates();
+    //         main_texture->popGLStates();
     //     }
-    //     main_window->display();
+    //     main_texture->display();
     //     if(main_detail::taking_screenshot) {
     //         sf::Texture tex;
     //         tex.update(*rltk::get_window());

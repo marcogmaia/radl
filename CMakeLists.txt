@@ -4,6 +4,8 @@ project(main)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 20)
+set(USER_CXX_FLAGS "-fdiagnostics-color=always")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USER_CXX_FLAGS}")
 
 if(POLICY CMP0072)
   cmake_policy(SET CMP0072 NEW)

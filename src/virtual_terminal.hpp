@@ -8,7 +8,7 @@ namespace radl {
 
 class virtual_terminal {
 private:
-    RenderTexture2D backing;  // backing texture
+    // RenderTexture2D backing;  // backing texture
     Texture2D tex;
     // used to get individual sprites from atlas
     // sf::VertexArray vertices;
@@ -34,12 +34,12 @@ public:
         , offset_x(x)
         , offset_y(y)
         , has_background(background) {
-        backing = LoadRenderTexture(1920, 1080);
-        font    = get_font(fontt);
+        // backing = LoadRenderTexture(1920, 1080);
+        font = get_font(fontt);
     }
 
     ~virtual_terminal() {
-        UnloadRenderTexture(backing);
+        // UnloadRenderTexture(backing);
     }
 
     /**
@@ -133,8 +133,19 @@ public:
         box(0, 0, term_width - 1, term_height - 1, fg, bg, double_lines);
     }
 
-    void render();
-    void draw();
+    /**
+     * @brief render the virtual terminal to a texture
+     *
+     * @param render_texture
+     */
+    void render(RenderTexture2D& render_texture);
+
+    /**
+     * @brief Draw the entire texture to the screen
+     *
+     * @param render_texture
+     */
+    static void draw(RenderTexture2D& render_texture);
 };
 
 }  // namespace radl

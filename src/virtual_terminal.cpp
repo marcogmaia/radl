@@ -81,7 +81,7 @@ void virtual_terminal::box(const int x, const int y, const int w, const int h,
     }
 }
 
-void virtual_terminal::render() {
+void virtual_terminal::render(RenderTexture2D& render_texture) {
     if(!visible) {
         return;
     }
@@ -100,7 +100,7 @@ void virtual_terminal::render() {
         };
         Rectangle tex_src_rect{0, 0, font_size.x, font_size.y};
 
-        BeginTextureMode(backing);
+        BeginTextureMode(render_texture);
         ClearBackground(BLANK);
         Vector2 pos{0.F, 0.F};
         for(auto& vch : buffer) {
@@ -120,17 +120,19 @@ void virtual_terminal::render() {
         }
         EndTextureMode();
     }
-    draw();
+    // TODO draw call should be in gui_t
+    draw(render_texture);
 }  // namespace radl
 
-void virtual_terminal::draw() {
-    // NOTE: Render texture must be y-flipped due to default OpenGL coordinates
+void virtual_terminal::draw(RenderTexture2D& render_texture) {
+    // NOTE: Render texture must be y-flipped due to default OpenGL
+    // coordinates
     // (left-bottom)
-    DrawTextureRec(backing.texture,
-                   Rectangle{0.F, 0.F,
-                             static_cast<float>(backing.texture.width),
-                             static_cast<float>(-backing.texture.height)},
-                   Vector2{0.F, 0.F}, WHITE);
+    DrawTextureRec(
+        render_texture.texture,
+        Rectangle{0.F, 0.F, static_cast<float>(render_texture.texture.width),
+                  static_cast<float>(-render_texture.texture.height)},
+        Vector2{0.F, 0.F}, WHITE);
 }
 
 }  // namespace radl

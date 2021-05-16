@@ -6,7 +6,7 @@
 #include <string>
 #include <sys/stat.h>
 
-namespace {
+namespace radl {
 
 inline bool exists(const std::string& filename) noexcept {
     struct stat buffer;

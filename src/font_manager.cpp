@@ -29,14 +29,13 @@ std::unordered_map<std::string, bitmap_font> atlas;
 
 }  // namespace font_detail
 
-bitmap_font* get_font(const std::string font_tag) {
+bitmap_font* get_font(const std::string& font_tag) {
     auto finder = font_detail::atlas.find(font_tag);
     if(finder == font_detail::atlas.end()) {
         throw std::runtime_error("Unable to locate bitmap font with tag "
                                  + font_tag);
-    } else {
-        return &finder->second;
     }
+    return &finder->second;
 }
 
 inline void check_for_duplicate_font(const std::string& tag) {
@@ -53,7 +52,7 @@ inline void check_texture_exists(const std::string& texture_tag) {
     }
 }
 
-void register_font(const std::string font_tag, const std::string filename,
+void register_font(const std::string& font_tag, const std::string& filename,
                    int tile_width, int tile_height) {
     const std::string texture_tag = "font_tex_" + filename;
     check_for_duplicate_font(font_tag);
@@ -63,12 +62,14 @@ void register_font(const std::string font_tag, const std::string filename,
         font_tag, bitmap_font(texture_tag, tile_width, tile_height)));
 }
 
-void register_font_directory(const std::string path) {
-    if(!exists(path))
+void register_font_directory(const std::string& path) {
+    if(!exists(path)) {
         throw std::runtime_error("Font directory does not exist.");
+    }
     const std::string info_file = path + "/fonts.txt";
-    if(!exists(info_file))
+    if(!exists(info_file)) {
         throw std::runtime_error("No fonts.txt file in font directory.");
+    }
 
     std::ifstream f(info_file);
     std::string line;

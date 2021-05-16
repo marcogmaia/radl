@@ -1,4 +1,5 @@
 {
+    "clangtidy.sourcePath": "${workspaceFolder}/src",
     "files.associations": {
         "string": "cpp",
         "stdexcept": "cpp",
@@ -99,6 +100,7 @@
         "semaphore": "cpp",
         "stack": "cpp",
         "__functional_03": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "filesystem": "cpp"
     }
 }

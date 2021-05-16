@@ -21,8 +21,8 @@ void gui_t::on_resize(const int w, const int h) {
 }
 
 void gui_t::render(RenderTexture2D& render_texture) {
-    for(auto l : gui_detail::render_order) {
-        l.second->render(render_texture);
+    for(auto& [handle, layer] : gui_detail::render_order) {
+        layer->render(render_texture);
     }
 }
 

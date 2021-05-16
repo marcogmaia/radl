@@ -40,7 +40,9 @@ public:
     gui_t(int w, int h)
         : screen_width(w)
         , screen_height(h) {}
+
     void on_resize(int w, int h);
+
     void render(RenderTexture2D& render_texture);
 
     // Specialization for adding console layers
@@ -62,7 +64,18 @@ public:
         std::function<void(layer_t*, RenderTexture2D&)> owner_draw_fun,
         int order = -1);
     void delete_layer(const int handle);
+
     layer_t* get_layer(const int handle);
+
+    /**
+     * @brief Gets the underlying virtual_terminal by reference
+     *
+     * @param handle
+     * @return virtual_terminal&
+     */
+    inline virtual_terminal& get_vterm(const int handle) {
+        return *get_layer(handle)->vterm.get();
+    }
 };
 
 }  // namespace radl

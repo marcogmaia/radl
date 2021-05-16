@@ -17,7 +17,7 @@ void virtual_terminal::set_char(const int index, const vchar_t& vch) noexcept {
 
 void virtual_terminal::clear() {
     dirty = true;
-    std::ranges::fill(buffer, vchar_t{32, {255, 255, 255}, {0, 0, 0}});
+    std::ranges::fill(buffer, vchar_t{32, colors::NONE, colors::NONE});
 }
 
 void virtual_terminal::resize_chars(const int width,

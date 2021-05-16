@@ -57,7 +57,7 @@ public:
      *
      * @param n
      * @param d
-     * @return int
+     * @return total sum of the dices
      */
     inline int roll_dice(int n, int d) {
         int total = 0;

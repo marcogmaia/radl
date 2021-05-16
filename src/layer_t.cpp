@@ -9,6 +9,14 @@ void layer_t::make_owner_draw_backing() {
     }
 }
 
+/**
+ * @brief Resizes the layer, by resizing the underlying virtual_terminal.
+ * 
+ * @note This function is called by gui_t::on_resize
+ *
+ * @param width
+ * @param height
+ */
 void layer_t::on_resize(const int width, const int height) {
     resize_func(this, width, height);
     if(vterm && vterm->visible) {

@@ -1,5 +1,5 @@
 /*
- * Provides RAII wrapper for a texture.
+ * Provides RAII wrapper for a texture and render_texture.
  */
 
 #pragma once
@@ -10,8 +10,13 @@
 
 namespace radl {
 
+/**
+ * @brief Class wrapper to use RAII idiom
+ *
+ */
 struct texture_t {
     Texture2D texture = {0};
+
     inline texture_t(const std::string& filename) {
         texture = LoadTexture(filename.c_str());
         if(texture.id == 0) {
@@ -20,7 +25,31 @@ struct texture_t {
         }
     }
     inline ~texture_t() {
+        // checks if texture is valid is done internal to raylib
         UnloadTexture(texture);
+    }
+};
+
+/**
+ * @brief Class wrapper to use RAII idiom
+ *
+ */
+struct render_texture_t {
+    RenderTexture2D render_texture = {0};
+
+    inline render_texture_t(const int width, const int height) {
+        render_texture = LoadRenderTexture(width, height);
+        if(render_texture.id == 0) {
+            throw std::runtime_error("Unable to create Framebuffer object");
+        }
+    }
+
+    render_texture_t(const render_texture_t&) = delete;
+    render_texture_t& operator=(const render_texture_t&) = delete;
+
+    inline ~render_texture_t() {
+        // checks if RenderTexture2D is valid is done inside raylib internals
+        UnloadRenderTexture(render_texture);
     }
 };
 

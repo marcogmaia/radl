@@ -1,12 +1,13 @@
+#include <memory>
 #include "radl.hpp"
 #include "texture.hpp"
-#include <memory>
+#include "texture_resources.hpp"
 
 namespace radl {
 
-RenderTexture2D main_texture = {0};
-std::unique_ptr<virtual_terminal> vterm;
-std::unique_ptr<gui_t> gui;
+std::unique_ptr<radl::render_texture_t> main_texture;
+std::unique_ptr<radl::virtual_terminal> vterm;
+std::unique_ptr<radl::gui_t> gui;
 
 namespace main_detail {
 bool use_root_console;
@@ -15,7 +16,7 @@ std::string screenshot_filename = "";
 }  // namespace main_detail
 
 RenderTexture2D& get_window() {
-    return main_texture;
+    return main_texture->render_texture;
 }
 
 // void init(const config_simple& config) {
@@ -70,17 +71,14 @@ void init(const config_advanced& config) {
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
     SetWindowState(window_flags);
 
-    main_texture = LoadRenderTexture(1920, 1080);
+    // main_texture = LoadRenderTexture(1920, 1080);
+    // main_texture
+    //     = render_texture_t{1920, 980}
     register_font_directory(config.font_path);
+    main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     main_detail::use_root_console = false;
     gui = std::make_unique<gui_t>(config.width_px, config.height_px);
-}
-
-void terminate() {
-    if(main_texture.id != 0) {
-        UnloadRenderTexture(main_texture);
-    }
 }
 
 // std::function<bool(sf::Event)> optional_event_hook = nullptr;

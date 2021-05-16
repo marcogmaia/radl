@@ -17,6 +17,7 @@
 // #include "serialization_utils.hpp"
 // #include "rexspeeder.hpp"
 // #include "scaling.hpp"
+#include "rng.hpp"
 #include "raylib.h"
 
 namespace radl {

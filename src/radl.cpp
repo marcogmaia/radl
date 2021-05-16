@@ -68,8 +68,8 @@ void init(const config_advanced& config) {
     if(config.fullscreen) {
         window_flags |= FLAG_FULLSCREEN_MODE;
     }
+    SetConfigFlags(window_flags);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
-    SetWindowState(window_flags);
 
     // main_texture = LoadRenderTexture(1920, 1080);
     // main_texture

@@ -50,8 +50,8 @@ struct layer_t {
     // to: a) permit threading, should you so wish (so there is a single
     // composite run) b) allow the future "effects" engine to run.
     RenderTexture2D backing = {0};
-    
-    layer_t(layer_t&& rhs)  = default;
+
+    layer_t(layer_t&& rhs) = default;
 
     /* This specialization is for generic consoles */
     layer_t(const int X, const int Y, const int W, const int H,

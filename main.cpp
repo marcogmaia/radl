@@ -56,6 +56,11 @@ void test_radl(radl::virtual_terminal& vterm) {
     }
 }
 
+void gui_layer_resize(radl::layer_t* layer, int new_width, int new_height) {
+    layer->w = new_width;
+    layer->h = new_height;
+}
+
 int main() {
     std::cout << "curr path: " << GetWorkingDirectory() << '\n';
     constexpr int main_screen_width  = 800;
@@ -65,13 +70,12 @@ int main() {
     radl::init(cfg);
     SetTargetFPS(200);
 
-    // TODO remove this from here, only testing to check if things are
-    // working
-    radl::vterm = std::make_unique<radl::virtual_terminal>("16x16");
-    radl::vterm->resize_pixels(GetScreenWidth(), GetScreenHeight());
-    radl::vterm->print(3, 3, "Marco A. G. Maia", BLUE, ORANGE);
+    radl::gui_t gui(1920, 1080);
+    constexpr int gui_handle = 1;
+    gui.add_layer(gui_handle, 0, 0, GetScreenWidth(), GetScreenHeight(),
+                  "16x16", gui_layer_resize);
 
-    auto on_resize = []() {
+    auto on_resize = [&gui]() {
         auto new_width               = GetScreenWidth();
         auto new_height              = GetScreenHeight();
         bool size_contraint_violated = false;
@@ -86,20 +90,18 @@ int main() {
         if(size_contraint_violated) {
             SetWindowSize(new_width, new_height);
         }
+        gui.on_resize(new_width, new_height);
     };
 
     while(!WindowShouldClose()) {
         if(IsWindowResized()) {
             on_resize();
-            radl::vterm->dirty = true;
-            radl::vterm->set_char(1, 1, radl::vchar_t{'@', BLUE, ORANGE});
-            radl::vterm->print(3, 3, "Marco A. G. Maia", ORANGE, BLUE);
         }
-        test_radl(*radl::vterm.get());
+        test_radl(gui.get_vterm(gui_handle));
 
         BeginDrawing();
         ClearBackground(BLACK);
-        radl::vterm->render(radl::get_window());
+        gui.render(radl::get_window());
         DrawFPS(GetScreenWidth() - 100, 0);
         EndDrawing();
     }

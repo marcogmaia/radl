@@ -50,7 +50,7 @@ public:
     }
 
     /**
-     * @brief Computs results in the form of DnD dice rolls.
+     * @brief Computes results in the form of DnD dice rolls.
      *
      * e.g.: 2d6, the output will be in closed interval [2, 12] for this
      * example.

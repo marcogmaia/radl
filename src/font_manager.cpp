@@ -62,6 +62,15 @@ void register_font(const std::string& font_tag, const std::string& filename,
         font_tag, bitmap_font(texture_tag, tile_width, tile_height)));
 }
 
+/**
+ * @brief register the font directory with the file fonts.txt in the proper
+ * CSV format:
+ * "tag,filename,char_width,char_height"
+ *
+ * @warning Doesn't work before InitWindow because GL isn't initialized...
+ * It needs to registers the font as a texture, and OpenGL needs to be
+ * initialized to store the texture
+ */
 void register_font_directory(const std::string& path) {
     if(!exists(path)) {
         throw std::runtime_error("Font directory does not exist.");
@@ -81,6 +90,7 @@ void register_font_directory(const std::string& path) {
         }
     }
 
+    // TODO make use of json files
     /*
     ptree font_tree;
     read_json(info_file, font_tree);

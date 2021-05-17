@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 #include "filesystem.hpp"
 #include "font_manager.hpp"
@@ -14,18 +15,6 @@
 namespace radl {
 
 namespace font_detail {
-
-std::vector<std::string> split(const std::string& str, const char& delimiter) {
-    std::vector<std::string> internal;
-    std::stringstream ss(str);  // Turn the string into a stream.
-    std::string tok;
-
-    while(getline(ss, tok, delimiter)) {
-        internal.push_back(tok);
-    }
-
-    return internal;
-}
 
 std::unordered_map<std::string, bitmap_font> atlas;
 
@@ -76,7 +65,7 @@ void register_font(const std::string& font_tag, const std::string& filename,
  * @param path path where the fonts.txt file is located
  */
 void register_font_directory(std::string path) {
-    boost::trim_right_if(path, boost::is_any_of("/"));
+    boost::trim_right_if(path, boost::is_any_of(" /"));
     if(!exists(path)) {
         throw std::runtime_error("Font directory does not exist.");
     }
@@ -88,10 +77,11 @@ void register_font_directory(std::string path) {
     std::ifstream f(info_file);
     std::string line;
     while(getline(f, line)) {
-        auto split = font_detail::split(line, ',');
-        if(split.size() == 4) {
-            register_font(split[0], path + "/" + split[1], std::stoi(split[2]),
-                          std::stoi(split[3]));
+        std::vector<std::string> csv_fields;
+        boost::split(csv_fields, line, boost::is_any_of(","));
+        if(csv_fields.size() == 4) {
+            register_font(csv_fields[0], path + "/" + csv_fields[1],
+                          std::stoi(csv_fields[2]), std::stoi(csv_fields[3]));
         }
     }
 

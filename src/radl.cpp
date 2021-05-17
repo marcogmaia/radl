@@ -5,6 +5,7 @@
 
 namespace radl {
 
+// Smart pointers makes it easy the use of RAII idiom
 std::unique_ptr<radl::render_texture_t> main_texture;
 std::unique_ptr<radl::virtual_terminal> vterm;
 std::unique_ptr<radl::gui_t> gui;
@@ -19,28 +20,47 @@ RenderTexture2D& get_window() {
     return main_texture->render_texture;
 }
 
-// void init(const config_simple& config) {
-//     register_font_directory(config.font_path);
-//     bitmap_font* font = get_font(config.root_font);
-//     if(!config.fullscreen) {
-//         main_texture = std::make_unique<sf::RenderWindow>(
-//             sf::VideoMode(config.width * font->character_size.first,
-//                           config.height * font->character_size.second),
-//             config.window_title,
-//             sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
-//     } else {
-//         sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-//         main_texture          = std::make_unique<sf::RenderWindow>(
-//             sf::VideoMode(desktop.width, desktop.height,
-//             desktop.bitsPerPixel), config.window_title,
-//             sf::Style::Fullscreen);
-//     }
-//     main_detail::use_root_console = true;
+void init(const config_simple& config) {
+    int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
+    if(config.fullscreen) {
+        window_flags |= FLAG_FULLSCREEN_MODE;
+    }
+    SetConfigFlags(window_flags);
+    InitWindow(config.width, config.height, config.window_title.c_str());
+    // Register fonts after OpenGL init (InitWindow), and then resize the window
+    // accordingly
+    register_font_directory(config.font_path);
+    bitmap_font* font               = get_font(config.root_font);
+    auto& [font_width, font_height] = font->character_size;
+    SetWindowSize(GetScreenWidth() * font_width,
+                  GetScreenHeight() * font_height);
 
-//     vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-//     sf::Vector2u size_pixels = main_texture->getSize();
-//     vterm->resize_pixels(size_pixels.x, size_pixels.y);
-// }
+    main_detail::use_root_console = true;
+    main_texture = std::make_unique<render_texture_t>(1920, 1080);
+
+    int texture_width  = main_texture->render_texture.texture.width;
+    int texture_height = main_texture->render_texture.texture.height;
+    radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
+    radl::vterm->resize_pixels(texture_width, texture_height);
+}
+
+
+void init(const config_simple_px& config) {
+    int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
+    if(config.fullscreen) {
+        window_flags |= FLAG_FULLSCREEN_MODE;
+    }
+    SetConfigFlags(window_flags);
+    InitWindow(config.width_px, config.height_px, config.window_title.c_str());
+
+    main_detail::use_root_console = true;
+    main_texture = std::make_unique<render_texture_t>(1920, 1080);
+
+    int texture_width  = main_texture->render_texture.texture.width;
+    int texture_height = main_texture->render_texture.texture.height;
+    radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
+    radl::vterm->resize_pixels(texture_width, texture_height);
+}
 
 // void init(const config_simple_px& config) {
 //     register_font_directory(config.font_path);
@@ -70,11 +90,14 @@ void init(const config_advanced& config) {
     }
     SetConfigFlags(window_flags);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
+    // Doesn't work before InitWindow because GL isn't initialized...
+    // It needs to registers the font as a texture, and OpenGL needs to be
+    // initialized to store the texture
+    register_font_directory(config.font_path);
 
     // main_texture = LoadRenderTexture(1920, 1080);
     // main_texture
     //     = render_texture_t{1920, 980}
-    register_font_directory(config.font_path);
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     main_detail::use_root_console = false;

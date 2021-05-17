@@ -120,8 +120,6 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
         }
         EndTextureMode();
     }
-    // TODO draw call should be in gui_t
-    draw(render_texture);
 }  // namespace radl
 
 void virtual_terminal::draw(RenderTexture2D& render_texture) {

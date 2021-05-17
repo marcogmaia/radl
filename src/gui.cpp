@@ -23,6 +23,7 @@ void gui_t::on_resize(const int w, const int h) {
 void gui_t::render(RenderTexture2D& render_texture) {
     for(auto& [handle, layer] : gui_detail::render_order) {
         layer->render(render_texture);
+        layer->vterm->draw(render_texture);
     }
 }
 
@@ -80,7 +81,6 @@ void gui_t::add_owner_layer(
                   return a.first < b.first;
               });
 }
-
 
 void gui_t::delete_layer(const int handle) {
     gui_detail::render_order.erase(

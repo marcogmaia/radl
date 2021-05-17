@@ -11,7 +11,7 @@ void layer_t::make_owner_draw_backing() {
 
 /**
  * @brief Resizes the layer, by resizing the underlying virtual_terminal.
- * 
+ *
  * @note This function is called by gui_t::on_resize
  *
  * @param width
@@ -92,9 +92,7 @@ void layer_t::render(RenderTexture2D& render_texture) {
         // window.draw(sf::Sprite(compositor));
     } else if(svterm) {
         svterm->render(render_texture);
-    }
-    // has backing
-    else {
+    } else {  // has backing
         // if backing doesn't exist, create one
         make_owner_draw_backing();
         BeginTextureMode(backing);

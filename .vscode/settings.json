@@ -101,6 +101,7 @@
         "stack": "cpp",
         "__functional_03": "cpp",
         "*.ipp": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "*.m": "cpp"
     }
 }

@@ -17,12 +17,12 @@ void test_radl(radl::virtual_terminal& vterm) {
     static radl::vchar_t dude{'@', YELLOW, BLANK};
     tick_time += GetFrameTime();
     if(tick_time > 0.05) {
-        // Using the RNG's handy roll_dice function, we roll 1d4. Each option
+        // Using the RNG's handy dice_roll function, we roll 1d4. Each option
         // represents a possible move in this case. The function is just like
         // D&D's venerable XdY system - you can roll 10d12 with
-        // roll_dice(10,12). You aren't limited to dice sizes that exist or make
+        // dice_roll(10,12). You aren't limited to dice sizes that exist or make
         // sense.
-        int direction = rng.roll_dice(1, 4);
+        int direction = rng.dice_roll(1, 4);
         switch(direction) {
         case 1: --dude_x; break;
         case 2: ++dude_x; break;
@@ -65,8 +65,9 @@ int main() {
     std::cout << "curr path: " << GetWorkingDirectory() << '\n';
     constexpr int main_screen_width  = 800;
     constexpr int main_screen_height = 600;
-    radl::config_advanced cfg{"../resources", main_screen_width,
-                              main_screen_height};
+    // radl::config_advanced cfg{"../resources", main_screen_width,
+    //                           main_screen_height};
+    radl::config_simple cfg{"../resources"};
     radl::init(cfg);
     SetTargetFPS(200);
 
@@ -97,11 +98,14 @@ int main() {
         if(IsWindowResized()) {
             on_resize();
         }
-        test_radl(gui.get_vterm(gui_handle));
+        // test_radl(gui.get_vterm(gui_handle));
+        test_radl(*radl::vterm);
 
         BeginDrawing();
         ClearBackground(BLACK);
-        gui.render(radl::get_window());
+        // gui.render(radl::get_window());
+        radl::vterm->render(radl::get_window());
+        radl::vterm->draw(radl::get_window());
         DrawFPS(GetScreenWidth() - 100, 0);
         EndDrawing();
     }

@@ -53,7 +53,7 @@ struct layer_t {
 
     layer_t(layer_t&& rhs) = default;
 
-    /* This specialization is for generic consoles */
+    // This specialization is for generic consoles
     layer_t(const int X, const int Y, const int W, const int H,
             std::string font_name,
             std::function<void(layer_t*, int, int)> resize_fun,
@@ -70,7 +70,7 @@ struct layer_t {
         vterm->resize_pixels(w, h);
     }
 
-    /* This specialization is for sparse consoles */
+    // This specialization is for sparse consoles
     layer_t(bool sparse, const int X, const int Y, const int W, const int H,
             std::string font_name,
             std::function<void(layer_t*, int, int)> resize_fun)
@@ -85,7 +85,7 @@ struct layer_t {
         svterm->resize_pixels(w, h);
     }
 
-    /* This specialization is for owner-draw panels */
+    // This specialization is for owner-draw panels
     layer_t(const int X, const int Y, const int W, const int H,
             std::function<void(layer_t*, int, int)> resize_fun,
             std::function<void(layer_t*, RenderTexture2D&)> owner_draw_fun)

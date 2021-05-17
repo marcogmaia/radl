@@ -8,6 +8,9 @@ private:
     std::mt19937_64 m_rng;
     uint_fast64_t m_seed;
 
+    std::uniform_real_distribution<double> m_real_distribuition1
+        = std::uniform_real_distribution<double>(0.0, 1.0);
+
 public:
     /**
      * @brief Constructs the rng with the actual time as seed
@@ -59,7 +62,7 @@ public:
      * @param d
      * @return total sum of the dices
      */
-    inline int roll_dice(int n, int d) {
+    inline int dice_roll(int n, int d) {
         int total = 0;
         for(; n; --n) {
             total += range(1, d);
@@ -71,22 +74,32 @@ public:
      * @brief Picks a random value in range [first - last] iterators,  and puts
      * in "output"
      *
-     * @tparam InIter
-     * @tparam OutIter
+     * @tparam InputIterator input iterator
+     * @tparam OutputIterator output iterator
      * @param first
      * @param last
      * @param output
-     * @return true
-     * @return false
+     * 
+     * @return true if sampled, false otherwise
      */
-    template <typename InIter, typename OutIter>
-    bool random_choice(InIter first, InIter last, OutIter& output) {
+    template <typename InputIterator, typename OutputIterator>
+    bool random_choice(InputIterator first, InputIterator last,
+                       OutputIterator output) {
         // if empty
         if(first == last) {
             return false;
         }
         std::sample(first, last, output, 1, this->m_rng);
         return true;
+    }
+
+    /**
+     * @brief Get a random double in the open inteval [0.0, 1.0)
+     *
+     * @return double
+     */
+    inline double random_double() {
+        return m_real_distribuition1(m_rng);
     }
 };
 

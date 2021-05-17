@@ -62,27 +62,6 @@ void init(const config_simple_px& config) {
     radl::vterm->resize_pixels(texture_width, texture_height);
 }
 
-// void init(const config_simple_px& config) {
-//     register_font_directory(config.font_path);
-//     if(!config.fullscreen) {
-//         main_texture = std::make_unique<sf::RenderWindow>(
-//             sf::VideoMode(config.width_px, config.height_px),
-//             config.window_title,
-//             sf::Style::Titlebar | sf::Style::Resize | sf::Style::Close);
-//     } else {
-//         sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-//         main_texture          = std::make_unique<sf::RenderWindow>(
-//             sf::VideoMode(desktop.width, desktop.height,
-//             desktop.bitsPerPixel), config.window_title,
-//             sf::Style::Fullscreen);
-//     }
-//     main_detail::use_root_console = true;
-
-//     vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-//     sf::Vector2u size_pixels = main_texture->getSize();
-//     vterm->resize_pixels(size_pixels.x, size_pixels.y);
-// }
-
 void init(const config_advanced& config) {
     int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
     if(config.fullscreen) {
@@ -95,9 +74,6 @@ void init(const config_advanced& config) {
     // initialized to store the texture
     register_font_directory(config.font_path);
 
-    // main_texture = LoadRenderTexture(1920, 1080);
-    // main_texture
-    //     = render_texture_t{1920, 980}
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     main_detail::use_root_console = false;

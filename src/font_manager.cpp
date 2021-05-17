@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include "filesystem.hpp"
 #include "font_manager.hpp"
 #include "texture_resources.hpp"
@@ -70,8 +72,11 @@ void register_font(const std::string& font_tag, const std::string& filename,
  * @warning Doesn't work before InitWindow because GL isn't initialized...
  * It needs to registers the font as a texture, and OpenGL needs to be
  * initialized to store the texture
+ *
+ * @param path path where the fonts.txt file is located
  */
-void register_font_directory(const std::string& path) {
+void register_font_directory(std::string path) {
+    boost::trim_right_if(path, boost::is_any_of("/"));
     if(!exists(path)) {
         throw std::runtime_error("Font directory does not exist.");
     }

@@ -29,7 +29,7 @@ struct bitmap_font {
         , character_size(std::make_pair(tile_width, tile_height)) {}
 };
 
-void register_font_directory(const std::string& path);
+void register_font_directory(std::string path);
 
 bitmap_font* get_font(const std::string& font_tag);
 

@@ -1,12 +1,22 @@
 #include <memory>
 #include <deque>
+#include <utility>
 
 #include "astar.hpp"
 
 namespace radl {
 
-// TODO make a constraint of navigator_t or an interface
-template <typename location_t>
+template <typename T>
+concept Navigable = requires(T nav) {
+    { nav.get_x() }
+    ->std::integral;
+    { nav.get_y() }
+    ->std::integral;
+    { nav.get_xy() }
+    ->std::convertible_to<std::tuple<int, int>>;
+};
+
+template <Navigable location_t>
 struct navigator_t {
     static int get_x(const location_t& pos) {
         return pos.first;
@@ -83,7 +93,7 @@ struct navigator_t {
 };
 
 
-template <typename location_t, typename navigator_t>
+template <Navigable location_t, typename navigator_t>
 class map_search_node {
 public:
     location_t pos;

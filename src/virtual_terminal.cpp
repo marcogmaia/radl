@@ -28,10 +28,10 @@ void virtual_terminal::resize_chars(const int width,
     buffer.resize(width * height);
 }
 
-void virtual_terminal::resize_pixels(const int width,
-                                     const int height) noexcept {
-    int chars_width  = width / font->character_size.first;
-    int chars_height = height / font->character_size.second;
+void virtual_terminal::resize_pixels(const int width_px,
+                                     const int height_px) noexcept {
+    int chars_width  = width_px / font->character_size.first;
+    int chars_height = height_px / font->character_size.second;
     resize_chars(chars_width, chars_height);
 }
 
@@ -81,6 +81,15 @@ void virtual_terminal::box(const int x, const int y, const int w, const int h,
     }
 }
 
+static void set_rectangle_position_from_vchar(Rectangle& rect,
+                                              const radl::vchar_t& vchar,
+                                              const radl::bitmap_font& font) {
+    const auto& [font_width, font_height] = font.character_size;
+    // 16x16 because the CP437 grid is in this format
+    rect.x = vchar.glyph % 16 * font_width;
+    rect.y = vchar.glyph / 16 * font_height;
+}
+
 void virtual_terminal::render(RenderTexture2D& render_texture) {
     if(!visible) {
         return;
@@ -98,7 +107,12 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
             static_cast<float>(font->character_size.first),
             static_cast<float>(font->character_size.second),
         };
-        Rectangle tex_src_rect{0, 0, font_size.x, font_size.y};
+        Rectangle tex_src_rect{
+            0,
+            0,
+            font_size.x,
+            font_size.y,
+        };
 
         BeginTextureMode(render_texture);
         ClearBackground(BLANK);
@@ -108,8 +122,7 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
                 Vector2 pos_bg = Vector2Multiply(pos, font_size);
                 DrawRectangleV(pos_bg, font_size, vch.background);
             }
-            tex_src_rect.x = (vch.glyph % 16) * font_size.x;
-            tex_src_rect.y = (vch.glyph / 16) * font_size.y;
+            set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
             DrawTextureRec(tex, tex_src_rect, Vector2Multiply(pos, font_size),
                            vch.foreground);
             pos.x += 1.F;
@@ -124,8 +137,7 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
 
 void virtual_terminal::draw(RenderTexture2D& render_texture) {
     // NOTE: Render texture must be y-flipped due to default OpenGL
-    // coordinates
-    // (left-bottom)
+    // coordinates (left-bottom)
     DrawTextureRec(
         render_texture.texture,
         Rectangle{0.F, 0.F, static_cast<float>(render_texture.texture.width),

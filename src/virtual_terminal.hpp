@@ -10,11 +10,7 @@ namespace radl {
 
 class virtual_terminal {
 private:
-    // RenderTexture2D backing;  // backing texture
     Texture2D tex;
-    // used to get individual sprites from atlas
-    // sf::VertexArray vertices;
-    // we can have a list of position?
     std::string font_tag;
     int offset_x;
     int offset_y;
@@ -22,6 +18,7 @@ private:
     color_t tint{255, 255, 255};
     bool has_background;
     bitmap_font* font = nullptr;
+    // we can have a list of position? that's what the buffer is for
     std::vector<vchar_t> buffer;
 
 public:
@@ -40,9 +37,7 @@ public:
         font = get_font(fontt);
     }
 
-    ~virtual_terminal() {
-        // UnloadRenderTexture(backing);
-    }
+    ~virtual_terminal() = default;
 
     /**
      * @brief  Helper function that returns the index of a character location in
@@ -55,7 +50,6 @@ public:
     inline size_t at(int x, int y) {
         return x + y * term_width;
     }
-
 
     /**
      * @brief clears the virtual terminal to blank (black) spaces
@@ -77,7 +71,7 @@ public:
     /**
      * @brief Resize the terminal to match width x height pixels.
      */
-    void resize_pixels(int width, int height) noexcept;
+    void resize_pixels(int width_px, int height_px) noexcept;
 
     /**
      * @brief Resize the terminal to match width x height virtual characters.
@@ -113,7 +107,6 @@ public:
     void print(int x, int y, const std::string& str,
                const color_t& fg = colors::White,
                const color_t& bg = colors::NONE) noexcept;
-
 
     /**
      * @brief Draw a box at x/y of size w/h, in color fg/bg (or black/white if

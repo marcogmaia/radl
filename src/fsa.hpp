@@ -48,8 +48,6 @@ binary trees can be used instead to get O(logn) access time.
 #include <cstring>
 #include <cstdio>
 
-namespace radl {
-
 
 template <class USER_TYPE>
 class FixedSizeAllocator {
@@ -215,4 +213,3 @@ private:  // data
 };
 
 #endif  // defined FSA_H
-}

@@ -7,7 +7,10 @@
                 "${workspaceFolder}/lib/raylib/src",
                 "${workspaceFolder}/src"
             ],
-            "defines": [],
+            "defines": [
+                "SPDLOG_FMT_EXTERNAL",
+                "DEBUG"
+            ],
             "cStandard": "c99",
             "cppStandard": "c++20"
         }

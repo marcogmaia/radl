@@ -27,7 +27,7 @@ void virtual_terminal_sparse::render(RenderTexture2D& render_texture) {
             static_cast<float>(font->character_size.first),
             static_cast<float>(font->character_size.second),
         };
-        BeginTextureMode(backing);
+        BeginTextureMode(render_texture);
         ClearBackground(BLANK);
         for(auto& svch : buffer) {
             Rectangle tex_rect_src{0, 0, font_size.x, font_size.y};
@@ -42,13 +42,6 @@ void virtual_terminal_sparse::render(RenderTexture2D& render_texture) {
         }
         EndTextureMode();
     }
-    // NOTE: Render texture must be y-flipped due to default OpenGL
-    // coordinates
-    // (left-bottom)
-    DrawTextureRec(backing.texture,
-                   Rectangle{0, 0, static_cast<float>(backing.texture.width),
-                             static_cast<float>(-backing.texture.height)},
-                   Vector2{0.F, 0.F}, WHITE);
 }
 
 }  // namespace radl

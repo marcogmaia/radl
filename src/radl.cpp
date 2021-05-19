@@ -1,9 +1,11 @@
 #include <memory>
+#include <future>
+
 #include "radl.hpp"
 #include "texture.hpp"
 #include "texture_resources.hpp"
 
-#include <path_finding.hpp>
+#include "path_finding.hpp"
 
 namespace radl {
 
@@ -18,7 +20,7 @@ bool taking_screenshot          = false;
 std::string screenshot_filename = "";
 }  // namespace main_detail
 
-RenderTexture2D& get_window() {
+RenderTexture2D& get_main_texture() {
     return main_texture->render_texture;
 }
 
@@ -87,16 +89,21 @@ std::function<void()> optional_display_hook = nullptr;
 
 void run(std::function<void(double)> on_tick) {
     while(!WindowShouldClose()) {
-        on_tick(GetFrameTime());
+        // update
+        static auto delta_time = 0.0;
+        on_tick(delta_time);
 
         BeginDrawing();
+        delta_time = GetFrameTime();
         ClearBackground(BLACK);
-        // gui.render(radl::get_window());
-        radl::vterm->render(radl::get_window());
-        radl::virtual_terminal::draw(radl::get_window());
+        // should render only when dirty, which "on_tick" sets
+        radl::vterm->render(radl::get_main_texture());
+        radl::draw(radl::get_main_texture());
         DrawFPS(GetScreenWidth() - 100, 100);
         EndDrawing();
+        // }
     }
+
 
     // reset_mouse_state();
 

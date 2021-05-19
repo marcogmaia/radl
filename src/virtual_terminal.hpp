@@ -33,7 +33,6 @@ public:
         , offset_x(x)
         , offset_y(y)
         , has_background(background) {
-        // backing = LoadRenderTexture(1920, 1080);
         font = get_font(fontt);
     }
 
@@ -41,7 +40,7 @@ public:
 
     /**
      * @brief  Helper function that returns the index of a character location in
-     * the backing vector.
+     * the buffer.
      *
      * @param x
      * @param y
@@ -52,7 +51,7 @@ public:
     }
 
     /**
-     * @brief clears the virtual terminal to blank (black) spaces
+     * @brief clears the virtual terminal to blank (100% Alpha) spaces
      */
     void clear();
 
@@ -129,18 +128,11 @@ public:
     }
 
     /**
-     * @brief render the virtual terminal to a texture
+     * @brief render the virtual terminal to an existing texture
      *
      * @param render_texture
      */
     void render(RenderTexture2D& render_texture);
-
-    /**
-     * @brief Draw the entire texture to the screen
-     *
-     * @param render_texture
-     */
-    static void draw(RenderTexture2D& render_texture);
 };
 
 }  // namespace radl

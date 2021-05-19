@@ -24,7 +24,6 @@ namespace radl {
 class virtual_terminal_sparse {
 private:
     Texture2D tex           = {0};
-    RenderTexture2D backing = {0};
     std::string font_tag;
     int offset_x;
     int offset_y;

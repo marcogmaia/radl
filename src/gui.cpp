@@ -21,9 +21,11 @@ void gui_t::on_resize(const int w, const int h) {
 }
 
 void gui_t::render(RenderTexture2D& render_texture) {
+    BeginTextureMode(render_texture);
+    ClearBackground(BLANK);
+    EndTextureMode();
     for(auto& [handle, layer] : gui_detail::render_order) {
         layer->render(render_texture);
-        layer->vterm->draw(render_texture);
     }
 }
 

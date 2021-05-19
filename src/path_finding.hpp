@@ -46,10 +46,7 @@ public:
         : pos(loc) {}
 
     float GoalDistanceEstimate(search_node_t<location_t, navigator_t>& goal) {
-        auto& [xi, yi] = pos;
-        auto& [xf, yf] = goal.pos;
-        float d        = distance2d_squared(xi, yi, xf, yf);
-        return d;
+        return navigator_t::get_distance_estimate(pos, goal.pos);
     }
 
     bool IsGoal(search_node_t<location_t, navigator_t>& node_goal) {
@@ -60,14 +57,14 @@ public:
     bool GetSuccessors(
         AStarSearch<search_node_t<location_t, navigator_t>>* a_star_search,
         search_node_t<location_t, navigator_t>* parent_node) {
-        // std::cout << "GetSuccessors called.\n";
         std::vector<location_t> successors;
-        if(parent_node) {
-            navigator_t::get_successors(parent_node->pos, successors);
-        } else {
-            navigator_t::get_successors(pos, successors);
-        }
-        for(location_t loc : successors) {
+        navigator_t::get_successors(pos, successors);
+        for(const auto& loc : successors) {
+            // skip the parent node, makes to set a backwards position as a
+            // successor
+            if(parent_node && (loc == parent_node->pos)) {
+                continue;
+            }
             search_node_t<location_t, navigator_t> tmp(loc);
             a_star_search->AddSuccessor(tmp);
         }
@@ -88,10 +85,10 @@ public:
 template <typename navigator_t, CLocation location_t>
 std::shared_ptr<astar_path_t<location_t>>
 path_find(location_t& start, location_t& end, size_t limit_steps = 100) {
-    using user_node_t = search_node_t<location_t, navigator_t>;
-    AStarSearch<search_node_t<location_t, navigator_t>> a_star_search;
-    user_node_t a_start(start);
-    user_node_t a_end(end);
+    using user_node_t  = search_node_t<location_t, navigator_t>;
+    auto a_start       = user_node_t(start);
+    auto a_end         = user_node_t(end);
+    auto a_star_search = AStarSearch<user_node_t>();
 
     a_star_search.SetStartAndGoalStates(a_start, a_end);
     unsigned int search_state = 0;
@@ -105,23 +102,15 @@ path_find(location_t& start, location_t& end, size_t limit_steps = 100) {
         }
     } while(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SEARCHING);
 
+    auto result = std::make_shared<astar_path_t<location_t>>(false, end);
     if(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SUCCEEDED) {
-        auto result = std::make_shared<astar_path_t<location_t>>(false, end);
-        auto* node  = a_star_search.GetSolutionStart();
-        for(;;) {
-            node = a_star_search.GetSolutionNext();
-            if(!node) {
-                break;
-            }
+        for(auto* node = a_star_search.GetSolutionStart(); node;
+            node       = a_star_search.GetSolutionNext()) {
             result->steps.push_back(node->pos);
         }
         a_star_search.FreeSolutionNodes();
-        a_star_search.EnsureMemoryFreed();
         result->success = true;
-        return result;
     }
-
-    auto result = std::make_shared<astar_path_t<location_t>>(false, end);
     a_star_search.EnsureMemoryFreed();
     return result;
 }

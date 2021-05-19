@@ -17,7 +17,7 @@ void virtual_terminal::set_char(const int index, const vchar_t& vch) noexcept {
 
 void virtual_terminal::clear() {
     dirty = true;
-    std::ranges::fill(buffer, vchar_t{32, colors::NONE, colors::NONE});
+    std::ranges::fill(buffer, vchar_t{0, colors::NONE, colors::NONE});
 }
 
 void virtual_terminal::resize_chars(const int width,
@@ -115,7 +115,6 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
         };
 
         BeginTextureMode(render_texture);
-        ClearBackground(BLANK);
         Vector2 pos{0.F, 0.F};
         for(auto& vch : buffer) {
             if(has_background) {
@@ -133,16 +132,6 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
         }
         EndTextureMode();
     }
-}  // namespace radl
-
-void virtual_terminal::draw(RenderTexture2D& render_texture) {
-    // NOTE: Render texture must be y-flipped due to default OpenGL
-    // coordinates (left-bottom)
-    DrawTextureRec(
-        render_texture.texture,
-        Rectangle{0.F, 0.F, static_cast<float>(render_texture.texture.width),
-                  static_cast<float>(-render_texture.texture.height)},
-        Vector2{0.F, 0.F}, WHITE);
 }
 
 }  // namespace radl

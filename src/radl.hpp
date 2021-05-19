@@ -131,7 +131,22 @@ extern std::unique_ptr<virtual_terminal> vterm;
  * In case you want to do some raw stuff yourself, this provides a pointer to
  * the main render texture.
  */
-RenderTexture2D& get_window();
+RenderTexture2D& get_main_texture();
+
+/**
+ * @brief Draw the entire texture to the screen
+ *
+ * @param render_texture
+ */
+inline void draw(RenderTexture2D& render_texture) {
+    // NOTE: Render texture must be y-flipped due to default OpenGL
+    // coordinates (left-bottom)
+    DrawTextureRec(
+        render_texture.texture,
+        Rectangle{0.F, 0.F, static_cast<float>(render_texture.texture.width),
+                  static_cast<float>(-render_texture.texture.height)},
+        Vector2{0.F, 0.F}, WHITE);
+}
 
 /*
  * For GUI manipulation

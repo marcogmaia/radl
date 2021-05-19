@@ -104,8 +104,8 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
         // gui.render(radl::get_window());
-        radl::vterm->render(radl::get_window());
-        radl::vterm->draw(radl::get_window());
+        radl::vterm->render(radl::get_main_texture());
+        radl::draw(radl::get_main_texture());
         DrawFPS(GetScreenWidth() - 100, 0);
         EndDrawing();
     }

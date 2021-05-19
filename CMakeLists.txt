@@ -20,7 +20,7 @@ add_subdirectory(src)
 add_executable(main main.cpp)
 target_link_libraries(main radl)
 
-set(COMPILE_EXAMPLES OFF)
+set(COMPILE_EXAMPLES ON)
 # compile examples
 if(COMPILE_EXAMPLES)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples")

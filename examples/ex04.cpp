@@ -144,8 +144,9 @@ struct navigator {
     // really well, but for now we'll just use a simple euclidian distance
     // squared. The geometry system defines one for us.
     static float get_distance_estimate(location_t& pos, location_t& goal) {
-        float d = distance2d_squared(pos.x, pos.y, goal.x, goal.y);
-        return d;
+        const auto& [px, py] = pos.get_xy();
+        const auto& [gx, gy] = goal.get_xy();
+        return distance2d_squared(px, py, gx, gy);
     }
 
     // Heuristic to determine if we've reached our destination? In some cases,
@@ -162,26 +163,18 @@ struct navigator {
     // return it as an option.
     static bool get_successors(location_t pos,
                                std::vector<location_t>& successors) {
-        // std::cout << pos.x << "/" << pos.y << "\n";
-
-        if(map.walkable(pos.x - 1, pos.y - 1))
-            successors.push_back(location_t(pos.x - 1, pos.y - 1));
-        if(map.walkable(pos.x, pos.y - 1))
-            successors.push_back(location_t(pos.x, pos.y - 1));
-        if(map.walkable(pos.x + 1, pos.y - 1))
-            successors.push_back(location_t(pos.x + 1, pos.y - 1));
-
-        if(map.walkable(pos.x - 1, pos.y))
-            successors.push_back(location_t(pos.x - 1, pos.y));
-        if(map.walkable(pos.x + 1, pos.y))
-            successors.push_back(location_t(pos.x + 1, pos.y));
-
-        if(map.walkable(pos.x - 1, pos.y + 1))
-            successors.push_back(location_t(pos.x - 1, pos.y + 1));
-        if(map.walkable(pos.x, pos.y + 1))
-            successors.push_back(location_t(pos.x, pos.y + 1));
-        if(map.walkable(pos.x + 1, pos.y + 1))
-            successors.push_back(location_t(pos.x + 1, pos.y + 1));
+        const auto& [px, py] = pos.get_xy();
+        for(int off_x = -1; off_x <= 1; ++off_x) {
+            for(int off_y = -1; off_y <= 1; ++off_y) {
+                if(off_x == 0 && off_y == 0) {
+                    continue;
+                }
+                auto sucessor = location_t{px + off_x, py + off_y};
+                if(map.walkable(sucessor.get_x(), sucessor.get_y())) {
+                    successors.push_back(sucessor);
+                }
+            }
+        }
         return true;
     }
 
@@ -213,9 +206,23 @@ auto dude_position = location_t{10, 10};
 auto destination = location_t{10, 10};
 
 // Lets go really fast!
-constexpr auto moves_per_sec = 100.f;
+constexpr auto moves_per_sec = 20.f;
 constexpr auto tick_duration = 1.f / moves_per_sec;
-auto tick_time               = 0.f;
+auto tick_time               = tick_duration;
+
+
+void draw_map() {
+    // draw_map
+    for(int y = 0; y < MAP_HEIGHT; ++y) {
+        for(int x = 0; x < MAP_WIDTH; ++x) {
+            if(map.walkable(x, y)) {
+                vterm->set_char(vterm->at(x, y), floor_tile);
+            } else {
+                vterm->set_char(vterm->at(x, y), wall_tile);
+            }
+        }
+    }
+}
 
 // Tick is called every frame. The parameter specifies how many ms have elapsed
 // since the last time it was called.
@@ -225,17 +232,13 @@ void tick(double duration_secs) {
     // Increase the tick time by the frame duration. If it has exceeded
     // the tick duration, then we move the @.
     tick_time += duration_secs;
-    if(tick_time > tick_duration) {
+    if(tick_time >= tick_duration) {
+        // Important: subtract to even ou the fluctuations. Or maybe we could
+        // clear the tick_time entirely
+        tick_time -= tick_duration;
+        vterm->clear();
         // Iterate over the whole map, rendering as appropriate
-        for(int y = 0; y < MAP_HEIGHT; ++y) {
-            for(int x = 0; x < MAP_WIDTH; ++x) {
-                if(map.walkable(x, y)) {
-                    vterm->set_char(vterm->at(x, y), floor_tile);
-                } else {
-                    vterm->set_char(vterm->at(x, y), wall_tile);
-                }
-            }
-        }
+        draw_map();
         // Are we there yet?
         if(dude_position == destination) {
             // We are there! We need to pick a new destination.
@@ -249,9 +252,10 @@ void tick(double duration_secs) {
             }
 
             // Now determine how to get there
-            if(path)
+            if(path) {
                 path.reset();
-            constexpr auto limit_steps = 500;
+            }
+            constexpr auto limit_steps = 2000;
             path
                 = path_find<navigator>(dude_position, destination, limit_steps);
             if(!path->success) {
@@ -259,23 +263,15 @@ void tick(double duration_secs) {
                 TraceLog(LOG_INFO,
                          "RESET, A* FAIL, SRC_POS: (%d, %d), DST_POS: (%d ,%d)",
                          dude_x, dude_y, dest_x, dest_y);
-                vterm->set_char(dude_x, dude_y,
-                                vchar_t{glyphs::SOLID, GREEN, BLANK});
-                vterm->set_char(dest_x, dest_y,
-                                vchar_t{glyphs::SOLID, RED, BLANK});
                 destination = dude_position;
             }
         } else {
-            vterm->dirty = true;
             // Follow the breadcrumbs!
             location_t next_step = path->steps.front();
             dude_x               = next_step.x;
             dude_y               = next_step.y;
             path->steps.pop_front();
         }
-
-        // Important: we clear the tick count after the update.
-        tick_time = 0.0;
     }
 
     // Render our planned path. We're using auto and a range-for to avoid typing
@@ -306,13 +302,16 @@ void tick(double duration_secs) {
     vterm->set_char(vterm->at(dude_x, dude_y), dude);
 }
 
+
 // Your main function
 int main() {
     SetTargetFPS(200);
     // Initialize with defaults
     init(config_simple_px("../../resources"));
 
+
     // Enter the main loop. "tick" is the function we wrote above.
+
     run(tick);
 
     return 0;

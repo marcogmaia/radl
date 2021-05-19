@@ -3,6 +3,8 @@
 #include "texture.hpp"
 #include "texture_resources.hpp"
 
+#include <path_finding.hpp>
+
 namespace radl {
 
 // Smart pointers makes it easy the use of RAII idiom
@@ -41,7 +43,8 @@ void init(const config_simple& config) {
     int texture_width  = main_texture->render_texture.texture.width;
     int texture_height = main_texture->render_texture.texture.height;
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-    radl::vterm->resize_pixels(texture_width, texture_height);
+    radl::vterm->resize_pixels(GetScreenWidth() * font_width,
+                               GetScreenHeight() * font_height);
 }
 
 
@@ -52,6 +55,7 @@ void init(const config_simple_px& config) {
     }
     SetConfigFlags(window_flags);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
+    register_font_directory(config.font_path);
 
     main_detail::use_root_console = true;
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
@@ -59,7 +63,7 @@ void init(const config_simple_px& config) {
     int texture_width  = main_texture->render_texture.texture.width;
     int texture_height = main_texture->render_texture.texture.height;
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-    radl::vterm->resize_pixels(texture_width, texture_height);
+    radl::vterm->resize_pixels(config.width_px, config.height_px);
 }
 
 void init(const config_advanced& config) {
@@ -69,9 +73,7 @@ void init(const config_advanced& config) {
     }
     SetConfigFlags(window_flags);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
-    // Doesn't work before InitWindow because GL isn't initialized...
-    // It needs to registers the font as a texture, and OpenGL needs to be
-    // initialized to store the texture
+
     register_font_directory(config.font_path);
 
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
@@ -84,6 +86,18 @@ void init(const config_advanced& config) {
 std::function<void()> optional_display_hook = nullptr;
 
 void run(std::function<void(double)> on_tick) {
+    while(!WindowShouldClose()) {
+        on_tick(GetFrameTime());
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+        // gui.render(radl::get_window());
+        radl::vterm->render(radl::get_window());
+        radl::virtual_terminal::draw(radl::get_window());
+        DrawFPS(GetScreenWidth() - 100, 100);
+        EndDrawing();
+    }
+
     // reset_mouse_state();
 
     // double duration_ms = 0.0;
@@ -133,7 +147,9 @@ void run(std::function<void(double)> on_tick) {
     //     main_texture->clear();
     //     // if (main_detail::use_root_console) console->clear();
 
-    //     on_tick(duration_ms);
+
+    // test_radl(gui.get_vterm(gui_handle));
+
 
     //     if(main_detail::use_root_console) {
     //         console->render(*main_texture);

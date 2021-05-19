@@ -434,22 +434,17 @@ public:
             return NULL;
         }
     }
-
     // Get next node
     UserState* GetSolutionNext() {
         if(m_CurrentSolutionNode) {
             if(m_CurrentSolutionNode->child) {
-                Node* child = m_CurrentSolutionNode->child;
-
+                Node* child           = m_CurrentSolutionNode->child;
                 m_CurrentSolutionNode = m_CurrentSolutionNode->child;
-
                 return &child->m_UserState;
             }
         }
-
         return NULL;
     }
-
     // Get end node
     UserState* GetSolutionEnd() {
         m_CurrentSolutionNode = m_Goal;
@@ -459,7 +454,6 @@ public:
             return NULL;
         }
     }
-
     // Step solution iterator backwards
     UserState* GetSolutionPrev() {
         if(m_CurrentSolutionNode) {
@@ -474,7 +468,6 @@ public:
 
         return NULL;
     }
-
     // Get final cost of solution
     // Returns FLT_MAX if goal is not defined or there is no solution
     float GetSolutionCost() {
@@ -484,11 +477,9 @@ public:
             return FLT_MAX;
         }
     }
-
     // For educational use and debugging it is useful to be able to view
     // the open and closed list at each step, here are two functions to allow
     // that.
-
     UserState* GetOpenListStart() {
         float f, g, h;
         return GetOpenListStart(f, g, h);
@@ -502,7 +493,6 @@ public:
             h = (*iterDbgOpen)->h;
             return &(*iterDbgOpen)->m_UserState;
         }
-
         return NULL;
     }
 
@@ -560,7 +550,6 @@ public:
     }
 
     // Get the number of steps
-
     int GetStepCount() {
         return m_Steps;
     }
@@ -716,17 +705,17 @@ template <class T>
 class AStarState {
 public:
     virtual ~AStarState() {}
-    virtual float GoalDistanceEstimate(T& nodeGoal)
-        = 0;  // Heuristic function which computes the estimated cost to the
-              // goal node
-    virtual bool IsGoal(T& nodeGoal)
-        = 0;  // Returns true if this node is the goal node
-    virtual bool GetSuccessors(AStarSearch<T>* astarsearch, T* parent_node)
-        = 0;  // Retrieves all successors to this node and adds them via
-              // astarsearch.addSuccessor()
-    virtual float GetCost(T& successor)
-        = 0;  // Computes the cost of traveling from this node to the successor
-              // node
-    virtual bool IsSameState(T& rhs)
-        = 0;  // Returns true if this node is the same as the rhs node
+    // Heuristic function which computes the estimated cost to the
+    // goal node
+    virtual float GoalDistanceEstimate(T& nodeGoal) = 0;
+    // Returns true if this node is the goal node
+    virtual bool IsGoal(T& nodeGoal) = 0;
+    // Computes the cost of traveling from this node to the successor
+    // node
+    virtual float GetCost(T& successor) = 0;
+    // Returns true if this node is the same as the rhs node
+    virtual bool IsSameState(T& rhs) = 0;
+    // Retrieves all successors to this node and adds them via
+    // astarsearch.addSuccessor()
+    virtual bool GetSuccessors(AStarSearch<T>* astarsearch, T* parent_node) = 0;
 };

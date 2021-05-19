@@ -66,4 +66,8 @@ struct svchar_t {
         , angle{Angle} {}
 };
 
+namespace glyphs {
+    constexpr auto SOLID = 219;
+}
+
 }  // namespace radl

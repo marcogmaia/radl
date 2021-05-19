@@ -24,12 +24,21 @@ RenderTexture2D& get_main_texture() {
     return main_texture->render_texture;
 }
 
-void init(const config_simple& config) {
+namespace {
+
+template <typename T>
+void init_common(const T& config) {
     int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
     if(config.fullscreen) {
         window_flags |= FLAG_FULLSCREEN_MODE;
     }
     SetConfigFlags(window_flags);
+}
+
+}  // namespace
+
+void init(const config_simple& config) {
+    init_common(config);
     InitWindow(config.width, config.height, config.window_title.c_str());
     // Register fonts after OpenGL init (InitWindow), and then resize the window
     // accordingly
@@ -42,8 +51,6 @@ void init(const config_simple& config) {
     main_detail::use_root_console = true;
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
-    int texture_width  = main_texture->render_texture.texture.width;
-    int texture_height = main_texture->render_texture.texture.height;
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(GetScreenWidth() * font_width,
                                GetScreenHeight() * font_height);
@@ -51,29 +58,19 @@ void init(const config_simple& config) {
 
 
 void init(const config_simple_px& config) {
-    int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
-    if(config.fullscreen) {
-        window_flags |= FLAG_FULLSCREEN_MODE;
-    }
-    SetConfigFlags(window_flags);
+    init_common(config);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
     register_font_directory(config.font_path);
 
     main_detail::use_root_console = true;
     main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
-    int texture_width  = main_texture->render_texture.texture.width;
-    int texture_height = main_texture->render_texture.texture.height;
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(config.width_px, config.height_px);
 }
 
 void init(const config_advanced& config) {
-    int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
-    if(config.fullscreen) {
-        window_flags |= FLAG_FULLSCREEN_MODE;
-    }
-    SetConfigFlags(window_flags);
+    init_common(config);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
 
     register_font_directory(config.font_path);
@@ -84,7 +81,7 @@ void init(const config_advanced& config) {
     gui = std::make_unique<gui_t>(config.width_px, config.height_px);
 }
 
-// std::function<bool(sf::Event)> optional_event_hook = nullptr;
+// std::function<bool(event)> optional_event_hook = nullptr;
 std::function<void()> optional_display_hook = nullptr;
 
 void run(std::function<void(double)> on_tick) {

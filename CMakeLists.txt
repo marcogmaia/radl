@@ -3,9 +3,11 @@ cmake_minimum_required(VERSION 3.15)
 project(radl)
 
 set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20
+)
 set(USER_CXX_FLAGS "-fdiagnostics-color=always")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USER_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -Wall -DDEBUG")
 
 if(POLICY CMP0072)
   cmake_policy(SET CMP0072 NEW)

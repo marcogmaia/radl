@@ -18,6 +18,9 @@ void layer_t::make_owner_draw_backing() {
  * @param height
  */
 void layer_t::on_resize(const int width, const int height) {
+    if(!resize_func) {
+        return;
+    }
     resize_func(this, width, height);
     if(vterm && vterm->visible) {
         vterm->set_offset(x, y);

@@ -83,7 +83,8 @@ public:
 };
 
 template <typename navigator_t, CLocation location_t>
-astar_path_t<location_t> path_find(location_t& start, location_t& end,
+astar_path_t<location_t> path_find(const location_t& start,
+                                   const location_t& end,
                                    size_t limit_steps = 100) {
     using user_node_t  = search_node_t<location_t, navigator_t>;
     auto a_start       = user_node_t(start);

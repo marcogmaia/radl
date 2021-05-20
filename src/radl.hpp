@@ -2,23 +2,24 @@
 
 #include <string>
 #include <functional>
-#include "font_manager.hpp"
-#include "texture_resources.hpp"
-#include "virtual_terminal.hpp"
 // #include "colors.hpp"
-// #include "rng.hpp"
 // #include "geometry.hpp"
 // #include "path_finding.hpp"
-// #include "input_handler.hpp"
-// #include "visibility.hpp"
-#include "gui.hpp"
-// #include "ecs.hpp"
 // #include "perlin_noise.hpp"
-// #include "serialization_utils.hpp"
 // #include "rexspeeder.hpp"
+// #include "rng.hpp"
 // #include "scaling.hpp"
+// #include "serialization_utils.hpp"
+// #include "visibility.hpp"
+#include "font_manager.hpp"
+#include "gui.hpp"
+#include "input_handler.hpp"
 #include "rng.hpp"
+#include "texture_resources.hpp"
+#include "virtual_terminal.hpp"
+
 #include "raylib.h"
+
 
 namespace radl {
 

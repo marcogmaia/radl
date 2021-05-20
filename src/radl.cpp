@@ -1,6 +1,7 @@
 #include <memory>
 #include <future>
 
+
 #include "radl.hpp"
 #include "texture.hpp"
 #include "texture_resources.hpp"
@@ -76,7 +77,10 @@ void init(const config_advanced& config) {
 std::function<void()> optional_display_hook = nullptr;
 
 void run(std::function<void(double)> on_tick) {
+    reset_mouse_state();
     while(!WindowShouldClose()) {
+        set_mouse_state();
+
         // update
         static auto delta_time = 0.0;
         on_tick(delta_time);
@@ -93,7 +97,6 @@ void run(std::function<void(double)> on_tick) {
         }
         DrawFPS(GetScreenWidth() - 100, 100);
         EndDrawing();
-        // }
     }
 
 

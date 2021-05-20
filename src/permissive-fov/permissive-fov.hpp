@@ -39,7 +39,7 @@ class fovPrivateT {
 public:
     static int isBlocked(int destX, int destY, void* context) {
         T* typedContext = reinterpret_cast<T*>(context);
-        return typedContext->isBlocked(destX, destY);
+        return typedContext->is_blocked(destX, destY);
     }
 
     static void visit(int destX, int destY, void* context) {

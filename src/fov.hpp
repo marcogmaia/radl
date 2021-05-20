@@ -1,6 +1,6 @@
 #pragma once
 
-#include "path_finding.hpp"
+#include "permissive-fov/permissive-fov.hpp"
 
 namespace radl {
 
@@ -14,7 +14,7 @@ public:
      *
      * @return true if can't see through, false otherwise
      */
-    virtual bool isBlocked(int x, int y) = 0;
+    virtual bool is_blocked(int x, int y) = 0;
 
     /**
      * @brief Visit a location in the map, we can perform some action, like: add

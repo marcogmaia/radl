@@ -185,39 +185,38 @@ color_t apply_colored_light(const color_t& col,
 }
 
 color_t lerp(const color_t& first, const color_t& second, float amount) {
-    const float r1 = first.r;
-    const float g1 = first.g;
-    const float b1 = first.b;
-
-    const float r2 = second.r;
-    const float g2 = second.g;
-    const float b2 = second.b;
+    const auto& [r1, g1, b1, a1] = first;
+    const auto& [r2, g2, b2, a2] = second;
 
     const float rdiff = r2 - r1;
     const float gdiff = g2 - g1;
     const float bdiff = b2 - b1;
+    const float adiff = a2 - a1;
 
     float red   = r1 + (rdiff * amount);
     float green = g1 + (gdiff * amount);
     float blue  = b1 + (bdiff * amount);
-    if(red > 255.0F)
-        red = 255.0F;
-    if(green > 255.0F)
-        green = 255.0F;
-    if(blue > 255.0F)
-        blue = 255.0F;
-    if(red < 0.0F)
-        red = 0.0F;
-    if(green < 0.0F)
-        green = 0.0F;
-    if(blue < 0.0F)
-        blue = 0.0F;
+    float alpha = a1 + (adiff * amount);
 
-    const int r = static_cast<const int>(red);
-    const int g = static_cast<const int>(green);
-    const int b = static_cast<const int>(blue);
+    static auto clip_channel = [](float& channel) {
+        if(channel < 0.f) {
+            channel = 0.f;
+        } else if(channel > 255.f) {
+            channel = 255.f;
+        }
+    };
 
-    return color_t(r, g, b);
+    clip_channel(red);
+    clip_channel(green);
+    clip_channel(blue);
+    clip_channel(alpha);
+
+    auto r = static_cast<const int>(red);
+    auto g = static_cast<const int>(green);
+    auto b = static_cast<const int>(blue);
+    auto a = static_cast<const int>(alpha);
+
+    return color_t{r, g, b, a};
 }
 
 }  // namespace radl

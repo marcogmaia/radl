@@ -93,24 +93,21 @@ struct color_t {
 
     /* You can multiply colors */
     color_t operator*(const color_t& other) {
-        int red   = r * other.r;
-        int green = g * other.g;
-        int blue  = b * other.b;
-        int alpha = a * other.a;
-        if(red < 0)
-            red = 0;
-        if(green < 0)
-            green = 0;
-        if(blue < 0)
-            blue = 0;
-        if(red > 255)
-            red = 255;
-        if(green > 255)
-            green = 255;
-        if(blue > 255)
-            blue = 255;
-        if(alpha > 255)
-            alpha = 255;
+        int red                  = r * other.r;
+        int green                = g * other.g;
+        int blue                 = b * other.b;
+        int alpha                = a * other.a;
+        static auto clip_channel = [](int& channel) {
+            if(channel < 0) {
+                channel = 0;
+            } else if(channel > 255) {
+                channel = 255;
+            }
+        };
+        clip_channel(red);
+        clip_channel(green);
+        clip_channel(blue);
+        clip_channel(alpha);
         return color_t(red, green, blue);
     }
 
@@ -118,9 +115,8 @@ struct color_t {
     bool operator==(const color_t& other) const {
         if(other.r == r && other.g == g && other.b == b && other.a == a) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     template <class Archive>

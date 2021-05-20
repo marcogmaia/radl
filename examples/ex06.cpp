@@ -263,8 +263,8 @@ void draw_map() {
     static const auto not_seen_wall
         = apply_colored_light(wall_color, dark_light);
 
-    for(int y = 0; y < MAP_HEIGHT; ++y) {
-        for(int x = 0; x < MAP_WIDTH; ++x) {
+    for(int x = 0; x < map.width; ++x) {
+        for(int y = 0; y < map.height; ++y) {
             // Caching so we don't keep doing the calculation
             const int map_idx = map.at(x, y);
             if(map.walkable[map_idx]) {

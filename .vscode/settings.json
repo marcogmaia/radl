@@ -102,6 +102,7 @@
         "__functional_03": "cpp",
         "*.ipp": "cpp",
         "filesystem": "cpp",
-        "*.m": "cpp"
+        "*.m": "cpp",
+        "rlgl.h": "c"
     }
 }

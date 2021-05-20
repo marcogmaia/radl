@@ -31,12 +31,13 @@ namespace {
 
 // create an enum to keep track of the gui's render order
 enum gui_handle_t {
-    G_DUDE = 0,
-    G_MAP,
+    G_MAP = 0,
+    G_DUDE,
 };
 
 }  // namespace
 
+// For now, we always want our "dude" to be a yellow @ - so he's const
 const vchar_t dude{
     '@',
     YELLOW,
@@ -309,12 +310,15 @@ void tick(double duration_secs) {
 // Your main function
 int main() {
     SetTargetFPS(200);
-    // Initialize with defaults
+    // Initialize with advanced configs so we can make use of layer, and set the
+    // proper order of rendering
     init(config_advanced("../../resources"));
     radl::gui->add_layer(gui_handle_t::G_MAP, 0, 0, map.width * 16,
-                         map.height * 16, "16x16");
+                         map.height * 16, "16x16", nullptr, false,
+                         gui_handle_t::G_MAP);
     radl::gui->add_layer(gui_handle_t::G_DUDE, 0, 0, map.width * 16,
-                         map.height * 16, "16x16");
+                         map.height * 16, "16x16", nullptr, false,
+                         gui_handle_t::G_DUDE);
 
     // Enter the main loop. "tick" is the function we wrote above.
     run(tick);

@@ -45,13 +45,13 @@ const vchar_t destination_glyph{
 // We now need to represent walls and floors, too
 const vchar_t wall_tile{
     glyphs::SOLID,
-    WHITE,
+    color_t(0, 31, 36),
     BLANK,
 };
 // Note that "floor" is taken as a name in C++!
 const vchar_t floor_tile{
     glyphs::BLOCK1,
-    GRAY,
+    color_t(36, 18, 4),
     BLANK,
 };
 
@@ -294,15 +294,16 @@ void tick(double duration_secs) {
     // all the iterator stuff
     if(path.success) {
         // We're going to show off a bit and "lerp" the color along the path;
-        // the red lightens as it approaches the destination. This is a preview
-        // of some of the color functions.
         const auto n_steps = static_cast<float>(path.steps.size());
         auto i             = 0.f;
         for(auto step : path.steps) {
             const float lerp_amount = i / n_steps;
+            auto end_color = GREEN;
+            end_color.a *= 0.25;
+            auto lerp_color = lerp(GREEN, end_color, lerp_amount);
             vchar_t highlight{
                 glyphs::BLOCK2,
-                lerp(GREEN, colors::LIGHTEST_GREEN, lerp_amount),
+                lerp_color,
                 BLANK,
             };
             vterm2.set_char(step.x, step.y, highlight);

@@ -31,13 +31,29 @@ using namespace radl;
 rng_t rng;
 
 // For now, we always want our "dude" to be a yellow @ - so he's constexpr
-const vchar_t dude{'@', YELLOW, BLACK};
+const vchar_t dude{
+    '@',
+    YELLOW,
+    BLANK,
+};
 // We're also going to render our destination as a pink heart. Aww.
-const vchar_t destination_glyph{3, MAGENTA, BLACK};
+const vchar_t destination_glyph{
+    glyphs::HEART,
+    MAGENTA,
+    BLANK,
+};
 // We now need to represent walls and floors, too
-const vchar_t wall_tile{'#', WHITE, BLACK};
+const vchar_t wall_tile{
+    glyphs::SOLID,
+    WHITE,
+    BLANK,
+};
+// Note that "floor" is taken as a name in C++!
 const vchar_t floor_tile{
-    '.', GRAY, BLACK};  // Note that "floor" is taken as a name in C++!
+    glyphs::BLOCK1,
+    GRAY,
+    BLANK,
+};
 
 // Now we define a structure to represent a location. In this case, it's a
 // simple x/y coordinate.
@@ -99,11 +115,11 @@ public:
             m_walkable[at(width - 1, y)] = false;
         }
 
-        // Every tile other than 10,10 (starting) has a 16% chance of being
+        // Every tile other than 10,10 (starting) has a 25% chance of being
         // solid
         for(int y = 1; y < height - 2; ++y) {
             for(int x = 1; x < width - 2; ++x) {
-                if((x != 10 && y != 10) && rng.dice_roll(1, 6) == 1)
+                if((x != 10 && y != 10) && rng.dice_roll(1, 5) == 1)
                     m_walkable[at(x, y)] = false;
             }
         }
@@ -207,13 +223,14 @@ auto tick_time               = tick_duration;
 
 
 void draw_map() {
+    auto& vterm1 = radl::gui->get_vterm(1);
     // draw_map
     for(int y = 0; y < MAP_HEIGHT; ++y) {
         for(int x = 0; x < MAP_WIDTH; ++x) {
             if(map.walkable(x, y)) {
-                vterm->set_char(vterm->at(x, y), floor_tile);
+                vterm1.set_char(x, y, floor_tile);
             } else {
-                vterm->set_char(vterm->at(x, y), wall_tile);
+                vterm1.set_char(x, y, wall_tile);
             }
         }
     }
@@ -229,6 +246,9 @@ void tick(double duration_secs) {
     static astar_path_t<location_t> path;
     auto& [dude_x, dude_y] = dude_position;
     auto& [dest_x, dest_y] = destination;
+
+
+    auto& vterm2 = radl::gui->get_vterm(2);
     // Increase the tick time by the frame duration. If it has exceeded
     // the tick duration, then we move the @.
     tick_time += duration_secs;
@@ -236,7 +256,7 @@ void tick(double duration_secs) {
         // Important: subtract to even ou the fluctuations. Or maybe we could
         // clear the tick_time entirely
         tick_time -= tick_duration;
-        vterm->clear();
+        vterm2.clear();
         // Iterate over the whole map, rendering as appropriate
         draw_map();
         // Are we there yet?
@@ -281,30 +301,41 @@ void tick(double duration_secs) {
         for(auto step : path.steps) {
             const float lerp_amount = i / n_steps;
             vchar_t highlight{
-                177,
+                glyphs::BLOCK2,
                 lerp(GREEN, colors::LIGHTEST_GREEN, lerp_amount),
                 BLANK,
             };
-            vterm->set_char(vterm->at(step.x, step.y), highlight);
+            vterm2.set_char(step.x, step.y, highlight);
             i += 1.f;
         }
     }
 
+
     // Render our destination
-    vterm->set_char(vterm->at(dest_x, dest_y), destination_glyph);
+    vterm2.set_char(dest_x, dest_y, destination_glyph);
 
     // Finally, we render the @ symbol. dude_x and dude_y are in terminal
     // coordinates.
-    vterm->set_char(vterm->at(dude_x, dude_y), dude);
+    // vterm->set_char(vterm->at(dude_x, dude_y), dude);
+    vterm2.set_char(dude_x, dude_y, dude);
 }
 
+void layer_resize_func(layer_t* l, int w, int h) {
+    // do nothing
+    return;
+}
 
 // Your main function
 int main() {
     // set the desired FPS
     SetTargetFPS(200);
-    // Initialize with defaults
-    init(config_simple_px("../../resources"));
+    // Initialize with advanced configs, so we can use gui to enable textures
+    // over another
+    init(config_advanced{"../../resources"});
+    radl::gui->add_layer(1, 0, 0, map.width * 16, map.height * 16, "16x16",
+                         layer_resize_func, false);
+    radl::gui->add_layer(2, 0, 0, map.width * 16, map.height * 16, "16x16",
+                         layer_resize_func, false);
     // Enter the main loop. "tick" is the function we wrote above.
     run(tick);
 

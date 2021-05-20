@@ -14,7 +14,7 @@ std::unique_ptr<radl::virtual_terminal> vterm;
 std::unique_ptr<radl::gui_t> gui;
 
 namespace main_detail {
-bool use_root_console;
+bool use_root_console           = false;
 bool taking_screenshot          = false;
 std::string screenshot_filename = "";
 }  // namespace main_detail
@@ -26,18 +26,19 @@ virtual_terminal& get_main_terminal() {
 namespace {
 
 template <typename T>
-void init_common(const T& config) {
+void init_common(const T& config, bool use_root_console = false) {
     int window_flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
     if(config.fullscreen) {
         window_flags |= FLAG_FULLSCREEN_MODE;
     }
     SetConfigFlags(window_flags);
+    main_detail::use_root_console = use_root_console;
 }
 
 }  // namespace
 
 void init(const config_simple& config) {
-    init_common(config);
+    init_common(config, true);
     InitWindow(config.width, config.height, config.window_title.c_str());
     // Register fonts after OpenGL init (InitWindow), and then resize the window
     // accordingly
@@ -47,7 +48,6 @@ void init(const config_simple& config) {
     SetWindowSize(GetScreenWidth() * font_width,
                   GetScreenHeight() * font_height);
 
-    main_detail::use_root_console = true;
 
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(GetScreenWidth() * font_width,
@@ -56,23 +56,19 @@ void init(const config_simple& config) {
 
 
 void init(const config_simple_px& config) {
-    init_common(config);
+    init_common(config, true);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
     register_font_directory(config.font_path);
-
-    main_detail::use_root_console = true;
 
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(config.width_px, config.height_px);
 }
 
 void init(const config_advanced& config) {
-    init_common(config);
+    init_common(config, false);
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
 
     register_font_directory(config.font_path);
-
-    main_detail::use_root_console = false;
     gui = std::make_unique<gui_t>(config.width_px, config.height_px);
 }
 
@@ -88,9 +84,13 @@ void run(std::function<void(double)> on_tick) {
         BeginDrawing();
         delta_time = GetFrameTime();
         ClearBackground(BLACK);
-        // should render only when dirty, which "on_tick" sets
-        radl::vterm->render();
-        radl::vterm->draw();
+        if(main_detail::use_root_console) {
+            radl::vterm->render();
+            radl::vterm->draw();
+        } else {
+            radl::gui->render();
+            radl::gui->draw();
+        }
         DrawFPS(GetScreenWidth() - 100, 100);
         EndDrawing();
         // }

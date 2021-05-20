@@ -45,6 +45,8 @@ public:
 
     void render();
 
+    void draw();
+
     // Specialization for adding console layers
     void add_layer(int handle, int X, int Y, int W, int H,
                    std::string font_name,

@@ -26,6 +26,12 @@ void gui_t::render() {
     }
 }
 
+void gui_t::draw() {
+    for(auto& [handle, layer] : gui_detail::render_order) {
+        layer->vterm->draw();
+    }
+}
+
 void gui_t::add_layer(const int handle, const int X, const int Y, const int W,
                       const int H, std::string font_name,
                       std::function<void(layer_t*, int, int)> resize_fun,
@@ -101,5 +107,6 @@ layer_t* gui_t::get_layer(const int handle) {
                                  + std::to_string(handle));
     return &(finder->second);
 }
+
 
 }  // namespace radl

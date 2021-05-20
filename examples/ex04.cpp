@@ -193,11 +193,6 @@ struct navigator {
     }
 };
 
-// The A* library returns the A* path with a constrained template specialization
-// to our location_t. Store the path here. Normally, you'd use "auto" for this
-// type, it is a lot less typing!
-std::shared_ptr<astar_path_t<location_t>> path;
-
 // Instead of raw ints, we'll use the location structure to represent where our
 // dude is. Using C++14 initialization, it's nice and clean.
 auto dude_position = location_t{10, 10};
@@ -224,9 +219,14 @@ void draw_map() {
     }
 }
 
+
 // Tick is called every frame. The parameter specifies how many ms have elapsed
 // since the last time it was called.
 void tick(double duration_secs) {
+    // The A* library returns the A* path with a constrained template
+    // specialization to our location_t. Store the path here. Normally, you'd
+    // use "auto" for this type, it is a lot less typing!
+    static astar_path_t<location_t> path;
     auto& [dude_x, dude_y] = dude_position;
     auto& [dest_x, dest_y] = destination;
     // Increase the tick time by the frame duration. If it has exceeded
@@ -251,38 +251,34 @@ void tick(double duration_secs) {
                 dest_y = rng.dice_roll(1, MAP_HEIGHT) - 1;
             }
 
-            // Now determine how to get there
-            if(path) {
-                path.reset();
-            }
-            constexpr auto limit_steps = 2000;
+            constexpr auto limit_steps = 200;
             path
                 = path_find<navigator>(dude_position, destination, limit_steps);
-            if(!path->success) {
+            if(!path.success) {
                 // std::cout << "RESET: THIS ISN'T MEANT TO HAPPEN!\n" <<;
                 TraceLog(LOG_INFO,
                          "RESET, A* FAIL, SRC_POS: (%d, %d), DST_POS: (%d ,%d)",
                          dude_x, dude_y, dest_x, dest_y);
                 destination = dude_position;
             }
-        } else {
+        } else if(!path.steps.empty()) {
             // Follow the breadcrumbs!
-            location_t next_step = path->steps.front();
+            location_t next_step = path.steps.front();
             dude_x               = next_step.x;
             dude_y               = next_step.y;
-            path->steps.pop_front();
+            path.steps.pop_front();
         }
     }
 
     // Render our planned path. We're using auto and a range-for to avoid typing
     // all the iterator stuff
-    if(path) {
+    if(path.success) {
         // We're going to show off a bit and "lerp" the color along the path;
         // the red lightens as it approaches the destination. This is a preview
         // of some of the color functions.
-        const auto n_steps = static_cast<float>(path->steps.size());
+        const auto n_steps = static_cast<float>(path.steps.size());
         auto i             = 0.f;
-        for(auto step : path->steps) {
+        for(auto step : path.steps) {
             const float lerp_amount = i / n_steps;
             vchar_t highlight{
                 177,

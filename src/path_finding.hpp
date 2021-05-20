@@ -83,8 +83,8 @@ public:
 };
 
 template <typename navigator_t, CLocation location_t>
-std::shared_ptr<astar_path_t<location_t>>
-path_find(location_t& start, location_t& end, size_t limit_steps = 100) {
+astar_path_t<location_t> path_find(location_t& start, location_t& end,
+                                   size_t limit_steps = 100) {
     using user_node_t  = search_node_t<location_t, navigator_t>;
     auto a_start       = user_node_t(start);
     auto a_end         = user_node_t(end);
@@ -102,14 +102,14 @@ path_find(location_t& start, location_t& end, size_t limit_steps = 100) {
         }
     } while(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SEARCHING);
 
-    auto result = std::make_shared<astar_path_t<location_t>>(false, end);
+    auto result = astar_path_t<location_t>(false, end);
     if(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SUCCEEDED) {
         for(auto* node = a_star_search.GetSolutionStart(); node;
             node       = a_star_search.GetSolutionNext()) {
-            result->steps.push_back(node->pos);
+            result.steps.push_back(node->pos);
         }
         a_star_search.FreeSolutionNodes();
-        result->success = true;
+        result.success = true;
     }
     a_star_search.EnsureMemoryFreed();
     return result;

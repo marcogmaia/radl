@@ -67,7 +67,13 @@ struct svchar_t {
 };
 
 namespace glyphs {
+    constexpr auto HEART = 3;
+
     constexpr auto SOLID = 219;
+
+    constexpr auto BLOCK1 = 176;
+    constexpr auto BLOCK2 = 177;
+    constexpr auto BLOCK3 = 178;
 }
 
 }  // namespace radl

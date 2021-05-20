@@ -116,13 +116,12 @@ struct color_t {
 
     /* You can compare colors */
     bool operator==(const color_t& other) const {
-        if(other.r == r && other.g == g && other.b == b) {
+        if(other.r == r && other.g == g && other.b == b && other.a == a) {
             return true;
         } else {
             return false;
         }
     }
-
 
     template <class Archive>
     void serialize(Archive& archive) {

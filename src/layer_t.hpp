@@ -109,7 +109,7 @@ struct layer_t {
     void on_resize(const int width, const int height);
 
     // Called by GUI when a render event occurs.
-    void render(RenderTexture2D& render_texture);
+    void render();
 
     // Retained Mode Controls
     template <class T>

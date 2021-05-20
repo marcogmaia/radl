@@ -10,7 +10,6 @@
 namespace radl {
 
 // Smart pointers makes it easy the use of RAII idiom
-std::unique_ptr<radl::render_texture_t> main_texture;
 std::unique_ptr<radl::virtual_terminal> vterm;
 std::unique_ptr<radl::gui_t> gui;
 
@@ -20,8 +19,8 @@ bool taking_screenshot          = false;
 std::string screenshot_filename = "";
 }  // namespace main_detail
 
-RenderTexture2D& get_main_texture() {
-    return main_texture->render_texture;
+virtual_terminal& get_main_terminal() {
+    return *vterm;
 }
 
 namespace {
@@ -49,7 +48,6 @@ void init(const config_simple& config) {
                   GetScreenHeight() * font_height);
 
     main_detail::use_root_console = true;
-    main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(GetScreenWidth() * font_width,
@@ -63,7 +61,6 @@ void init(const config_simple_px& config) {
     register_font_directory(config.font_path);
 
     main_detail::use_root_console = true;
-    main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
     radl::vterm->resize_pixels(config.width_px, config.height_px);
@@ -74,8 +71,6 @@ void init(const config_advanced& config) {
     InitWindow(config.width_px, config.height_px, config.window_title.c_str());
 
     register_font_directory(config.font_path);
-
-    main_texture = std::make_unique<render_texture_t>(1920, 1080);
 
     main_detail::use_root_console = false;
     gui = std::make_unique<gui_t>(config.width_px, config.height_px);
@@ -94,8 +89,8 @@ void run(std::function<void(double)> on_tick) {
         delta_time = GetFrameTime();
         ClearBackground(BLACK);
         // should render only when dirty, which "on_tick" sets
-        radl::vterm->render(radl::get_main_texture());
-        radl::draw(radl::get_main_texture());
+        radl::vterm->render();
+        radl::vterm->draw();
         DrawFPS(GetScreenWidth() - 100, 100);
         EndDrawing();
         // }

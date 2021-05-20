@@ -9,7 +9,7 @@ namespace radl {
 
 
 void virtual_terminal::set_char(const int index, const vchar_t& vch) noexcept {
-    if(index >= buffer.size()) {
+    if(index >= static_cast<int>(buffer.size())) {
         return;
     }
     buffer[index] = vch;
@@ -22,9 +22,13 @@ void virtual_terminal::clear() {
 
 void virtual_terminal::resize_chars(const int width,
                                     const int height) noexcept {
-    this->dirty       = true;
-    this->term_width  = width;
-    this->term_height = height;
+    this->dirty                   = true;
+    this->term_width              = width;
+    this->term_height             = height;
+    const auto& [fwidth, fheight] = font->character_size;
+    // RAII automatically unloads the previous texture and loads a new one
+    this->backing
+        = std::make_unique<render_texture_t>(width * fwidth, height * fheight);
     buffer.resize(width * height);
 }
 
@@ -90,7 +94,8 @@ static void set_rectangle_position_from_vchar(Rectangle& rect,
     rect.y = vchar.glyph / 16 * font_height;
 }
 
-void virtual_terminal::render(RenderTexture2D& render_texture) {
+
+void virtual_terminal::render() {
     if(!visible) {
         return;
     }
@@ -114,7 +119,8 @@ void virtual_terminal::render(RenderTexture2D& render_texture) {
             font_size.y,
         };
 
-        BeginTextureMode(render_texture);
+        BeginTextureMode(backing->render_texture);
+        ClearBackground(BLANK);
         Vector2 pos{0.F, 0.F};
         for(auto& vch : buffer) {
             if(has_background) {

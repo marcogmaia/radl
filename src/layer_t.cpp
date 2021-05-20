@@ -28,7 +28,7 @@ void layer_t::on_resize(const int width, const int height) {
     }
 }
 
-void layer_t::render(RenderTexture2D& render_texture) {
+void layer_t::render() {
     if(vterm) {
         // render start events
         for(auto& [handle, control] : controls) {
@@ -76,7 +76,7 @@ void layer_t::render(RenderTexture2D& render_texture) {
         for(auto& [handle, control] : controls) {
             control->render(vterm.get());
         }
-        vterm->render(render_texture);
+        vterm->render();
         //     }
         //     console->render(render_texture);
         // } else if(sconsole) {
@@ -91,7 +91,8 @@ void layer_t::render(RenderTexture2D& render_texture) {
         // compositor.move(static_cast<float>(x), static_cast<float>(y));
         // window.draw(sf::Sprite(compositor));
     } else if(svterm) {
-        svterm->render(render_texture);
+        // TODO: render svterm
+        // svterm->render(render_texture);
     } else {  // has backing
         // if backing doesn't exist, create one
         make_owner_draw_backing();

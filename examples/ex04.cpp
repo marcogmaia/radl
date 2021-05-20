@@ -301,13 +301,11 @@ void tick(double duration_secs) {
 
 // Your main function
 int main() {
+    // set the desired FPS
     SetTargetFPS(200);
     // Initialize with defaults
     init(config_simple_px("../../resources"));
-
-
     // Enter the main loop. "tick" is the function we wrote above.
-
     run(tick);
 
     return 0;

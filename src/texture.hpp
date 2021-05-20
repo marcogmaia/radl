@@ -51,6 +51,24 @@ struct render_texture_t {
         // checks if RenderTexture2D is valid is done inside raylib internals
         UnloadRenderTexture(render_texture);
     }
+
+    /**
+     * @brief Clears the RenderTexture
+     *
+     * @param color optional color to clear the texture
+     */
+    inline void clear(const Color& color = BLANK) {
+        BeginTextureMode(render_texture);
+        ClearBackground(color);
+        EndTextureMode();
+    }
 };
+
+inline void texture_clear(RenderTexture2D& render_texture,
+                          const Color& color = BLANK) {
+    BeginTextureMode(render_texture);
+    ClearBackground(BLANK);
+    EndTextureMode();
+}
 
 }  // namespace radl

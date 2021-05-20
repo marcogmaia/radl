@@ -131,7 +131,7 @@ extern std::unique_ptr<virtual_terminal> vterm;
  * In case you want to do some raw stuff yourself, this provides a pointer to
  * the main render texture.
  */
-RenderTexture2D& get_main_texture();
+virtual_terminal& get_main_terminal();
 
 /**
  * @brief Draw the entire texture to the screen

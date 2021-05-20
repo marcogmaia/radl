@@ -19,7 +19,7 @@
 namespace radl {
 
 /*
- * The overall GUI - holds layers and handles render calls. Access via rltk::gui
+ * The overall GUI - holds layers and handles render calls. Access via radl::gui
  */
 class gui_t {
 private:
@@ -43,7 +43,7 @@ public:
 
     void on_resize(int w, int h);
 
-    void render(RenderTexture2D& render_texture);
+    void render();
 
     // Specialization for adding console layers
     void add_layer(int handle, int X, int Y, int W, int H,

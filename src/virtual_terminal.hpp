@@ -6,6 +6,8 @@
 #include "vchar.hpp"
 
 #include "colors.hpp"
+#include "texture.hpp"
+
 namespace radl {
 
 class virtual_terminal {
@@ -20,6 +22,7 @@ private:
     bitmap_font* font = nullptr;
     // we can have a list of position? that's what the buffer is for
     std::vector<vchar_t> buffer;
+    std::unique_ptr<render_texture_t> backing;
 
 public:
     int term_width;
@@ -132,7 +135,36 @@ public:
      *
      * @param render_texture
      */
-    void render(RenderTexture2D& render_texture);
+    void render();
+
+    /**
+     * @brief Clears the texture if the virtual terminal is dirty
+     *
+     */
+    inline void texture_clear() {
+        if(dirty) {
+            BeginTextureMode(backing->render_texture);
+            ClearBackground(BLANK);
+            EndTextureMode();
+        }
+    }
+
+    /**
+     * @brief Draw the entire texture to the screen
+     *
+     * @param render_texture
+     */
+    inline void draw() {
+        // NOTE: Render texture must be y-flipped due to default OpenGL
+        // coordinates (left-bottom)
+        DrawTextureRec(
+            backing->render_texture.texture,
+            Rectangle{
+                0.F, 0.F,
+                static_cast<float>(backing->render_texture.texture.width),
+                static_cast<float>(-backing->render_texture.texture.height)},
+            Vector2{0.F, 0.F}, WHITE);
+    }
 };
 
 }  // namespace radl

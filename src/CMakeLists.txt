@@ -9,6 +9,7 @@ add_library(
     "layer_t.cpp"
     "radl.cpp"
     "texture_resources.cpp"
+    "input_handler.cpp"
     "virtual_terminal_sparse.cpp"
     "virtual_terminal.cpp"
 )

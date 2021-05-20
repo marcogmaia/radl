@@ -50,8 +50,8 @@ public:
     // Specialization for adding console layers
     void add_layer(int handle, int X, int Y, int W, int H,
                    std::string font_name,
-                   std::function<void(layer_t*, int, int)> resize_fun,
-                   bool has_background = true, int order = -1);
+                   std::function<void(layer_t*, int, int)> resize_fun = nullptr,
+                   bool has_background = false, int order = -1);
 
     // Specialization for sparse layers
     void add_sparse_layer(int handle, int X, int Y, int W, int H,
@@ -75,7 +75,7 @@ public:
      * @param handle
      * @return virtual_terminal&
      */
-    inline virtual_terminal& get_vterm(const int handle) {
+    inline virtual_terminal& get_vterm(int handle) {
         return *get_layer(handle)->vterm.get();
     }
 };

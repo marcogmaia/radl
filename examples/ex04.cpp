@@ -298,7 +298,7 @@ void tick(double duration_secs) {
         auto i             = 0.f;
         for(auto step : path.steps) {
             const float lerp_amount = i / n_steps;
-            auto end_color = GREEN;
+            auto end_color          = GREEN;
             end_color.a *= 0.25;
             auto lerp_color = lerp(GREEN, end_color, lerp_amount);
             vchar_t highlight{
@@ -321,11 +321,6 @@ void tick(double duration_secs) {
     vterm2.set_char(dude_x, dude_y, dude);
 }
 
-void layer_resize_func(layer_t* l, int w, int h) {
-    // do nothing
-    return;
-}
-
 // Your main function
 int main() {
     // set the desired FPS
@@ -333,10 +328,8 @@ int main() {
     // Initialize with advanced configs, so we can use gui to enable textures
     // over another
     init(config_advanced{"../../resources"});
-    radl::gui->add_layer(1, 0, 0, map.width * 16, map.height * 16, "16x16",
-                         layer_resize_func, false);
-    radl::gui->add_layer(2, 0, 0, map.width * 16, map.height * 16, "16x16",
-                         layer_resize_func, false);
+    radl::gui->add_layer(1, 0, 0, map.width * 16, map.height * 16, "16x16");
+    radl::gui->add_layer(2, 0, 0, map.width * 16, map.height * 16, "16x16");
     // Enter the main loop. "tick" is the function we wrote above.
     run(tick);
 

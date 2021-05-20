@@ -1,4 +1,3 @@
-#include <fmt/format.h>
 #include "raylib.h"
 #include "color_t.hpp"
 #include "texture.hpp"

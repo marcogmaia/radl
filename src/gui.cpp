@@ -32,6 +32,12 @@ void gui_t::draw() {
     }
 }
 
+void gui_t::clear() {
+    for(auto& [handle, layer] : gui_detail::render_order) {
+        layer->vterm->clear();
+    }
+}
+
 void gui_t::add_layer(const int handle, const int X, const int Y, const int W,
                       const int H, std::string font_name,
                       std::function<void(layer_t*, int, int)> resize_fun,

@@ -241,7 +241,7 @@ public:
 } fov;  // fov object to pass to the algorithm fov_assist fov;
 
 void draw_map() {
-    auto& map_vterm = radl::gui->get_vterm(gui_handle_t::G_MAP);
+    auto& map_vterm = radl::get_vterm(gui_handle_t::G_MAP);
     // Iterate over the whole map, rendering as appropriate
     static const auto bright_light = std::tuple{1.f, 1.f, 1.f};
     static const auto dim_light    = std::tuple{.5f, .5f, .5f};
@@ -329,7 +329,7 @@ void tick(double duration_secs) {
     // to our location_t. Store the path here. Normally, you'd use "auto" for
     // this type, it is a lot less typing!
     static astar_path_t<location_t> path;
-    auto& dude_vterm = radl::gui->get_vterm(gui_handle_t::G_DUDE);
+    auto& dude_vterm = radl::get_vterm(gui_handle_t::G_DUDE);
 
     // Increase the tick time by the frame duration. If it has exceeded
     // the tick duration, then we move the @.

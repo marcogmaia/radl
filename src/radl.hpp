@@ -157,15 +157,16 @@ extern std::unique_ptr<gui_t> gui;
 /*
  * Convenience function to quickly get a GUI layer
  */
-inline layer_t* layer(const int& handle) {
-    return gui->get_layer(handle);
-}
-inline virtual_terminal* term(const int& handle) {
-    return gui->get_layer(handle)->vterm.get();
+inline layer_t& layer(const int& handle) {
+    return *gui->get_layer(handle);
 }
 
-inline virtual_terminal_sparse* sterm(const int& handle) {
-    return gui->get_layer(handle)->svterm.get();
+inline virtual_terminal& get_vterm(const int& handle) {
+    return *gui->get_layer(handle)->vterm.get();
+}
+
+inline virtual_terminal_sparse& get_svterm(const int& handle) {
+    return *gui->get_layer(handle)->svterm.get();
 }
 
 /* Request a screenshot */

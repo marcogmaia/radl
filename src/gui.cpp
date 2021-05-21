@@ -28,13 +28,13 @@ void gui_t::render() {
 
 void gui_t::draw() {
     for(auto& [handle, layer] : gui_detail::render_order) {
-        layer->vterm->draw();
+        layer->draw();
     }
 }
 
 void gui_t::clear() {
     for(auto& [handle, layer] : gui_detail::render_order) {
-        layer->vterm->clear();
+        layer->clear();
     }
 }
 

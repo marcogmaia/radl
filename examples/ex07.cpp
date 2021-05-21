@@ -21,11 +21,11 @@ using namespace radl::colors;
 // For convenience, we'll define our GUI section handles here. These are just ID
 // numbers.
 enum {
-    TITLE_LAYER = 0,
-    MAP_LAYER,
-    MAIN_LAYER,
+    LAYER_TITLE = 0,
+    LAYER_MAP,
+    LAYER_DUDE,
     LOG_LAYER,
-    OVERLAY_LAYER,
+    LAYER_OVERLAY,
 };
 constexpr auto game_tick = 1.f / 20.f;
 auto delta_time          = game_tick;
@@ -41,17 +41,18 @@ void tick(double duration_secs) {
 
 
     // gui->clear();
-    get_vterm(TITLE_LAYER).clear(vchar_t{' ', YELLOW, BLUE});
-    get_vterm(TITLE_LAYER)
+    get_vterm(LAYER_TITLE).clear(vchar_t{' ', YELLOW, BLUE});
+    get_vterm(LAYER_TITLE)
         .print_center(0, "    Big 32x32 Title    ", YELLOW, BLUE);
     // static float hue = 0.f;
     // auto huecolor    = ColorFromHSV(hue, 1.f, 1.f);
     // hue += 2.f;
     constexpr auto huecolor = BLANK;
-    get_vterm(MAP_LAYER).clear(vchar_t{'.', GREY, huecolor});
-    get_vterm(MAIN_LAYER).clear();
-    get_vterm(MAIN_LAYER).box(GREY, BLACK, true);
-    get_vterm(MAIN_LAYER).set_char(10, 10, vchar_t{'@', YELLOW, BLANK});
+    get_vterm(LAYER_MAP).clear(vchar_t{'.', GREY, huecolor});
+    get_vterm(LAYER_MAP).box(GREY, BLACK, true);
+    get_svterm(LAYER_DUDE).clear();
+    get_svterm(LAYER_DUDE).set_char(10, 10, vchar_t{'@', YELLOW, BLACK});
+    get_svterm(LAYER_DUDE).dirty = true;
     get_vterm(LOG_LAYER).clear(vchar_t{' ', WHITE, DARKEST_GREEN});
     get_vterm(LOG_LAYER).box(DARKEST_GREEN, BLACK);
     get_vterm(LOG_LAYER).print(1, 1, "Log Entry", LIGHT_GREEN, DARKEST_GREEN);
@@ -61,12 +62,12 @@ void tick(double duration_secs) {
     get_vterm(LOG_LAYER).print(1, 4, "... goes here", LIGHT_GREEN,
                                DARKEST_GREEN);
 
-    get_vterm(OVERLAY_LAYER).clear();
+    get_vterm(LAYER_OVERLAY).clear();
     constexpr auto bgcolor = BLANK;
-    get_vterm(OVERLAY_LAYER)
+    get_vterm(LAYER_OVERLAY)
         .set_char(11, 10,
                   vchar_t{17, LIGHT_GREEN, bgcolor});  // Draw a left arrow
-    get_vterm(OVERLAY_LAYER)
+    get_vterm(LAYER_OVERLAY)
         .print(12, 10, "Translucent Tool-tip", LIGHT_GREEN, bgcolor);
 
     std::stringstream ss;
@@ -118,16 +119,16 @@ int main() {
     // functions.
     init(config_advanced("../../resources"));
 
-    gui->add_layer(TITLE_LAYER, 0, 0, 1024, 32, "32x32", resize_title, true);
-    gui->add_layer(MAP_LAYER, 0, 32, 1024 - 160, 768 - 32, "8x8", resize_main,
+    gui->add_layer(LAYER_TITLE, 0, 0, 1024, 32, "32x32", resize_title, true);
+    gui->add_layer(LAYER_MAP, 0, 32, 1024 - 160, 768 - 32, "8x8", resize_main,
                    true);
-    gui->add_layer(MAIN_LAYER, 0, 32, 1024 - 160, 768 - 32, "8x8", resize_main,
-                   true);
+    gui->add_sparse_layer(LAYER_DUDE, 0, 32, 1024 - 160, 768 - 32, "8x8",
+                          resize_main, true);
     gui->add_layer(LOG_LAYER, 864, 32, 160, 768 - 32, "8x16", resize_log, true);
-    gui->add_layer(OVERLAY_LAYER, 0, 32, 1024 - 160, 768 - 32, "8x8",
+    gui->add_layer(LAYER_OVERLAY, 0, 32, 1024 - 160, 768 - 32, "8x8",
                    resize_main,
                    true);  // We re-use resize_main, we want it over the top
-    get_vterm(OVERLAY_LAYER).set_alpha(196);  // Make the overlay translucent
+    get_vterm(LAYER_OVERLAY).set_alpha(196);  // Make the overlay translucent
 
     run(tick);
 

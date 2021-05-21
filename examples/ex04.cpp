@@ -9,7 +9,7 @@
  * won't force a map type on you!
  */
 
-// You need to include the RLTK header
+// You need to include the radl header
 #include "radl.hpp"
 #include "path_finding.hpp"
 #include "geometry.hpp"
@@ -22,7 +22,7 @@
 // safety that it will be disposed when you are done with it.
 #include <memory>
 
-// For convenience, import the whole rltk namespace. You may not want to do this
+// For convenience, import the whole radl namespace. You may not want to do this
 // in larger projects, to avoid naming collisions.
 using namespace radl;
 

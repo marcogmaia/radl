@@ -13,4 +13,4 @@ inline bool exists(const std::string& filename) noexcept {
     return (stat(filename.c_str(), &buffer) == 0);
 }
 
-}  // namespace rltk
+}  // namespace radl

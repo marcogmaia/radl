@@ -7,10 +7,10 @@
  * tick lengths.
  */
 
-// You need to include the RLTK header
+// You need to include the radl header
 #include "radl.hpp"
 
-// For convenience, import the whole rltk namespace. You may not want to do this
+// For convenience, import the whole radl namespace. You may not want to do this
 // in larger projects, to avoid naming collisions.
 using namespace radl;
 

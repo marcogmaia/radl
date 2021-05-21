@@ -3,16 +3,16 @@
  * Licensed under the MIT license - see LICENSE file.
  *
  * Example 1: A truly minimal hello world root vterm, demonstrating
- * how to get started with RLTK.
+ * how to get started with RADL.
  */
 
-// You need to include the RLTK header
+// You need to include the radl header
 #include "radl.hpp"
 
 // We're using a stringstream to build the hello world message.
 #include <sstream>
 
-// For convenience, import the whole rltk namespace. You may not want to do this
+// For convenience, import the whole radl namespace. You may not want to do this
 // in larger projects, to avoid naming collisions.
 using namespace radl;
 

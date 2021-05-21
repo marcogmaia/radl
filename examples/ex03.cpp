@@ -7,14 +7,14 @@
  * destination and path as well as the simple "world" our little @ lives in.
  */
 
-// You need to include the RLTK header
+// You need to include the radl header
 #include "radl.hpp"
 #include "geometry.hpp"
 
 // We're using a deque to represent our path
 #include <deque>
 
-// For convenience, import the whole rltk namespace. You may not want to do this
+// For convenience, import the whole radl namespace. You may not want to do this
 // in larger projects, to avoid naming collisions.
 using namespace radl;
 

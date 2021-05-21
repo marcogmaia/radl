@@ -7,17 +7,14 @@
 namespace radl {
 
 
-void virtual_terminal::set_char(const int index, const vchar_t& vch) noexcept {
+void virtual_terminal::set_char(const int index, const vchar_t& vch) {
     if(index >= static_cast<int>(buffer.size())) {
         return;
     }
     buffer[index] = vch;
 }
 
-
-void virtual_terminal::resize_chars(const int width,
-                                    const int height) noexcept {
-    this->dirty                   = true;
+void virtual_terminal::resize_chars(const int width, const int height) {
     this->term_width              = width;
     this->term_height             = height;
     const auto& [fwidth, fheight] = font->character_size;
@@ -25,27 +22,33 @@ void virtual_terminal::resize_chars(const int width,
     this->backing
         = std::make_unique<render_texture_t>(width * fwidth, height * fheight);
     buffer.resize(width * height);
+    clear();
 }
 
-void virtual_terminal::resize_pixels(const int width_px,
-                                     const int height_px) noexcept {
+void virtual_terminal::resize_pixels(const int width_px, const int height_px) {
     int chars_width  = width_px / font->character_size.first;
     int chars_height = height_px / font->character_size.second;
     resize_chars(chars_width, chars_height);
 }
 
-void virtual_terminal::print(int x, int y, const std::string& str,
-                             const color_t& fg, const color_t& bg) noexcept {
+void virtual_terminal::print(const int x, const int y, const std::string& str,
+                             const color_t& fg, const color_t& bg) {
     int idx = at(x, y);
     for(const auto& ch : str) {
-        buffer[idx] = vchar_t{ch, fg, bg};
+        set_char(idx, vchar_t{ch, fg, bg});
         ++idx;
     }
 }
 
+void virtual_terminal::print_center(const int y, const std::string& str,
+                                    const color_t& fg, const color_t& bg) {
+    auto init_x = term_width / 2 - str.size() / 2;
+    print(init_x, y, str, fg, bg);
+}
+
 void virtual_terminal::box(const int x, const int y, const int w, const int h,
                            const color_t& fg, const color_t& bg,
-                           bool double_lines) noexcept {
+                           bool double_lines) {
     // horizontal
     for(int i = 1; i < w; ++i) {
         if(!double_lines) {

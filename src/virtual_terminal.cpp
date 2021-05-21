@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <ranges>
 
 #include "virtual_terminal.hpp"
 #include "texture_resources.hpp"
@@ -15,10 +14,6 @@ void virtual_terminal::set_char(const int index, const vchar_t& vch) noexcept {
     buffer[index] = vch;
 }
 
-void virtual_terminal::clear() {
-    dirty = true;
-    std::ranges::fill(buffer, vchar_t{0, colors::NONE, colors::NONE});
-}
 
 void virtual_terminal::resize_chars(const int width,
                                     const int height) noexcept {

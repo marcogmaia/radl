@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ranges>
+
 #include "font_manager.hpp"
 #include "color_t.hpp"
 #include "raylib.h"
@@ -17,7 +19,7 @@ private:
     int offset_x;
     int offset_y;
     uint8_t alpha = 255;
-    color_t tint{255, 255, 255};
+    color_t tint{255, 255, 255, 255};
     bool has_background;
     bitmap_font* font = nullptr;
     // we can have a list of position? that's what the buffer is for
@@ -54,9 +56,31 @@ public:
     }
 
     /**
+     * @brief Fills the terminal with @p vch
+     *
+     * @param vch
+     */
+    inline void fill(const vchar_t& vch) {
+        std::ranges::fill(buffer, vch);
+    }
+
+    /**
      * @brief clears the virtual terminal to blank (100% Alpha) spaces
      */
-    void clear();
+    inline void clear() {
+        dirty = true;
+        fill(vchar_t{0, BLANK, BLANK});
+    }
+
+    /**
+     * @brief Fills the terminal with @p vch, and set the terminal to dirty
+     *
+     * @param vch vchar to fill the terminal with
+     */
+    inline void clear(const vchar_t& vch) {
+        dirty = true;
+        fill(vch);
+    }
 
     /**
      * @brief Set the char object
@@ -150,6 +174,24 @@ public:
     }
 
     /**
+     * @brief Set the tint for the entire terminal
+     *
+     * @param color to tint with
+     */
+    inline void set_tint(const color_t& color) {
+        tint = color;
+    }
+
+    /**
+     * @brief Set the tint color alpha channel for the entire terminal
+     *
+     * @param alpha
+     */
+    inline void set_alpha(uint8_t alpha) {
+        tint.a = alpha;
+    }
+
+    /**
      * @brief Draw the entire texture to the screen
      *
      * @param render_texture
@@ -159,11 +201,19 @@ public:
         // coordinates (left-bottom)
         DrawTextureRec(
             backing->render_texture.texture,
+            // src rect
             Rectangle{
-                0.F, 0.F,
+                0.f,
+                0.f,
                 static_cast<float>(backing->render_texture.texture.width),
-                static_cast<float>(-backing->render_texture.texture.height)},
-            Vector2{0.F, 0.F}, WHITE);
+                static_cast<float>(-backing->render_texture.texture.height),
+            },
+            // position
+            Vector2{
+                static_cast<float>(offset_x),
+                static_cast<float>(offset_y),
+            },
+            tint);
     }
 };
 

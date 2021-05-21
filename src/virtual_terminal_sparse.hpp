@@ -23,14 +23,16 @@ namespace radl {
 
 class virtual_terminal_sparse {
 private:
-    Texture2D tex           = {0};
+    Texture2D tex = {0};
     std::string font_tag;
     int offset_x;
     int offset_y;
-    uint8_t alpha = 255;
-    color_t tint{255, 255, 255};
+    int width;
+    int height;
+    color_t tint{255, 255, 255, 255};
     bitmap_font* font = nullptr;
     std::vector<svchar_t> buffer;
+    std::unique_ptr<render_texture_t> backing;
 
 public:
     int term_width;
@@ -38,8 +40,7 @@ public:
     bool visible = true;
     bool dirty   = true;  // Flag for requiring a re-draw
 
-    virtual_terminal_sparse(const std::string fontt, const int x = 0,
-                            const int y = 0)
+    virtual_terminal_sparse(const std::string fontt, const int x, const int y)
         : font_tag(fontt)
         , offset_x(x)
         , offset_y(y) {
@@ -53,12 +54,46 @@ public:
         buffer.clear();
     }
 
-    inline void add(const svchar_t& target) {
+    inline void set_char(const svchar_t& target) {
         dirty = true;
         buffer.emplace_back(target);
     }
 
-    void render(RenderTexture2D& render_texture);
+    inline void set_char(int x, int y, const vchar_t& vch) {
+        dirty                       = true;
+        const auto& [glyph, fg, bg] = vch;
+        buffer.emplace_back(svchar_t{
+            glyph,
+            fg,
+            static_cast<float>(x),
+            static_cast<float>(y),
+        });
+    }
+
+    void render();
+
+    /**
+     * @brief Draw the entire backing texture to the screen
+     */
+    inline void draw() {
+        // NOTE: Render texture must be y-flipped due to default OpenGL
+        // coordinates (left-bottom)
+        DrawTextureRec(
+            backing->render_texture.texture,
+            // src rect
+            Rectangle{
+                0.f,
+                0.f,
+                static_cast<float>(backing->render_texture.texture.width),
+                static_cast<float>(-backing->render_texture.texture.height),
+            },
+            // position
+            Vector2{
+                static_cast<float>(offset_x),
+                static_cast<float>(offset_y),
+            },
+            tint);
+    }
 };
 
 }  // namespace radl

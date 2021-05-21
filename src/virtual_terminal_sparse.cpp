@@ -11,26 +11,28 @@ void virtual_terminal_sparse::resize_pixels(const int width, const int height) {
 }
 
 void virtual_terminal_sparse::resize_chars(const int width, const int height) {
-    dirty               = true;
-    const int num_chars = width * height;
-    term_width          = width;
-    term_height         = height;
-    buffer.resize(num_chars);
+    dirty       = true;
+    term_width  = width;
+    term_height = height;
+    const auto& [fwidth, fheight] = font->character_size;
+    backing
+        = std::make_unique<render_texture_t>(width * fwidth, height * fheight);
 }
 
-void virtual_terminal_sparse::render(RenderTexture2D& render_texture) {
+void virtual_terminal_sparse::render() {
     if(!visible)
         return;
     if(dirty) {
         dirty = false;
-        const Vector2 font_size{
+        static const Vector2 font_size{
             static_cast<float>(font->character_size.first),
             static_cast<float>(font->character_size.second),
         };
-        BeginTextureMode(render_texture);
+        static const auto tex = radl::get_texture(font->texture_tag);
+        BeginTextureMode(backing->render_texture);
         ClearBackground(BLANK);
+        Rectangle tex_rect_src{0, 0, font_size.x, font_size.y};
         for(auto& svch : buffer) {
-            Rectangle tex_rect_src{0, 0, font_size.x, font_size.y};
             tex_rect_src.x = (svch.glyph % 16) * font_size.x;
             tex_rect_src.y = (svch.glyph / 16) * font_size.y;
             Vector2 pos{svch.x, svch.y};

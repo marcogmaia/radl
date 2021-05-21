@@ -157,7 +157,7 @@ struct navigator {
     // really well, but for now we'll just use a simple euclidian distance
     // squared. The geometry system defines one for us.
     static float get_distance_estimate(location_t& pos, location_t& goal) {
-        float d = distance2d_squared(pos.x, pos.y, goal.x, goal.y);
+        float d = distance2d_manhattan(pos.x, pos.y, goal.x, goal.y);
         return d;
     }
 
@@ -351,8 +351,9 @@ void tick(double duration_secs) {
             // Since we're using an 8x8, it's just a matter of dividing by 8 to
             // find the terminal-character coordinates. There will be a helper
             // function for this once we get into retained GUIs.
-            const int terminal_x = mouse_x / 16;
-            const int terminal_y = mouse_y / 16;
+            const int terminal_x                   = mouse_x / 16;
+            const int terminal_y                   = mouse_y / 16;
+            constexpr auto path_finder_limit_calcs = 500;
 
             // If the mouse is pointing at a walkable location, and the left
             // button is down - path to the mouse.
@@ -362,7 +363,8 @@ void tick(double duration_secs) {
                 destination.y = terminal_y;
 
                 // Now determine how to get there
-                path = path_find<navigator>(dude_position, destination);
+                path = path_find<navigator>(dude_position, destination,
+                                            path_finder_limit_calcs);
                 if(!path.success) {
                     destination = dude_position;
                     std::cout << "RESET: THIS ISN'T MEANT TO HAPPEN!\n";
@@ -371,7 +373,8 @@ void tick(double duration_secs) {
                 // If the mouse is not clicked, then path to the mouse cursor
                 // for display only
                 path = path_find<navigator, location_t>(
-                    dude_position, location_t{terminal_x, terminal_y});
+                    dude_position, location_t{terminal_x, terminal_y},
+                    path_finder_limit_calcs);
             }
         } else if(!path.steps.empty()) {
             // Follow the breadcrumbs!

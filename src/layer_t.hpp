@@ -81,8 +81,9 @@ struct layer_t {
         , font(font_name)
         , resize_func(resize_fun) {
         // Sparse is unusued, but is there to differentiate the signature.
-        svterm = std::make_unique<virtual_terminal_sparse>(font_name, x, y);
-        svterm->resize_pixels(w, h);
+        svterm
+            = std::make_unique<virtual_terminal_sparse>(font_name, X, Y);
+        svterm->resize_pixels(W, H);
     }
 
     // This specialization is for owner-draw panels
@@ -110,6 +111,10 @@ struct layer_t {
 
     // Called by GUI when a render event occurs.
     void render();
+
+    void draw();
+
+    void clear();
 
     // Retained Mode Controls
     template <class T>

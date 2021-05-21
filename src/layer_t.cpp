@@ -94,8 +94,7 @@ void layer_t::render() {
         // compositor.move(static_cast<float>(x), static_cast<float>(y));
         // window.draw(sf::Sprite(compositor));
     } else if(svterm) {
-        // TODO: render svterm
-        // svterm->render(render_texture);
+        svterm->render();
     } else {  // has backing
         // if backing doesn't exist, create one
         make_owner_draw_backing();
@@ -103,8 +102,25 @@ void layer_t::render() {
         ClearBackground(BLANK);
         owner_draw_func(this, backing);
         EndTextureMode();
-        // TODO draw to screen
     }
+}
+
+void layer_t::draw() {
+    if(vterm) {
+        vterm->draw();
+    } else if(svterm) {
+        svterm->draw();
+    }
+    // TODO owner layer
+}
+
+void layer_t::clear() {
+    if(vterm) {
+        vterm->clear();
+    } else if(svterm) {
+        svterm->clear();
+    }
+    // TODO owner layer
 }
 
 void resize_fullscreen(radl::layer_t* l, int w, int h) {

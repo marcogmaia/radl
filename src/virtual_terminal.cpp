@@ -119,7 +119,7 @@ void virtual_terminal::render() {
 
         BeginTextureMode(backing->render_texture);
         ClearBackground(BLANK);
-        Vector2 pos{0.F, 0.F};
+        Vector2 pos{0.f, 0.f};
         for(auto& vch : buffer) {
             if(has_background) {
                 Vector2 pos_bg = Vector2Multiply(pos, font_size);
@@ -128,10 +128,10 @@ void virtual_terminal::render() {
             set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
             DrawTextureRec(tex, tex_src_rect, Vector2Multiply(pos, font_size),
                            vch.foreground);
-            pos.x += 1.F;
+            pos.x += 1.f;
             if(pos.x >= term_width) {
-                pos.x = 0.F;
-                pos.y += 1.F;
+                pos.x = 0.f;
+                pos.y += 1.f;
             }
         }
         EndTextureMode();

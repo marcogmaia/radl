@@ -67,19 +67,11 @@ public:
     }
 
     /**
-     * @brief clears the virtual terminal to blank (100% Alpha) spaces
-     */
-    inline void clear() {
-        dirty = true;
-        fill(vchar_t{0, BLANK, BLANK});
-    }
-
-    /**
      * @brief Fills the terminal with @p vch, and set the terminal to dirty
      *
      * @param vch vchar to fill the terminal with
      */
-    inline void clear(const vchar_t& vch) {
+    inline void clear(const vchar_t& vch = vchar_t{0, BLANK, BLANK}) {
         dirty = true;
         fill(vch);
     }
@@ -164,18 +156,6 @@ public:
      * @param render_texture
      */
     void render();
-
-    // /**
-    //  * @brief Clears the texture if the virtual terminal is dirty
-    //  *
-    //  */
-    // inline void texture_clear() {
-    //     if(dirty) {
-    //         BeginTextureMode(backing->render_texture);
-    //         ClearBackground(BLANK);
-    //         EndTextureMode();
-    //     }
-    // }
 
     /**
      * @brief Set the tint for the entire terminal

@@ -4,8 +4,8 @@
 namespace radl {
 
 void layer_t::make_owner_draw_backing() {
-    if(backing.id == 0) {
-        backing = LoadRenderTexture(w, h);
+    if(!backing) {
+        backing = std::make_unique<render_texture_t>(w, h);
     }
 }
 
@@ -98,9 +98,9 @@ void layer_t::render() {
     } else {  // has backing
         // if backing doesn't exist, create one
         make_owner_draw_backing();
-        BeginTextureMode(backing);
+        BeginTextureMode(backing->render_texture);
         ClearBackground(BLANK);
-        owner_draw_func(this, backing);
+        owner_draw_func(this, backing->render_texture);
         EndTextureMode();
     }
 }

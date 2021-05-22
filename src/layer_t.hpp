@@ -49,7 +49,7 @@ struct layer_t {
     // Used for owner-draw layers. We need to render to texture and then compose
     // to: a) permit threading, should you so wish (so there is a single
     // composite run) b) allow the future "effects" engine to run.
-    RenderTexture2D backing = {0};
+    std::unique_ptr<render_texture_t> backing;
 
     layer_t(layer_t&& rhs) = default;
 
@@ -81,8 +81,7 @@ struct layer_t {
         , font(font_name)
         , resize_func(resize_fun) {
         // Sparse is unusued, but is there to differentiate the signature.
-        svterm
-            = std::make_unique<virtual_terminal_sparse>(font_name, X, Y);
+        svterm = std::make_unique<virtual_terminal_sparse>(font_name, X, Y);
         svterm->resize_pixels(W, H);
     }
 
@@ -97,11 +96,7 @@ struct layer_t {
         , resize_func(resize_fun)
         , owner_draw_func(owner_draw_fun) {}
 
-    ~layer_t() {
-        if(backing.id != 0) {
-            UnloadRenderTexture(backing);
-        }
-    }
+    ~layer_t() = default;
 
     // Used by the owner-draw code to ensure that a texture is available for use
     void make_owner_draw_backing();

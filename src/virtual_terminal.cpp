@@ -1,9 +1,14 @@
 #include <algorithm>
 
+#include <boost/range/combine.hpp>
+
 #include "virtual_terminal.hpp"
 #include "texture_resources.hpp"
 
 #include "raymath.h"
+#include "rlgl.h"
+#include "external/glad.h"  // GLAD extensions loading library,
+
 namespace radl {
 
 
@@ -23,6 +28,7 @@ void virtual_terminal::resize_chars(const int width, const int height) {
         = std::make_unique<render_texture_t>(width * fwidth, height * fheight);
     buffer.resize(width * height);
     clear();
+    buffer_prev.resize(width * height);
 }
 
 void virtual_terminal::resize_pixels(const int width_px, const int height_px) {
@@ -104,7 +110,6 @@ void virtual_terminal::render() {
 
     if(dirty) {
         dirty = false;
-        tex   = radl::get_texture(this->font->texture_tag);
 
         Vector2 font_size = {
             static_cast<float>(font->character_size.first),
@@ -118,24 +123,56 @@ void virtual_terminal::render() {
         };
 
         BeginTextureMode(backing->render_texture);
-        ClearBackground(BLANK);
+
+        rlSetBlendFactors(GL_ONE_MINUS_DST_ALPHA, GL_ONE, GL_FUNC_SUBTRACT);
+
+        // clear everything that has changed
+        BeginBlendMode(BLEND_CUSTOM);
         Vector2 pos{0.f, 0.f};
-        for(auto& vch : buffer) {
-            if(has_background) {
-                Vector2 pos_bg = Vector2Multiply(pos, font_size);
-                DrawRectangleV(pos_bg, font_size, vch.background);
+        assert(buffer_prev.size() == buffer.size());
+        for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
+            // if nothing changed
+            const Vector2 pos_bg = Vector2Multiply(pos, font_size);
+            if(vch == prev_vch) {
+            } else {  // changed
+                DrawRectangleV(pos_bg, font_size, BLANK);
             }
-            set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
-            DrawTextureRec(tex, tex_src_rect, Vector2Multiply(pos, font_size),
-                           vch.foreground);
+            // increment vchar position
             pos.x += 1.f;
             if(pos.x >= term_width) {
                 pos.x = 0.f;
                 pos.y += 1.f;
             }
         }
-        EndTextureMode();
+        EndBlendMode();
+
+
+        tex = radl::get_texture(this->font->texture_tag);
+        pos = Vector2{0.f, 0.f};
+        for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
+            // if nothing changed
+            if(vch == prev_vch) {
+            } else {  // changed
+                prev_vch             = vch;
+                const Vector2 pos_bg = Vector2Multiply(pos, font_size);
+                if(has_background) {
+                    DrawRectangleV(pos_bg, font_size, vch.background);
+                }
+                set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
+                DrawTextureRec(tex, tex_src_rect,
+                               Vector2Multiply(pos, font_size), vch.foreground);
+            }
+            // increment vchar position
+            pos.x += 1.f;
+            if(pos.x >= term_width) {
+                pos.x = 0.f;
+                pos.y += 1.f;
+            }
+        }
     }
+
+
+    EndTextureMode();
 }
 
 }  // namespace radl

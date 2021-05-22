@@ -26,6 +26,7 @@ private:
     bitmap_font* font = nullptr;
     // we can have a list of position? that's what the buffer is for
     std::vector<vchar_t> buffer;
+    std::vector<vchar_t> buffer_prev;
     std::unique_ptr<render_texture_t> backing;
 
 public:

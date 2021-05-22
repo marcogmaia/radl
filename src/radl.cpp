@@ -18,6 +18,8 @@ namespace main_detail {
 bool use_root_console           = false;
 bool taking_screenshot          = false;
 std::string screenshot_filename = "";
+
+Shader shader_mask;
 }  // namespace main_detail
 
 virtual_terminal& get_main_terminal() {
@@ -34,23 +36,27 @@ void init_common(const T& config, bool use_root_console = false) {
     }
     SetConfigFlags(window_flags);
     main_detail::use_root_console = use_root_console;
+    InitWindow(config.width, config.height, config.window_title.c_str());
+    main_detail::shader_mask
+        = LoadShader(nullptr, "../resources/shaders/mask.frag");
+    register_font_directory(config.font_path);
 }
 
 }  // namespace
 
 void init(const config_simple& config) {
     init_common(config, true);
-    InitWindow(config.width, config.height, config.window_title.c_str());
     // Register fonts after OpenGL init (InitWindow), and then resize the window
     // accordingly
-    register_font_directory(config.font_path);
+
     bitmap_font* font               = get_font(config.root_font);
     auto& [font_width, font_height] = font->character_size;
     SetWindowSize(GetScreenWidth() * font_width,
                   GetScreenHeight() * font_height);
 
 
-    radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
+    radl::vterm
+        = std::make_unique<virtual_terminal>(config.root_font, 0, 0, true);
     radl::vterm->resize_pixels(GetScreenWidth() * font_width,
                                GetScreenHeight() * font_height);
 }
@@ -58,19 +64,15 @@ void init(const config_simple& config) {
 
 void init(const config_simple_px& config) {
     init_common(config, true);
-    InitWindow(config.width_px, config.height_px, config.window_title.c_str());
-    register_font_directory(config.font_path);
 
-    radl::vterm = std::make_unique<virtual_terminal>(config.root_font, 0, 0);
-    radl::vterm->resize_pixels(config.width_px, config.height_px);
+    radl::vterm
+        = std::make_unique<virtual_terminal>(config.root_font, 0, 0, true);
+    radl::vterm->resize_pixels(config.width, config.width);
 }
 
 void init(const config_advanced& config) {
     init_common(config, false);
-    InitWindow(config.width_px, config.height_px, config.window_title.c_str());
-
-    register_font_directory(config.font_path);
-    gui = std::make_unique<gui_t>(config.width_px, config.height_px);
+    gui = std::make_unique<gui_t>(config.width, config.height);
 }
 
 // std::function<bool(event)> optional_event_hook = nullptr;
@@ -98,6 +100,8 @@ void run(std::function<void(double)> on_tick) {
         DrawFPS(GetScreenWidth() - 100, 100);
         EndDrawing();
     }
+
+    UnloadShader(main_detail::shader_mask);
 
 
     // reset_mouse_state();

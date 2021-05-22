@@ -29,8 +29,8 @@ namespace radl {
  */
 struct config_simple_px {
     const std::string font_path;
-    const int width_px;
-    const int height_px;
+    const int width;
+    const int height;
     const std::string window_title;
     const std::string root_font;
     const bool fullscreen;
@@ -40,8 +40,8 @@ struct config_simple_px {
                      const std::string& font = "16x16",
                      bool full_screen        = false)
         : font_path(fonts_file_path)
-        , width_px(width)
-        , height_px(height)
+        , width(width)
+        , height(height)
         , window_title(title)
         , root_font(font)
         , fullscreen(full_screen) {}
@@ -76,8 +76,8 @@ struct config_simple {
  */
 struct config_advanced {
     const std::string font_path;
-    const int width_px;
-    const int height_px;
+    const int width;
+    const int height;
     const std::string window_title;
     const bool fullscreen;
 
@@ -85,8 +85,8 @@ struct config_advanced {
                     const int height = 768, const std::string& title = "RADL",
                     bool full_screen = false)
         : font_path(fonts_file_path)
-        , width_px(width)
-        , height_px(height)
+        , width(width)
+        , height(height)
         , window_title(title)
         , fullscreen(full_screen) {}
 };

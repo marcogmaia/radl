@@ -103,6 +103,7 @@
         "*.ipp": "cpp",
         "filesystem": "cpp",
         "*.m": "cpp",
-        "rlgl.h": "c"
+        "rlgl.h": "c",
+        "raymath.h": "c"
     }
 }

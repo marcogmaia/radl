@@ -47,6 +47,18 @@ struct color_t {
         , b(B)
         , a(A) {}
 
+    /**
+     * @brief Construct a new color from Hex
+     *
+     * @param hex uint32_t
+     */
+    color_t(uint32_t hex) {
+        r = (hex >> 24) & 0xff;
+        g = (hex >> 16) & 0xff;
+        b = (hex >> 8) & 0xff;
+        a = (hex >> 0) & 0xff;
+    }
+
     /* Construct from HSV, in the range of 0-1.0 as floats. */
     color_t(const float hue, const float saturation, const float value) {
         std::tie(r, g, b, a) = color_from_hsv(hue, saturation, value);

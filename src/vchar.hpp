@@ -34,6 +34,11 @@ struct vchar_t {
         , foreground(color_t{fr, fg, fb, fa})
         , background(color_t{br, bg, bb, ba}) {}
 
+    bool operator==(const vchar_t& rhs) const {
+        return std::tuple{glyph, foreground, background}
+               == std::tuple{rhs.glyph, rhs.foreground, rhs.background};
+    }
+
     template <class Archive>
     void serialize(Archive& archive) {
         archive(glyph, foreground,
@@ -67,13 +72,13 @@ struct svchar_t {
 };
 
 namespace glyphs {
-    constexpr auto HEART = 3;
+constexpr auto HEART = 3;
 
-    constexpr auto SOLID = 219;
+constexpr auto SOLID = 219;
 
-    constexpr auto BLOCK1 = 176;
-    constexpr auto BLOCK2 = 177;
-    constexpr auto BLOCK3 = 178;
-}
+constexpr auto BLOCK1 = 176;
+constexpr auto BLOCK2 = 177;
+constexpr auto BLOCK3 = 178;
+}  // namespace glyphs
 
 }  // namespace radl

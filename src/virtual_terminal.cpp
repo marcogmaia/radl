@@ -124,10 +124,9 @@ void virtual_terminal::render() {
 
         BeginTextureMode(backing->render_texture);
 
-        rlSetBlendFactors(GL_ONE_MINUS_DST_ALPHA, GL_ONE, GL_FUNC_SUBTRACT);
-
         // clear everything that has changed
-        BeginBlendMode(BLEND_CUSTOM);
+        // rlSetBlendFactors(GL_ONE, GL_ONE, GL_FUNC_SUBTRACT);
+        BeginBlendMode(BLEND_SUBTRACT_COLORS);
         Vector2 pos{0.f, 0.f};
         assert(buffer_prev.size() == buffer.size());
         for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
@@ -145,7 +144,6 @@ void virtual_terminal::render() {
             }
         }
         EndBlendMode();
-
 
         tex = radl::get_texture(this->font->texture_tag);
         pos = Vector2{0.f, 0.f};

@@ -62,41 +62,11 @@ void gui_layer_resize(radl::layer_t* layer, int new_width, int new_height) {
 
 int main() {
     std::cout << "curr path: " << GetWorkingDirectory() << '\n';
-    constexpr int main_screen_width  = 800;
-    constexpr int main_screen_height = 600;
-    // radl::config_advanced cfg{"../resources", main_screen_width,
-    //                           main_screen_height};
     radl::config_simple cfg{"../resources"};
     radl::init(cfg);
     SetTargetFPS(200);
 
-    radl::gui_t gui(1920, 1080);
-    constexpr int gui_handle = 1;
-    gui.add_layer(gui_handle, 0, 0, GetScreenWidth(), GetScreenHeight(),
-                  "16x16", gui_layer_resize);
-
-    auto on_resize = [&gui]() {
-        auto new_width               = GetScreenWidth();
-        auto new_height              = GetScreenHeight();
-        bool size_contraint_violated = false;
-        if(new_width < main_screen_width) {
-            size_contraint_violated = true;
-            new_width               = main_screen_width;
-        }
-        if(new_height < main_screen_height) {
-            size_contraint_violated = true;
-            new_height              = main_screen_height;
-        }
-        if(size_contraint_violated) {
-            SetWindowSize(new_width, new_height);
-        }
-        gui.on_resize(new_width, new_height);
-    };
-
     while(!WindowShouldClose()) {
-        if(IsWindowResized()) {
-            on_resize();
-        }
         // test_radl(gui.get_vterm(gui_handle));
         test_radl(*radl::vterm);
 

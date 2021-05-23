@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ranges>
 #include <execution>
+#include <mutex>
 
 #include "font_manager.hpp"
 #include "color_t.hpp"
@@ -16,18 +17,19 @@ namespace radl {
 
 class virtual_terminal {
 private:
-    Texture2D tex;
-    std::string font_tag;
-    int offset_x;
-    int offset_y;
-    uint8_t alpha = 255;
-    color_t tint{255, 255, 255, 255};
-    bool has_background;
-    bitmap_font* font = nullptr;
+    Texture2D m_tex;
+    std::string m_font_tag;
+    int m_offset_x;
+    int m_offset_y;
+    color_t m_tint{255, 255, 255, 255};
+    bool m_has_background;
+    bitmap_font* m_font = nullptr;
     // we can have a list of position? that's what the buffer is for
-    std::vector<vchar_t> buffer;
-    std::vector<vchar_t> buffer_prev;
-    std::unique_ptr<render_texture_t> backing;
+    std::vector<vchar_t> m_buffer;
+    std::vector<vchar_t> m_buffer_prev;
+    std::unique_ptr<render_texture_t> m_backing;
+
+    std::mutex m_mutex;
 
 public:
     int term_width;
@@ -37,11 +39,11 @@ public:
 
     virtual_terminal(const std::string fontt, const int x = 0, const int y = 0,
                      const bool background = false)
-        : font_tag(fontt)
-        , offset_x(x)
-        , offset_y(y)
-        , has_background(background) {
-        font = get_font(fontt);
+        : m_font_tag(fontt)
+        , m_offset_x(x)
+        , m_offset_y(y)
+        , m_has_background(background) {
+        m_font = get_font(fontt);
     }
 
     ~virtual_terminal() = default;
@@ -63,9 +65,7 @@ public:
      *
      * @param vch
      */
-    inline void fill(const vchar_t& vch) {
-        std::ranges::fill(buffer, vch);
-    }
+    void fill(const vchar_t& vch) ;
 
     /**
      * @brief Fills the terminal with @p vch, and set the terminal to dirty
@@ -103,8 +103,8 @@ public:
      * @brief Use this to move the terminal in x/y screen pixels.
      */
     inline void set_offset(int x, int y) noexcept {
-        offset_x = x;
-        offset_y = y;
+        m_offset_x = x;
+        m_offset_y = y;
     };
 
     /**
@@ -113,7 +113,7 @@ public:
      * @return std::pair<int, int> -- width and height
      */
     inline std::pair<int, int> get_font_size() noexcept {
-        return font->character_size;
+        return m_font->character_size;
     }
 
     /**
@@ -122,7 +122,7 @@ public:
      * @return std::string
      */
     inline std::string get_font_tag() noexcept {
-        return font->texture_tag;
+        return m_font->texture_tag;
     }
 
     void print(int x, int y, const std::string& str,
@@ -164,7 +164,7 @@ public:
      * @param color to tint with
      */
     inline void set_tint(const color_t& color) {
-        tint = color;
+        m_tint = color;
     }
 
     /**
@@ -173,7 +173,7 @@ public:
      * @param alpha
      */
     inline void set_alpha(uint8_t alpha) {
-        tint.a = alpha;
+        m_tint.a = alpha;
     }
 
     /**
@@ -185,20 +185,20 @@ public:
         // NOTE: Render texture must be y-flipped due to default OpenGL
         // coordinates (left-bottom)
         DrawTextureRec(
-            backing->render_texture.texture,
+            m_backing->render_texture.texture,
             // src rect
             Rectangle{
                 0.f,
                 0.f,
-                static_cast<float>(backing->render_texture.texture.width),
-                static_cast<float>(-backing->render_texture.texture.height),
+                static_cast<float>(m_backing->render_texture.texture.width),
+                static_cast<float>(-m_backing->render_texture.texture.height),
             },
             // position
             Vector2{
-                static_cast<float>(offset_x),
-                static_cast<float>(offset_y),
+                static_cast<float>(m_offset_x),
+                static_cast<float>(m_offset_y),
             },
-            tint);
+            m_tint);
     }
 };
 

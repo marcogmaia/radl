@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <mutex>
 
 #include <boost/range/combine.hpp>
 
@@ -7,33 +8,35 @@
 
 #include "raymath.h"
 #include "rlgl.h"
-#include "external/glad.h"  // GLAD extensions loading library,
 
 namespace radl {
 
 
 void virtual_terminal::set_char(const int index, const vchar_t& vch) {
-    if(index >= static_cast<int>(buffer.size())) {
-        return;
-    }
-    buffer[index] = vch;
+    auto lock     = std::lock_guard(m_mutex);
+    m_buffer[index] = vch;
+}
+
+void virtual_terminal::fill(const vchar_t& vch) {
+    auto lock = std::lock_guard(m_mutex);
+    std::ranges::fill(m_buffer, vch);
 }
 
 void virtual_terminal::resize_chars(const int width, const int height) {
     this->term_width              = width;
     this->term_height             = height;
-    const auto& [fwidth, fheight] = font->character_size;
+    const auto& [fwidth, fheight] = m_font->character_size;
     // RAII automatically unloads the previous texture and loads a new one
-    this->backing
+    this->m_backing
         = std::make_unique<render_texture_t>(width * fwidth, height * fheight);
-    buffer.resize(width * height);
+    m_buffer.resize(width * height);
     clear();
-    buffer_prev.resize(width * height);
+    m_buffer_prev.resize(width * height);
 }
 
 void virtual_terminal::resize_pixels(const int width_px, const int height_px) {
-    int chars_width  = width_px / font->character_size.first;
-    int chars_height = height_px / font->character_size.second;
+    int chars_width  = width_px / m_font->character_size.first;
+    int chars_height = height_px / m_font->character_size.second;
     resize_chars(chars_width, chars_height);
 }
 
@@ -104,16 +107,16 @@ void virtual_terminal::render() {
         return;
     }
 
-    if(this->font == nullptr) {
-        throw std::runtime_error("Font not loaded: " + font_tag);
+    if(this->m_font == nullptr) {
+        throw std::runtime_error("Font not loaded: " + m_font_tag);
     }
 
     if(dirty) {
         dirty = false;
 
         Vector2 font_size = {
-            static_cast<float>(font->character_size.first),
-            static_cast<float>(font->character_size.second),
+            static_cast<float>(m_font->character_size.first),
+            static_cast<float>(m_font->character_size.second),
         };
         Rectangle tex_src_rect{
             0,
@@ -122,15 +125,15 @@ void virtual_terminal::render() {
             font_size.y,
         };
 
-        BeginTextureMode(backing->render_texture);
+        BeginTextureMode(m_backing->render_texture);
         // clear everything that has changed
         BeginBlendMode(BLEND_SUBTRACT_COLORS);
         Vector2 pos{0.f, 0.f};
-        assert(buffer_prev.size() == buffer.size());
-        for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
+        assert(m_buffer_prev.size() == m_buffer.size());
+        for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
             const Vector2 pos_bg = Vector2Multiply(pos, font_size);
             if(vch != prev_vch) {  // vch changed
-                if(has_background
+                if(m_has_background
                    && vch.background.a != 0) {  // has bg and alpha channel
                     rlSetBlendMode(BLEND_ALPHA);
                     DrawRectangleRec(
@@ -152,15 +155,15 @@ void virtual_terminal::render() {
         }
         EndBlendMode();
 
-        tex = radl::get_texture(this->font->texture_tag);
+        m_tex = radl::get_texture(this->m_font->texture_tag);
         pos = Vector2{0.f, 0.f};
-        for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
+        for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
             // if vch has changed
             if(vch != prev_vch) {
                 prev_vch             = vch;
                 const Vector2 pos_bg = Vector2Multiply(pos, font_size);
-                set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
-                DrawTextureRec(tex, tex_src_rect, pos_bg, vch.foreground);
+                set_rectangle_position_from_vchar(tex_src_rect, vch, *m_font);
+                DrawTextureRec(m_tex, tex_src_rect, pos_bg, vch.foreground);
             }
             // increment vchar position
             pos.x += 1.f;

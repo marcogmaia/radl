@@ -18,10 +18,13 @@ include_directories(./src)
 add_subdirectory(lib/raylib)
 add_subdirectory(src)
 
-add_executable(main main.cpp)
-target_link_libraries(main radl)
+set(COMPILE_MAIN OFF)
+if(COMPILE_MAIN)
+    add_executable(main main.cpp)
+    target_link_libraries(main radl)
+endif()
 
-set(COMPILE_EXAMPLES ON)
+set(COMPILE_EXAMPLES OFF)
 # compile examples
 if(COMPILE_EXAMPLES)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples")

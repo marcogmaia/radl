@@ -1,5 +1,5 @@
 #pragma once
-/* 
+/*
  * Copyright (c) 2016-Present, Bracket Productions.
  * Licensed under the MIT license - see LICENSE file.
  *
@@ -29,13 +29,13 @@ constexpr auto BACK    = MOUSE_BUTTON_BACK;
 
 /* Does the game window currently have focus? You might want to pause if it
  * doesn't. */
-extern bool is_window_focused();
+bool is_window_focused();
 
 /* Setter function for window focus */
-extern void set_window_focus_state(const bool& s);
+void set_window_focus_state(const bool& s);
 
 /* Mouse state reset: clears all mouse state */
-extern void reset_mouse_state();
+void reset_mouse_state();
 
 /**
  * @brief Set all mouse buttons state
@@ -48,8 +48,8 @@ extern void set_mouse_position(const int x, const int y);
 std::pair<int, int> get_mouse_position();
 
 /* Mouse button state */
-extern void set_mouse_button_state(const MouseButton button, const bool state);
-extern bool get_mouse_button_state(const MouseButton button);
+void set_mouse_button_state(const MouseButton button, const bool state);
+bool get_mouse_button_state(const MouseButton button);
 
 /* Keyboard queue */
 // extern void enqueue_key_pressed(sf::Event& event);

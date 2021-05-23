@@ -128,11 +128,10 @@ void virtual_terminal::render() {
         Vector2 pos{0.f, 0.f};
         assert(buffer_prev.size() == buffer.size());
         for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
-            // if nothing changed
             const Vector2 pos_bg = Vector2Multiply(pos, font_size);
-            if(vch == prev_vch) {
-            } else {  // changed
-                if(has_background) {
+            if(vch != prev_vch) {  // vch changed
+                if(has_background
+                   && vch.background.a != 0) {  // has bg and alpha channel
                     rlSetBlendMode(BLEND_ALPHA);
                     DrawRectangleRec(
                         Rectangle{pos_bg.x, pos_bg.y, font_size.x, font_size.y},

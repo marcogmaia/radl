@@ -37,17 +37,18 @@ void tick(double duration_secs) {
     if(delta_time < game_tick) {
         return;
     }
-    delta_time -= game_tick;
+    delta_time = 0;
 
 
     // gui->clear();
     get_vterm(LAYER_TITLE).clear(vchar_t{' ', YELLOW, BLUE});
     get_vterm(LAYER_TITLE)
         .print_center(0, "    Big 32x32 Title    ", YELLOW, BLUE);
-    // static float hue = 0.f;
-    // auto huecolor    = ColorFromHSV(hue, 1.f, 1.f);
-    // hue += 2.f;
-    constexpr auto huecolor = BLANK;
+    static float hue = 0.f;
+    // TODO create color_t pick random
+    auto huecolor    = ColorFromHSV(hue, 1.f, 1.f);
+    hue += 6.f;
+    // huecolor = BLANK;
     get_vterm(LAYER_MAP).clear(vchar_t{'.', GREY, huecolor});
     get_vterm(LAYER_MAP).box(GREY, BLACK, true);
     get_svterm(LAYER_DUDE).clear();

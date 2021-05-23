@@ -104,6 +104,8 @@
         "filesystem": "cpp",
         "*.m": "cpp",
         "rlgl.h": "c",
-        "raymath.h": "c"
+        "raymath.h": "c",
+        "glad.h": "c",
+        "dirent.h": "c"
     }
 }

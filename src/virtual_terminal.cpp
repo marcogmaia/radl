@@ -123,9 +123,7 @@ void virtual_terminal::render() {
         };
 
         BeginTextureMode(backing->render_texture);
-
         // clear everything that has changed
-        // rlSetBlendFactors(GL_ONE, GL_ONE, GL_FUNC_SUBTRACT);
         BeginBlendMode(BLEND_SUBTRACT_COLORS);
         Vector2 pos{0.f, 0.f};
         assert(buffer_prev.size() == buffer.size());
@@ -134,7 +132,17 @@ void virtual_terminal::render() {
             const Vector2 pos_bg = Vector2Multiply(pos, font_size);
             if(vch == prev_vch) {
             } else {  // changed
-                DrawRectangleV(pos_bg, font_size, BLANK);
+                if(has_background) {
+                    rlSetBlendMode(BLEND_ALPHA);
+                    DrawRectangleRec(
+                        Rectangle{pos_bg.x, pos_bg.y, font_size.x, font_size.y},
+                        vch.background);
+                } else {
+                    rlSetBlendMode(BLEND_SUBTRACT_COLORS);
+                    DrawRectangleRec(
+                        Rectangle{pos_bg.x, pos_bg.y, font_size.x, font_size.y},
+                        BLANK);
+                }
             }
             // increment vchar position
             pos.x += 1.f;
@@ -148,17 +156,12 @@ void virtual_terminal::render() {
         tex = radl::get_texture(this->font->texture_tag);
         pos = Vector2{0.f, 0.f};
         for(auto&& [prev_vch, vch] : boost::combine(buffer_prev, buffer)) {
-            // if nothing changed
-            if(vch == prev_vch) {
-            } else {  // changed
+            // if vch has changed
+            if(vch != prev_vch) {
                 prev_vch             = vch;
                 const Vector2 pos_bg = Vector2Multiply(pos, font_size);
-                if(has_background) {
-                    DrawRectangleV(pos_bg, font_size, vch.background);
-                }
                 set_rectangle_position_from_vchar(tex_src_rect, vch, *font);
-                DrawTextureRec(tex, tex_src_rect,
-                               Vector2Multiply(pos, font_size), vch.foreground);
+                DrawTextureRec(tex, tex_src_rect, pos_bg, vch.foreground);
             }
             // increment vchar position
             pos.x += 1.f;
@@ -167,10 +170,8 @@ void virtual_terminal::render() {
                 pos.y += 1.f;
             }
         }
+        EndTextureMode();
     }
-
-
-    EndTextureMode();
 }
 
 }  // namespace radl

@@ -3,11 +3,19 @@
         {
             "name": "RADL",
             "includePath": [
-                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/src",
                 "${workspaceFolder}/lib/raylib/src",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/lib/raylib/src/external"
             ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "${workspaceFolder}/lib/raylib/**"
+                ]
+            },
             "defines": [
+                "SUPPORT_TRACELOG",
+                "RLGL_IMPLEMENTATION",
                 "SPDLOG_FMT_EXTERNAL",
                 "DEBUG"
             ],

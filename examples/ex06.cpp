@@ -319,7 +319,7 @@ void draw_map() {
 }
 
 // Lets go really fast!
-constexpr double tick_duration = 0.05;
+constexpr double tick_duration = 1. / 60.;
 double tick_time               = tick_duration;
 
 // Tick is called every frame. The parameter specifies how many ms have elapsed

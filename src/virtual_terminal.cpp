@@ -1,19 +1,18 @@
-#include <algorithm>
-#include <mutex>
-
-#include <boost/range/combine.hpp>
-
 #include "virtual_terminal.hpp"
-#include "texture_resources.hpp"
 
 #include "raymath.h"
 #include "rlgl.h"
+#include "texture_resources.hpp"
+
+#include <algorithm>
+#include <boost/range/combine.hpp>
+#include <mutex>
 
 namespace radl {
 
 
 void virtual_terminal::set_char(const int index, const vchar_t& vch) {
-    auto lock     = std::lock_guard(m_mutex);
+    auto lock       = std::lock_guard(m_mutex);
     m_buffer[index] = vch;
 }
 
@@ -112,7 +111,7 @@ void virtual_terminal::render() {
     }
 
     if(dirty) {
-        dirty = false;
+        dirty            = false;
 
         Vector2 font_size = {
             static_cast<float>(m_font->character_size.first),
@@ -156,7 +155,7 @@ void virtual_terminal::render() {
         EndBlendMode();
 
         m_tex = radl::get_texture(this->m_font->texture_tag);
-        pos = Vector2{0.f, 0.f};
+        pos   = Vector2{0.f, 0.f};
         for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
             // if vch has changed
             if(vch != prev_vch) {

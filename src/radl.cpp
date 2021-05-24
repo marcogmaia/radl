@@ -42,6 +42,7 @@ void init_common(const T& config, bool use_root_console = false) {
     // Register fonts after OpenGL init (InitWindow), and then resize the window
     // accordingly
     register_font_directory(config.font_path);
+    set_game_running_state(true);
 }
 
 }  // namespace
@@ -62,6 +63,7 @@ void init(const config_simple& config) {
 
 void terminate() {
     UnloadShader(main_detail::shader_mask);
+    set_game_running_state(false);
 }
 
 void init(const config_simple_px& config) {

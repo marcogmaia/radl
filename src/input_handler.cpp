@@ -7,6 +7,7 @@ namespace radl {
 
 namespace state {
 
+bool game_running = false;
 // bool window_focused = true;
 std::array<bool, MOUSE_BUTTON_MAX> mouse_button_pressed;
 int mouse_x = 0;
@@ -21,6 +22,14 @@ int mouse_y = 0;
 // void set_window_focus_state(const bool& s) {
 //     radl::state::window_focused = s;
 // }
+
+bool is_game_running() {
+    return state::game_running;
+}
+
+void set_game_running_state(bool running) {
+    state::game_running = running;
+}
 
 void reset_mouse_state() {
     std::fill(radl::state::mouse_button_pressed.begin(),

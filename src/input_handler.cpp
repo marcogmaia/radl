@@ -1,6 +1,7 @@
-#include <array>
-#include <algorithm>
 #include "input_handler.hpp"
+
+#include <algorithm>
+#include <array>
 
 namespace radl {
 
@@ -36,6 +37,19 @@ void set_mouse_state() {
     }
     radl::state::mouse_x = GetMouseX();
     radl::state::mouse_y = GetMouseY();
+}
+
+void set_mouse_state(float pos_x, float pos_y) {
+    int idx = 0;
+    for(auto& button : radl::state::mouse_button_pressed) {
+        button = IsMouseButtonDown(idx);
+        ++idx;
+    }
+    if(pos_x < 0.0 || pos_y < 0.0) {
+        return;
+    }
+    radl::state::mouse_x = static_cast<int>(pos_x);
+    radl::state::mouse_y = static_cast<int>(pos_y);
 }
 
 void set_mouse_button_state(const MouseButton button, const bool state) {

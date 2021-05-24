@@ -26,10 +26,17 @@ void gui_t::render() {
     }
 }
 
-void gui_t::draw() {
+void gui_t::draw(bool yflipped) {
     for(auto& [handle, layer] : gui_detail::render_order) {
-        layer->draw();
+        layer->draw(yflipped);
     }
+}
+
+void gui_t::draw(RenderTexture2D *texture) {
+    BeginTextureMode(*texture) ;
+    ClearBackground(BLACK);
+    draw(true);
+    EndTextureMode();
 }
 
 void gui_t::clear() {

@@ -17,7 +17,7 @@ IndentWidth: 4
 NamespaceIndentation: None
 PointerAlignment: Left
 PointerBindsToType: true
-SortIncludes: false
+SortIncludes: true
 TabWidth: 4
 
 AllowAllArgumentsOnNextLine: true

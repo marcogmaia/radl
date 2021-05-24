@@ -91,9 +91,9 @@ void layer_t::render() {
     }
 }
 
-void layer_t::draw() {
+void layer_t::draw(bool yflipped) {
     if(vterm) {
-        vterm->draw();
+        vterm->draw(yflipped);
     } else if(svterm) {
         svterm->draw();
     }

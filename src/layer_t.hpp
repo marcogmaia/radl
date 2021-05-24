@@ -107,7 +107,7 @@ struct layer_t {
     // Called by GUI when a render event occurs.
     void render();
 
-    void draw();
+    void draw(bool yflipped = false);
 
     void clear();
 

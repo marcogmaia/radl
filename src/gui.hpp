@@ -45,7 +45,14 @@ public:
 
     void render();
 
-    void draw();
+    void draw(bool yflipped = false);
+
+    /**
+     * @brief draw to a RendeTexture
+     * 
+     * @param texture 
+     */
+    void draw(RenderTexture2D *texture);
 
     void clear();
 

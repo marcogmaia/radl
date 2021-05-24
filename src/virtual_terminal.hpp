@@ -1,17 +1,16 @@
 #pragma once
 
-#include <algorithm>
-#include <ranges>
-#include <execution>
-#include <mutex>
-
-#include "font_manager.hpp"
 #include "color_t.hpp"
+#include "colors.hpp"
+#include "font_manager.hpp"
 #include "raylib.h"
+#include "texture.hpp"
 #include "vchar.hpp"
 
-#include "colors.hpp"
-#include "texture.hpp"
+#include <algorithm>
+#include <execution>
+#include <mutex>
+#include <ranges>
 
 namespace radl {
 
@@ -65,7 +64,7 @@ public:
      *
      * @param vch
      */
-    void fill(const vchar_t& vch) ;
+    void fill(const vchar_t& vch);
 
     /**
      * @brief Fills the terminal with @p vch, and set the terminal to dirty
@@ -181,24 +180,27 @@ public:
      *
      * @param render_texture
      */
-    inline void draw() {
+    inline void draw(bool yflipped = false) {
+        auto src_rect = Rectangle{
+            0.f,
+            0.f,
+            static_cast<float>(m_backing->render_texture.texture.width),
+            static_cast<float>(-m_backing->render_texture.texture.height),
+        };
+        if(yflipped) {
+            src_rect.height *= -1;
+        }
         // NOTE: Render texture must be y-flipped due to default OpenGL
         // coordinates (left-bottom)
-        DrawTextureRec(
-            m_backing->render_texture.texture,
-            // src rect
-            Rectangle{
-                0.f,
-                0.f,
-                static_cast<float>(m_backing->render_texture.texture.width),
-                static_cast<float>(-m_backing->render_texture.texture.height),
-            },
-            // position
-            Vector2{
-                static_cast<float>(m_offset_x),
-                static_cast<float>(m_offset_y),
-            },
-            m_tint);
+        DrawTextureRec(m_backing->render_texture.texture,
+                       // src rect
+                       src_rect,
+                       // position
+                       Vector2{
+                           static_cast<float>(m_offset_x),
+                           static_cast<float>(m_offset_y),
+                       },
+                       m_tint);
     }
 };
 

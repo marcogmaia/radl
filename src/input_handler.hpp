@@ -9,8 +9,8 @@
  *
  */
 
-#include <utility>
 #include <raylib.h>
+#include <utility>
 
 namespace radl {
 
@@ -41,6 +41,7 @@ void reset_mouse_state();
  * @brief Set all mouse buttons state
  */
 void set_mouse_state();
+void set_mouse_state(float pos_x, float pos_y);
 
 /* Update the stored mouse position. Does not actually move the mouse. */
 extern void set_mouse_position(const int x, const int y);

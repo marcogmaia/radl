@@ -60,6 +60,10 @@ void init(const config_simple& config) {
                                GetScreenHeight() * font_height);
 }
 
+void terminate() {
+    UnloadShader(main_detail::shader_mask);
+}
+
 void init(const config_simple_px& config) {
     init_common(config, true);
 
@@ -108,9 +112,6 @@ void run(std::function<void(double)> on_tick) {
         delta_time
             = std::chrono::duration<double>(clock.now() - start_time).count();
     }
-
-    UnloadShader(main_detail::shader_mask);
-
 
     // reset_mouse_state();
 

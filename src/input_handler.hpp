@@ -27,10 +27,6 @@ constexpr auto BACK    = MOUSE_BUTTON_BACK;
 
 }  // namespace button
 
-bool is_game_running();
-
-void set_game_running_state(bool running);
-
 /* Does the game window currently have focus? You might want to pause if it
  * doesn't. */
 bool is_window_focused();

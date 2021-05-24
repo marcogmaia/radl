@@ -111,7 +111,7 @@ void virtual_terminal::render() {
     }
 
     if(dirty) {
-        dirty            = false;
+        dirty = false;
 
         Vector2 font_size = {
             static_cast<float>(m_font->character_size.first),

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <functional>
+#include <string>
 // #include "colors.hpp"
 // #include "geometry.hpp"
 // #include "path_finding.hpp"
@@ -14,11 +14,11 @@
 #include "font_manager.hpp"
 #include "gui.hpp"
 #include "input_handler.hpp"
+#include "path_finding.hpp"
+#include "raylib.h"
 #include "rng.hpp"
 #include "texture_resources.hpp"
 #include "virtual_terminal.hpp"
-
-#include "raylib.h"
 
 
 namespace radl {

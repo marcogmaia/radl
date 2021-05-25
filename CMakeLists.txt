@@ -14,9 +14,9 @@ endif()
 find_package(OpenGL REQUIRED)
 
 include_directories(lib/raylib/src)
-include_directories(./src)
 add_subdirectory(lib/raylib)
-add_subdirectory(src)
+include_directories(./radl)
+add_subdirectory(./radl)
 
 set(COMPILE_MAIN OFF)
 if(COMPILE_MAIN)

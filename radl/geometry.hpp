@@ -8,9 +8,9 @@
  * Random number generator class.
  */
 
+#include <cmath>
 #include <functional>
 #include <utility>
-#include <cmath>
 
 namespace radl {
 

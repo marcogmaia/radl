@@ -1,8 +1,9 @@
-#include <unordered_map>
 #include <stdexcept>
-#include "texture_resources.hpp"
-#include "texture.hpp"
+#include <unordered_map>
+
 #include "raylib.h"
+#include "texture.hpp"
+#include "texture_resources.hpp"
 
 namespace radl {
 

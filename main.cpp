@@ -1,12 +1,11 @@
-#include "raylib.h"
-#include "color_t.hpp"
-#include "texture.hpp"
-#include "virtual_terminal.hpp"
-#include "texture_resources.hpp"
-
-#include "radl.hpp"
-
 #include <filesystem>
+
+#include "color_t.hpp"
+#include "radl.hpp"
+#include "raylib.h"
+#include "texture.hpp"
+#include "texture_resources.hpp"
+#include "virtual_terminal.hpp"
 
 void test_radl(radl::virtual_terminal& vterm) {
     static double tick_time = 0.0;

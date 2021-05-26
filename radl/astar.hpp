@@ -25,16 +25,16 @@ given where due.
 
 #pragma once
 // used for text debugging
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 //#include <conio.h>
 #include <cassert>
 
 // stl includes
 #include <algorithm>
+#include <cfloat>
 #include <set>
 #include <vector>
-#include <cfloat>
 
 using namespace std;
 

@@ -1,7 +1,8 @@
-#include "gui.hpp"
+#include <algorithm>
 #include <stdexcept>
 #include <utility>
-#include <algorithm>
+
+#include "gui.hpp"
 
 namespace radl {
 
@@ -32,8 +33,8 @@ void gui_t::draw(bool yflipped) {
     }
 }
 
-void gui_t::draw(RenderTexture2D *texture) {
-    BeginTextureMode(*texture) ;
+void gui_t::draw(RenderTexture2D* texture) {
+    BeginTextureMode(*texture);
     ClearBackground(BLACK);
     draw(true);
     EndTextureMode();

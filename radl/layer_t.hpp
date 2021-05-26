@@ -71,8 +71,8 @@ struct layer_t {
     }
 
     // This specialization is for sparse consoles
-    layer_t(bool sparse, const int X, const int Y, const int W, const int H,
-            std::string font_name,
+    layer_t([[maybe_unused]] bool sparse, const int X, const int Y, const int W,
+            const int H, std::string font_name,
             std::function<void(layer_t*, int, int)> resize_fun)
         : x(X)
         , y(Y)
@@ -140,12 +140,12 @@ struct layer_t {
                                      + std::to_string(handle));
     }
 
-    inline void add_static_text(const int handle, const int x, const int y,
+    inline void add_static_text(const int handle, const int lx, const int ly,
                                 const std::string text, const color_t fg,
                                 const color_t bg) {
         check_handle_uniqueness(handle);
         controls.emplace(
-            handle, std::make_unique<gui_static_text_t>(x, y, text, fg, bg));
+            handle, std::make_unique<gui_static_text_t>(lx, ly, text, fg, bg));
     }
 
     inline void add_boundary_box(const int handle, const bool double_lines,
@@ -155,20 +155,20 @@ struct layer_t {
             handle, std::make_unique<gui_border_box_t>(double_lines, fg, bg));
     }
 
-    inline void add_checkbox(const int handle, const int x, const int y,
+    inline void add_checkbox(const int handle, const int lx, const int ly,
                              const std::string label, const bool checked,
                              const color_t fg, const color_t bg) {
         check_handle_uniqueness(handle);
         controls.emplace(handle, std::make_unique<gui_checkbox_t>(
-                                     x, y, checked, label, fg, bg));
+                                     lx, ly, checked, label, fg, bg));
     }
 
-    inline void add_radioset(const int handle, const int x, const int y,
+    inline void add_radioset(const int handle, const int lx, const int ly,
                              const std::string caption, const color_t fg,
                              const color_t bg, std::vector<radio> opts) {
         check_handle_uniqueness(handle);
         controls.emplace(handle, std::make_unique<gui_radiobuttons_t>(
-                                     x, y, caption, fg, bg, opts));
+                                     lx, ly, caption, fg, bg, opts));
     }
 
     inline void add_hbar(const int handle, const int X, const int Y,

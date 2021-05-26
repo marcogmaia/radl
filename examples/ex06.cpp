@@ -7,8 +7,8 @@
 #include <iostream>
 
 // You need to include the RADL header
-#include "radl.hpp"
 #include "path_finding.hpp"
+#include "radl.hpp"
 
 // We're using a vector to represent the map
 #include <vector>

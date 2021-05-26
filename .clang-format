@@ -17,8 +17,17 @@ IndentWidth: 4
 NamespaceIndentation: None
 PointerAlignment: Left
 PointerBindsToType: true
-SortIncludes: true
 TabWidth: 4
+
+IncludeCategories:
+  - Regex:           '^<.*>'
+    Priority:        0
+    SortPriority:    0
+  - Regex:           '.*'
+    Priority:        2
+    SortPriority:    2
+SortIncludes: true
+IncludeBlocks: Regroup
 
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -35,7 +44,7 @@ SpaceBeforeParens: Never
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
 
-IncludeBlocks: Regroup
+
 
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 2

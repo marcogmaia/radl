@@ -3,10 +3,10 @@
 /* Copyright (c) 2007, Jonathon Duerig. Licensed under the BSD
    license. See LICENSE.txt for details. */
 
-#include <list>
-#include <iostream>
-#include <fstream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <list>
 #include <string>
 
 #include "permissive-fov.h"
@@ -387,9 +387,7 @@ permissiveErrorT loadPermissiveMask(permissiveMaskT* mask,
             // TODO: Enforce input restrictions.
             switch(current) {
             case '#': bit = 0; break;
-            case '!':
-                bit = 0;
-                [[fallthrough]];
+            case '!': bit = 0; [[fallthrough]];
             case '@':
                 // Bit is already set properly.
                 mask->south = i;

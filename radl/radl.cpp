@@ -1,12 +1,10 @@
-#include <memory>
 #include <future>
+#include <memory>
 
-
+#include "path_finding.hpp"
 #include "radl.hpp"
 #include "texture.hpp"
 #include "texture_resources.hpp"
-
-#include "path_finding.hpp"
 
 namespace radl {
 

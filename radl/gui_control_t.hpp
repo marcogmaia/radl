@@ -3,11 +3,12 @@
  */
 #pragma once
 
-#include "virtual_terminal.hpp"
-#include <string>
 #include <functional>
-#include <vector>
 #include <iostream>
+#include <string>
+#include <vector>
+
+#include "virtual_terminal.hpp"
 
 // TODO: Text box, display rich text, combo box, slider, spinner
 

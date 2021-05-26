@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <string>
 #include <stdexcept>
+#include <string>
+
 #include "raylib.h"
 
 namespace radl {
@@ -67,7 +68,7 @@ struct render_texture_t {
 inline void texture_clear(RenderTexture2D& render_texture,
                           const Color& color = BLANK) {
     BeginTextureMode(render_texture);
-    ClearBackground(BLANK);
+    ClearBackground(color);
     EndTextureMode();
 }
 

@@ -1,6 +1,7 @@
 #include "virtual_terminal_sparse.hpp"
-#include "texture_resources.hpp"
+
 #include "raymath.h"
+#include "texture_resources.hpp"
 
 namespace radl {
 
@@ -11,9 +12,9 @@ void virtual_terminal_sparse::resize_pixels(const int width, const int height) {
 }
 
 void virtual_terminal_sparse::resize_chars(const int width, const int height) {
-    dirty       = true;
-    term_width  = width;
-    term_height = height;
+    dirty                         = true;
+    term_width                    = width;
+    term_height                   = height;
     const auto& [fwidth, fheight] = font->character_size;
     backing
         = std::make_unique<render_texture_t>(width * fwidth, height * fheight);

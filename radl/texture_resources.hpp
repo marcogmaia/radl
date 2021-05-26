@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include "raylib.h"
 
 namespace radl {

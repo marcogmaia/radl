@@ -1,9 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <deque>
-#include <utility>
 #include <concepts>
+#include <deque>
+#include <memory>
+#include <utility>
 
 #include "astar.hpp"
 #include "geometry.hpp"

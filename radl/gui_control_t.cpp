@@ -1,7 +1,7 @@
-#include "gui_control_t.hpp"
-#include <sstream>
 #include <algorithm>
+#include <sstream>
 
+#include "gui_control_t.hpp"
 namespace radl {
 
 void gui_static_text_t::render(virtual_terminal* vterm) {

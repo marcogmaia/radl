@@ -9,9 +9,11 @@
  */
 
 // You need to include the RADL header
-#include "radl.hpp"
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+
+#include "radl.hpp"
+
 
 // For convenience, import the whole radl namespace. You may not want to do this
 // in larger projects, to avoid naming collisions.
@@ -46,7 +48,7 @@ void tick(double duration_secs) {
         .print_center(0, "    Big 32x32 Title    ", YELLOW, BLUE);
     static float hue = 0.f;
     // TODO create color_t pick random
-    auto huecolor    = ColorFromHSV(hue, 1.f, 1.f);
+    auto huecolor = ColorFromHSV(hue, 1.f, 1.f);
     hue += 6.f;
     // huecolor = BLANK;
     get_vterm(LAYER_MAP).clear(vchar_t{'.', GREY, huecolor});

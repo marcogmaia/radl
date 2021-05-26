@@ -10,9 +10,9 @@
  */
 
 // You need to include the radl header
-#include "radl.hpp"
-#include "path_finding.hpp"
 #include "geometry.hpp"
+#include "path_finding.hpp"
+#include "radl.hpp"
 
 // We're using a vector to represent the map
 #include <vector>

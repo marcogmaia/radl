@@ -1,8 +1,8 @@
 #pragma once
 
 #include <tuple>
-#include <cereal/cereal.hpp>
 
+#include "cereal/cereal.hpp"
 #include "raylib.h"
 
 namespace radl {

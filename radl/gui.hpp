@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-Present, Bracket Productions.
  * Licensed under the MIT license - see LICENSE file.
  *
@@ -9,8 +9,8 @@
 
 
 #include <functional>
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 #include "layer_t.hpp"
@@ -49,10 +49,10 @@ public:
 
     /**
      * @brief draw to a RendeTexture
-     * 
-     * @param texture 
+     *
+     * @param texture
      */
-    void draw(RenderTexture2D *texture);
+    void draw(RenderTexture2D* texture);
 
     void clear();
 

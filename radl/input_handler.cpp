@@ -1,7 +1,7 @@
-#include "input_handler.hpp"
-
 #include <algorithm>
 #include <array>
+
+#include "input_handler.hpp"
 
 namespace radl {
 

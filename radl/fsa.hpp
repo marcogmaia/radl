@@ -45,8 +45,8 @@ binary trees can be used instead to get O(logn) access time.
 #ifndef FSA_H
 #define FSA_H
 
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 
 
 template <class USER_TYPE>

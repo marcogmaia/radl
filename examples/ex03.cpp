@@ -8,8 +8,8 @@
  */
 
 // You need to include the radl header
-#include "radl.hpp"
 #include "geometry.hpp"
+#include "radl.hpp"
 
 // We're using a deque to represent our path
 #include <deque>

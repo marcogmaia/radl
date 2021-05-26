@@ -79,7 +79,7 @@ public:
      * @param first
      * @param last
      * @param output
-     * 
+     *
      * @return true if sampled, false otherwise
      */
     template <typename InputIterator, typename OutputIterator>

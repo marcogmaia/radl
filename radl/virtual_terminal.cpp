@@ -1,12 +1,11 @@
 #include "virtual_terminal.hpp"
+#include <algorithm>
+#include <boost/range/combine.hpp>
+#include <mutex>
 
 #include "raymath.h"
 #include "rlgl.h"
 #include "texture_resources.hpp"
-
-#include <algorithm>
-#include <boost/range/combine.hpp>
-#include <mutex>
 
 namespace radl {
 

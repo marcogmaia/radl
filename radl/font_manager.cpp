@@ -5,13 +5,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/split.hpp>
-
+#include "boost/algorithm/string/split.hpp"
+#include "boost/algorithm/string/trim.hpp"
 #include "filesystem.hpp"
 #include "font_manager.hpp"
 #include "texture_resources.hpp"
-
 namespace radl {
 
 namespace font_detail {

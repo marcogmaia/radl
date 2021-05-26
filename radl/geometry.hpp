@@ -99,10 +99,10 @@ inline void line_func(const int& x1, const int& y1, const int& x2,
                       std::function<void(int, int)>&& func) noexcept {
     auto x               = static_cast<double>(x1) + 0.5F;
     auto y               = static_cast<double>(y1) + 0.5F;
-    auto dest_x          = static_cast<const double>(x2);
-    auto dest_y          = static_cast<const double>(y2);
+    auto dest_x          = static_cast<double>(x2);
+    auto dest_y          = static_cast<double>(y2);
     const double n_steps = distance2d(x1, y1, x2, y2);
-    const auto steps     = static_cast<const int>(std::floor(n_steps) + 1);
+    const auto steps     = static_cast<int>(std::floor(n_steps) + 1);
     const double slope_x = (dest_x - x) / n_steps;
     const double slope_y = (dest_y - y) / n_steps;
 
@@ -150,11 +150,11 @@ inline void line_func_cancellable(const int& x1, const int& y1, const int& x2,
                                   const int& y2, F&& func) noexcept {
     auto x      = static_cast<double>(x1) + 0.5;
     auto y      = static_cast<double>(y1) + 0.5;
-    auto dest_x = static_cast<const double>(x2);
-    auto dest_y = static_cast<const double>(y2);
+    auto dest_x = static_cast<double>(x2);
+    auto dest_y = static_cast<double>(y2);
 
     const double n_steps = distance2d(x1, y1, x2, y2);
-    const int steps      = static_cast<const int>(std::floor(n_steps) + 1);
+    const int steps      = static_cast<int>(std::floor(n_steps) + 1);
     const double slope_x = (dest_x - x) / n_steps;
     const double slope_y = (dest_y - y) / n_steps;
 

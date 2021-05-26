@@ -1,16 +1,16 @@
 #pragma once
 
+#include <algorithm>
+#include <execution>
+#include <mutex>
+#include <ranges>
+
 #include "color_t.hpp"
 #include "colors.hpp"
 #include "font_manager.hpp"
 #include "raylib.h"
 #include "texture.hpp"
 #include "vchar.hpp"
-
-#include <algorithm>
-#include <execution>
-#include <mutex>
-#include <ranges>
 
 namespace radl {
 

@@ -47,6 +47,10 @@ struct color_t {
         , b(B)
         , a(A) {}
 
+    color_t(float R, float G, float B, float A = 1.f);
+
+    color_t(float (&color)[4]) ;
+
     /**
      * @brief Construct a new color from Hex
      *

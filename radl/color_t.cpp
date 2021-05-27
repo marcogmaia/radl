@@ -7,6 +7,36 @@ using std::min;
 
 namespace radl {
 
+color_t::color_t(float R, float G, float B, float A) {
+    static auto clamp_float = [](float f) {
+        if(f > 1.f) {
+            f = 1.f;
+        } else if(f < 0.f) {
+            f = 0.f;
+        }
+        return f;
+    };
+    r = static_cast<uint8_t>(255 * clamp_float(R));
+    g = static_cast<uint8_t>(255 * clamp_float(G));
+    b = static_cast<uint8_t>(255 * clamp_float(B));
+    a = static_cast<uint8_t>(255 * clamp_float(A));
+}
+
+color_t::color_t(float (&color)[4]) {
+    static auto clamp_float = [](float f) {
+        if(f > 1.f) {
+            f = 1.f;
+        } else if(f < 0.f) {
+            f = 0.f;
+        }
+        return f;
+    };
+    r = static_cast<uint8_t>(255 * clamp_float(color[0]));
+    g = static_cast<uint8_t>(255 * clamp_float(color[1]));
+    b = static_cast<uint8_t>(255 * clamp_float(color[2]));
+    a = static_cast<uint8_t>(255 * clamp_float(color[2]));
+}
+
 // Credit: https://gist.github.com/fairlight1337/4935ae72bcbcc1ba5c72
 std::tuple<float, float, float> color_to_hsv(const color_t& col) {
     float fR = (col.r / 255.0f);

@@ -149,7 +149,7 @@ struct color_t {
  * @return Color
  */
 inline Color color_to_rlcolor(const color_t& col) {
-    return Color(col.r, col.g, col.b, col.a);
+    return Color{col.r, col.g, col.b, col.a};
 }
 
 /* Converts a color_t to an RGBA tuple */

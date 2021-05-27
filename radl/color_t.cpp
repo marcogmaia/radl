@@ -34,7 +34,7 @@ color_t::color_t(float (&color)[4]) {
     r = static_cast<uint8_t>(255 * clamp_float(color[0]));
     g = static_cast<uint8_t>(255 * clamp_float(color[1]));
     b = static_cast<uint8_t>(255 * clamp_float(color[2]));
-    a = static_cast<uint8_t>(255 * clamp_float(color[2]));
+    a = static_cast<uint8_t>(255 * clamp_float(color[3]));
 }
 
 // Credit: https://gist.github.com/fairlight1337/4935ae72bcbcc1ba5c72

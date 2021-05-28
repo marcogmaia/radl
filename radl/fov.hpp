@@ -6,6 +6,7 @@ namespace radl {
 
 class IFov {
 public:
+    virtual ~IFov() = default;
     /**
      * @brief check if @p location is blocked
      *

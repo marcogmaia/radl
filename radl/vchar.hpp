@@ -39,6 +39,10 @@ struct vchar_t {
                == std::tuple{rhs.glyph, rhs.foreground, rhs.background};
     }
 
+    bool operator!=(const vchar_t& rhs) {
+        return !operator==(rhs);
+    }
+
     template <class Archive>
     void serialize(Archive& archive) {
         archive(glyph, foreground,

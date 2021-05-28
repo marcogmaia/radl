@@ -17,7 +17,7 @@ void virtual_terminal::set_char(const int index, const vchar_t& vch) {
 
 void virtual_terminal::fill(const vchar_t& vch) {
     auto lock = std::lock_guard(m_mutex);
-    std::ranges::fill(m_buffer, vch);
+    std::fill(m_buffer.begin(), m_buffer.end(), vch);
 }
 
 void virtual_terminal::resize_chars(const int width, const int height) {

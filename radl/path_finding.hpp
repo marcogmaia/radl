@@ -10,20 +10,8 @@
 
 namespace radl {
 
-// We want to force that the navigable class implemetns these methods
-template <typename T>
-concept CLocation = requires(const T loc) {
-    { loc.get_x() }
-    ->std::integral;
-    { loc.get_y() }
-    ->std::integral;
-    { loc.get_xy() }
-    ->std::convertible_to<std::tuple<int, int>>;
-    std::equality_comparable<T>;
-};
-
 // Template class used to define what a navigation path looks like
-template <CLocation location_t>
+template <typename location_t>
 struct astar_path_t {
     // if true: the path was found, false otherwise
     bool success = false;
@@ -35,7 +23,7 @@ struct astar_path_t {
 
 
 // The A* library also requires a helper class to understand your map format.
-template <CLocation location_t, typename navigator_t>
+template <typename location_t, typename navigator_t>
 class search_node_t final
     : public AStarState<search_node_t<location_t, navigator_t>> {
     using SearchNode_t = search_node_t<location_t, navigator_t>;
@@ -84,7 +72,7 @@ public:
     }
 };
 
-template <typename navigator_t, CLocation location_t>
+template <typename navigator_t, typename location_t>
 astar_path_t<location_t> path_find(const location_t& start,
                                    const location_t& end,
                                    size_t limit_steps = 100) {

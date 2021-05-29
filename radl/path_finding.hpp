@@ -93,7 +93,7 @@ astar_path_t<location_t> path_find(const location_t& start,
         }
     } while(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SEARCHING);
 
-    auto result = astar_path_t<location_t>(false, end);
+    auto result = astar_path_t<location_t>{false, end};
     if(search_state == AStarSearch<user_node_t>::SEARCH_STATE_SUCCEEDED) {
         for(auto* node = a_star_search.GetSolutionStart(); node;
             node       = a_star_search.GetSolutionNext()) {

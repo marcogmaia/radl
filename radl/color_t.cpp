@@ -1,4 +1,5 @@
 #include "color_t.hpp"
+#include <array>
 #include <cmath>
 
 using std::fmod;
@@ -7,30 +8,27 @@ using std::min;
 
 namespace radl {
 
+namespace {
+
+float clamp_float(float f) {
+    if(f > 1.f) {
+        f = 1.f;
+    } else if(f < 0.f) {
+        f = 0.f;
+    }
+    return f;
+}
+
+}  // namespace
+
 color_t::color_t(float R, float G, float B, float A) {
-    static auto clamp_float = [](float f) {
-        if(f > 1.f) {
-            f = 1.f;
-        } else if(f < 0.f) {
-            f = 0.f;
-        }
-        return f;
-    };
     r = static_cast<uint8_t>(255 * clamp_float(R));
     g = static_cast<uint8_t>(255 * clamp_float(G));
     b = static_cast<uint8_t>(255 * clamp_float(B));
     a = static_cast<uint8_t>(255 * clamp_float(A));
 }
 
-color_t::color_t(float (&color)[4]) {
-    static auto clamp_float = [](float f) {
-        if(f > 1.f) {
-            f = 1.f;
-        } else if(f < 0.f) {
-            f = 0.f;
-        }
-        return f;
-    };
+color_t::color_t(std::array<float, 4>& color) {
     r = static_cast<uint8_t>(255 * clamp_float(color[0]));
     g = static_cast<uint8_t>(255 * clamp_float(color[1]));
     b = static_cast<uint8_t>(255 * clamp_float(color[2]));
@@ -228,7 +226,7 @@ color_t lerp(const color_t& first, const color_t& second, float amount) {
     float blue  = b1 + (bdiff * amount);
     float alpha = a1 + (adiff * amount);
 
-    static auto clip_channel = [](float& channel) {
+    static auto clamp_channel = [](float& channel) {
         if(channel < 0.f) {
             channel = 0.f;
         } else if(channel > 255.f) {
@@ -236,10 +234,10 @@ color_t lerp(const color_t& first, const color_t& second, float amount) {
         }
     };
 
-    clip_channel(red);
-    clip_channel(green);
-    clip_channel(blue);
-    clip_channel(alpha);
+    clamp_channel(red);
+    clamp_channel(green);
+    clamp_channel(blue);
+    clamp_channel(alpha);
 
     auto r = static_cast<const int>(red);
     auto g = static_cast<const int>(green);

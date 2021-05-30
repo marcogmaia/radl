@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <gsl/span>
 #include <tuple>
 
 #include "cereal/cereal.hpp"
@@ -19,7 +21,7 @@ struct color_t {
     uint8_t a = 0xFF;
 
     /* Default empty constructor */
-    color_t() {}
+    color_t() = default;
 
     color_t(Color rlcolor)
         : r{rlcolor.r}
@@ -49,7 +51,7 @@ struct color_t {
 
     color_t(float R, float G, float B, float A = 1.f);
 
-    color_t(float (&color)[4]) ;
+    color_t(std::array<float, 4>& color);
 
     /**
      * @brief Construct a new color from Hex

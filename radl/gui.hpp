@@ -58,13 +58,13 @@ public:
 
     // Specialization for adding console layers
     void add_layer(int handle, int X, int Y, int W, int H,
-                   std::string font_name,
+                   const std::string& font_name,
                    std::function<void(layer_t*, int, int)> resize_fun = nullptr,
                    bool has_background = false, int order = -1);
 
     // Specialization for sparse layers
     void add_sparse_layer(int handle, int X, int Y, int W, int H,
-                          std::string font_name,
+                          const std::string& font_name,
                           std::function<void(layer_t*, int, int)> resize_fun,
                           int order = -1);
 

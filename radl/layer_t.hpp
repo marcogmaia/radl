@@ -4,6 +4,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <utility>
 
 #include "gui_control_t.hpp"
 #include "virtual_terminal.hpp"
@@ -55,7 +56,7 @@ struct layer_t {
 
     // This specialization is for generic consoles
     layer_t(const int X, const int Y, const int W, const int H,
-            std::string font_name,
+            const std::string& font_name,
             std::function<void(layer_t*, int, int)> resize_fun,
             bool render_background = true)
         : x(X)
@@ -63,7 +64,7 @@ struct layer_t {
         , w(W)
         , h(H)
         , font(font_name)
-        , resize_func(resize_fun)
+        , resize_func(std::move(resize_fun))
         , has_background(render_background) {
         vterm = std::make_unique<virtual_terminal>(font_name, x, y,
                                                    has_background);
@@ -72,14 +73,14 @@ struct layer_t {
 
     // This specialization is for sparse consoles
     layer_t([[maybe_unused]] bool sparse, const int X, const int Y, const int W,
-            const int H, std::string font_name,
+            const int H, const std::string& font_name,
             std::function<void(layer_t*, int, int)> resize_fun)
         : x(X)
         , y(Y)
         , w(W)
         , h(H)
         , font(font_name)
-        , resize_func(resize_fun) {
+        , resize_func(std::move(resize_fun)) {
         // Sparse is unusued, but is there to differentiate the signature.
         svterm = std::make_unique<virtual_terminal_sparse>(font_name, X, Y);
         svterm->resize_pixels(W, H);
@@ -93,8 +94,8 @@ struct layer_t {
         , y(Y)
         , w(W)
         , h(H)
-        , resize_func(resize_fun)
-        , owner_draw_func(owner_draw_fun) {}
+        , resize_func(std::move(resize_fun))
+        , owner_draw_func(std::move(owner_draw_fun)) {}
 
     ~layer_t() = default;
 
@@ -141,7 +142,7 @@ struct layer_t {
     }
 
     inline void add_static_text(const int handle, const int lx, const int ly,
-                                const std::string text, const color_t fg,
+                                const std::string& text, const color_t fg,
                                 const color_t bg) {
         check_handle_uniqueness(handle);
         controls.emplace(
@@ -156,7 +157,7 @@ struct layer_t {
     }
 
     inline void add_checkbox(const int handle, const int lx, const int ly,
-                             const std::string label, const bool checked,
+                             const std::string& label, const bool checked,
                              const color_t fg, const color_t bg) {
         check_handle_uniqueness(handle);
         controls.emplace(handle, std::make_unique<gui_checkbox_t>(
@@ -164,8 +165,8 @@ struct layer_t {
     }
 
     inline void add_radioset(const int handle, const int lx, const int ly,
-                             const std::string caption, const color_t fg,
-                             const color_t bg, std::vector<radio> opts) {
+                             const std::string& caption, const color_t fg,
+                             const color_t bg, std::vector<radio>& opts) {
         check_handle_uniqueness(handle);
         controls.emplace(handle, std::make_unique<gui_radiobuttons_t>(
                                      lx, ly, caption, fg, bg, opts));
@@ -176,7 +177,7 @@ struct layer_t {
                          const int VAL, const color_t FULL_START,
                          const color_t FULL_END, const color_t EMPTY_START,
                          const color_t EMPTY_END, const color_t TEXT_COL,
-                         const std::string prefix = "") {
+                         const std::string& prefix = "") {
         check_handle_uniqueness(handle);
         controls.emplace(handle,
                          std::make_unique<gui_hbar_t>(
@@ -189,7 +190,7 @@ struct layer_t {
                          const int VAL, const color_t FULL_START,
                          const color_t FULL_END, const color_t EMPTY_START,
                          const color_t EMPTY_END, const color_t TEXT_COL,
-                         const std::string prefix = "") {
+                         const std::string& prefix = "") {
         check_handle_uniqueness(handle);
         controls.emplace(handle,
                          std::make_unique<gui_vbar_t>(
@@ -198,8 +199,8 @@ struct layer_t {
     }
 
     inline void add_listbox(const int handle, const int X, const int Y,
-                            const int VAL, std::vector<list_item> options,
-                            std::string label, const color_t label_fg,
+                            const int VAL, std::vector<list_item>& options,
+                            const std::string& label, const color_t label_fg,
                             const color_t label_bg, const color_t ITEM_FG,
                             const color_t ITEM_BG, const color_t sel_fg,
                             const color_t sel_bg) {

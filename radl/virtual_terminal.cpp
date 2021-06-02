@@ -126,7 +126,7 @@ void virtual_terminal::render() {
         BeginTextureMode(m_backing->render_texture);
         // clear everything that has changed
         BeginBlendMode(BLEND_SUBTRACT_COLORS);
-        Vector2 pos{0.f, 0.f};
+        Vector2 pos{0.f, static_cast<float>(term_height - 1)};
         assert(m_buffer_prev.size() == m_buffer.size());
         for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
             const Vector2 pos_bg = Vector2Multiply(pos, font_size);
@@ -148,13 +148,13 @@ void virtual_terminal::render() {
             pos.x += 1.f;
             if(pos.x >= term_width) {
                 pos.x = 0.f;
-                pos.y += 1.f;
+                pos.y -= 1.f;
             }
         }
         EndBlendMode();
 
         m_tex = radl::get_texture(this->m_font->texture_tag);
-        pos   = Vector2{0.f, 0.f};
+        pos   = Vector2{0.f, static_cast<float>(term_height - 1)};
         for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
             // if vch has changed
             if(vch != prev_vch) {
@@ -167,7 +167,7 @@ void virtual_terminal::render() {
             pos.x += 1.f;
             if(pos.x >= term_width) {
                 pos.x = 0.f;
-                pos.y += 1.f;
+                pos.y -= 1.f;
             }
         }
         EndTextureMode();

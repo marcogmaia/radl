@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 // #include "colors.hpp"
 // #include "geometry.hpp"
 // #include "path_finding.hpp"
@@ -35,15 +36,14 @@ struct config_simple_px {
     const std::string root_font;
     const bool fullscreen;
 
-    config_simple_px(const std::string& fonts_file_path, const int width = 1024,
-                     const int height = 768, const std::string& title = "RADL",
-                     const std::string& font = "16x16",
-                     bool full_screen        = false)
-        : font_path(fonts_file_path)
+    config_simple_px(std::string fonts_file_path, const int width = 1024,
+                     const int height = 768, std::string title = "RADL",
+                     std::string font = "16x16", bool full_screen = false)
+        : font_path(std::move(fonts_file_path))
         , width(width)
         , height(height)
-        , window_title(title)
-        , root_font(font)
+        , window_title(std::move(title))
+        , root_font(std::move(font))
         , fullscreen(full_screen) {}
 };
 
@@ -59,14 +59,14 @@ struct config_simple {
     const std::string root_font;
     const bool fullscreen;
 
-    config_simple(const std::string& fonts_file_path, const int width_term = 64,
-                  const int height_term = 48, const std::string& title = "RADL",
-                  const std::string& font = "16x16", bool full_screen = false)
-        : font_path(fonts_file_path)
+    config_simple(std::string fonts_file_path, const int width_term = 64,
+                  const int height_term = 48, std::string title = "RADL",
+                  std::string font = "16x16", bool full_screen = false)
+        : font_path(std::move(fonts_file_path))
         , width(width_term)
         , height(height_term)
-        , window_title(title)
-        , root_font(font)
+        , window_title(std::move(title))
+        , root_font(std::move(font))
         , fullscreen(full_screen) {}
 };
 
@@ -81,13 +81,13 @@ struct config_advanced {
     const std::string window_title;
     const bool fullscreen;
 
-    config_advanced(const std::string& fonts_file_path, const int width = 1024,
-                    const int height = 768, const std::string& title = "RADL",
+    config_advanced(std::string fonts_file_path, const int width = 1024,
+                    const int height = 768, std::string title = "RADL",
                     bool full_screen = false)
-        : font_path(fonts_file_path)
+        : font_path(std::move(fonts_file_path))
         , width(width)
         , height(height)
-        , window_title(title)
+        , window_title(std::move(title))
         , fullscreen(full_screen) {}
 };
 
@@ -157,15 +157,15 @@ extern std::unique_ptr<gui_t> gui;
 /*
  * Convenience function to quickly get a GUI layer
  */
-inline layer_t& layer(const int& handle) {
+inline layer_t& layer(const int handle) {
     return *gui->get_layer(handle);
 }
 
-inline virtual_terminal& get_vterm(const int& handle) {
+inline virtual_terminal& get_vterm(const int handle) {
     return *gui->get_layer(handle)->vterm.get();
 }
 
-inline virtual_terminal_sparse& get_svterm(const int& handle) {
+inline virtual_terminal_sparse& get_svterm(const int handle) {
     return *gui->get_layer(handle)->svterm.get();
 }
 

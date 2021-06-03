@@ -96,7 +96,7 @@ void layer_t::draw(bool yflipped) {
     if(vterm) {
         vterm->draw(yflipped);
     } else if(svterm) {
-        svterm->draw();
+        svterm->draw(yflipped);
     }
     // TODO owner layer
 }

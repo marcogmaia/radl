@@ -36,7 +36,7 @@ void virtual_terminal_sparse::render() {
         for(auto& svch : buffer) {
             tex_rect_src.x = (svch.glyph % 16) * font_size.x;
             tex_rect_src.y = (svch.glyph / 16) * font_size.y;
-            Vector2 pos{svch.x, svch.y};
+            Vector2 pos{svch.x, term_height - svch.y - 1};
             Vector2 render_pos = Vector2Multiply(pos, font_size);
             if(svch.has_background) {
                 DrawRectangleV(render_pos, font_size, svch.background);

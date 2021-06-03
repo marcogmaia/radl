@@ -39,7 +39,7 @@ public:
     bool visible = true;
     bool dirty   = true;  // Flag for requiring a re-draw
 
-    virtual_terminal_sparse(const std::string fontt, const int x, const int y)
+    virtual_terminal_sparse(const std::string& fontt, const int x, const int y)
         : font_tag(fontt)
         , offset_x(x)
         , offset_y(y) {
@@ -72,11 +72,18 @@ public:
     void render();
 
     /**
-     * @brief Draw the entire backing texture to the screen
+     *  @brief Draw the entire backing texture to the screen
+     *
+     *  @param yflipped flip the y axis drawn
      */
-    inline void draw() {
+    inline void draw(bool yflipped = false) {
         // NOTE: Render texture must be y-flipped due to default OpenGL
         // coordinates (left-bottom)
+        auto rect_height
+            = static_cast<float>(-backing->render_texture.texture.height);
+        if(yflipped) {
+            rect_height *= -1;
+        }
         DrawTextureRec(
             backing->render_texture.texture,
             // src rect
@@ -84,7 +91,7 @@ public:
                 0.f,
                 0.f,
                 static_cast<float>(backing->render_texture.texture.width),
-                static_cast<float>(-backing->render_texture.texture.height),
+                rect_height,
             },
             // position
             Vector2{

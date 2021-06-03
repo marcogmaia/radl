@@ -36,7 +36,7 @@ public:
     bool visible = true;
     bool dirty   = true;  // Flag for requiring a re-draw
 
-    virtual_terminal(const std::string fontt, const int x = 0, const int y = 0,
+    virtual_terminal(const std::string& fontt, const int x = 0, const int y = 0,
                      const bool background = false)
         : m_font_tag(fontt)
         , m_offset_x(x)

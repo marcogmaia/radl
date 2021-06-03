@@ -65,7 +65,7 @@ public:
     // Specialization for sparse layers
     void add_sparse_layer(int handle, int X, int Y, int W, int H,
                           const std::string& font_name,
-                          std::function<void(layer_t*, int, int)> resize_fun,
+                          std::function<void(layer_t*, int, int)> resize_fun = nullptr,
                           int order = -1);
 
     // Specialization for adding owner-draw layers

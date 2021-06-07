@@ -32,6 +32,10 @@ public:
         m_rng  = std::mt19937_64(seed);
     }
 
+    inline decltype(auto) get_rng() {
+        return m_rng;
+    }
+
     /**
      * @brief Constructs the rng with a string as seed
      *

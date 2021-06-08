@@ -212,7 +212,8 @@ color_t apply_colored_light(const color_t& col,
     return color_t(red, green, blue);
 }
 
-color_t lerp(const color_t& first, const color_t& second, float amount) {
+color_t color_t::lerp(const color_t& first, const color_t& second,
+                      float amount) {
     const auto& [r1, g1, b1, a1] = first;
     const auto& [r2, g2, b2, a2] = second;
 

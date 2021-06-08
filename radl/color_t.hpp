@@ -141,6 +141,12 @@ struct color_t {
     void serialize(Archive& archive) {
         archive(r, g, b, a);  // serialize things by passing them to the archive
     }
+    /**
+     * @brief Calculates an intermediate color on a linear RGB color ramp.
+     * Amount is from 0.F to 1.F
+     */
+    static color_t lerp(const color_t& first, const color_t& second,
+                        float amount);
 };
 
 
@@ -181,10 +187,5 @@ color_t darken(const int& amount, const color_t& col);
 color_t apply_colored_light(const color_t& col,
                             const std::tuple<float, float, float>& light);
 
-/**
- * @brief Calculates an intermediate color on a linear RGB color ramp. Amount is
- * from 0.F to 1.F
- */
-color_t lerp(const color_t& first, const color_t& second, float amount);
 
 }  // namespace radl

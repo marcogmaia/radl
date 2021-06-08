@@ -1,9 +1,7 @@
 #pragma once
 
 #include <algorithm>
-#include <execution>
 #include <mutex>
-#include <ranges>
 
 #include "color_t.hpp"
 #include "colors.hpp"

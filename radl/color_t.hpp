@@ -4,7 +4,6 @@
 #include <gsl/span>
 #include <tuple>
 
-#include "cereal/cereal.hpp"
 #include "raylib.h"
 
 namespace radl {

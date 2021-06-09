@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "virtual_terminal.hpp"
@@ -33,9 +34,9 @@ struct gui_control_t {
 };
 
 struct gui_static_text_t : public gui_control_t {
-    gui_static_text_t(const int X, const int Y, const std::string txt,
+    gui_static_text_t(const int X, const int Y, std::string txt,
                       const color_t fg, const color_t bg)
-        : text(txt)
+        : text(std::move(txt))
         , x(X)
         , y(Y)
         , foreground(fg)
@@ -47,8 +48,8 @@ struct gui_static_text_t : public gui_control_t {
     color_t foreground;
     color_t background;
 
-    virtual void render(virtual_terminal* vterm) override;
-    virtual bool mouse_in_control(const int tx, const int ty) override {
+    void render(virtual_terminal* vterm) override;
+    bool mouse_in_control(const int tx, const int ty) override {
         return (tx >= x && tx <= x + (static_cast<int>(text.size()))
                 && ty == y);
     }
@@ -65,24 +66,24 @@ struct gui_border_box_t : public gui_control_t {
     color_t foreground;
     color_t background;
 
-    virtual void render(virtual_terminal* vterm) override;
+    void render(virtual_terminal* vterm) override;
 };
 
 struct gui_checkbox_t : public gui_control_t {
     gui_checkbox_t(const int X, const int Y, const bool is_checked,
-                   const std::string text, const color_t fg, const color_t bg)
+                   std::string text, const color_t fg, const color_t bg)
         : checked(is_checked)
-        , label(text)
+        , label(std::move(text))
         , foreground(fg)
         , background(bg)
         , x(X)
         , y(Y) {
         on_mouse_down = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_checkbox_t* me = static_cast<gui_checkbox_t*>(ctrl);
-            me->click_started  = true;
+            auto* me          = static_cast<gui_checkbox_t*>(ctrl);
+            me->click_started = true;
         };
         on_mouse_up = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_checkbox_t* me = static_cast<gui_checkbox_t*>(ctrl);
+            auto* me = static_cast<gui_checkbox_t*>(ctrl);
             if(me->click_started) {
                 me->checked = !me->checked;
             }
@@ -98,8 +99,8 @@ struct gui_checkbox_t : public gui_control_t {
     int y              = 0;
     bool click_started = false;
 
-    virtual void render(virtual_terminal* vterm) override;
-    virtual bool mouse_in_control(const int tx, const int ty) override {
+    void render(virtual_terminal* vterm) override;
+    bool mouse_in_control(const int tx, const int ty) override {
         return (tx >= x && tx <= x + (static_cast<int>(label.size()) + 4)
                 && ty == y);
     }
@@ -112,13 +113,13 @@ struct radio {
 };
 
 struct gui_radiobuttons_t : public gui_control_t {
-    gui_radiobuttons_t(const int X, const int Y, const std::string heading,
+    gui_radiobuttons_t(const int X, const int Y, std::string heading,
                        const color_t fg, const color_t bg,
                        std::vector<radio> opts)
-        : caption(heading)
+        : caption(std::move(heading))
         , foreground(fg)
         , background(bg)
-        , options(opts)
+        , options(std::move(opts))
         , x(X)
         , y(Y) {
         width = static_cast<int>(caption.size());
@@ -131,11 +132,11 @@ struct gui_radiobuttons_t : public gui_control_t {
         height = static_cast<int>(options.size()) + 1;
 
         on_mouse_down = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_radiobuttons_t* me = static_cast<gui_radiobuttons_t*>(ctrl);
-            me->click_started      = true;
+            auto* me          = static_cast<gui_radiobuttons_t*>(ctrl);
+            me->click_started = true;
         };
         on_mouse_up = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_radiobuttons_t* me = static_cast<gui_radiobuttons_t*>(ctrl);
+            auto* me = static_cast<gui_radiobuttons_t*>(ctrl);
             if(me->click_started) {
                 const int option_number = (ty - me->y) - 1;
                 if(option_number >= 0
@@ -165,8 +166,8 @@ struct gui_radiobuttons_t : public gui_control_t {
     bool click_started = false;
     int selected_value = -1;
 
-    virtual void render(virtual_terminal* vterm) override;
-    virtual bool mouse_in_control(const int tx, const int ty) override {
+    void render(virtual_terminal* vterm) override;
+    bool mouse_in_control(const int tx, const int ty) override {
         if(tx >= x && tx <= (x + width) && ty >= y && ty <= (y + height)) {
             return true;
         }
@@ -191,7 +192,7 @@ struct gui_hbar_t : public gui_control_t {
         , empty_start(EMPTY_START)
         , empty_end(EMPTY_END)
         , text_color(TEXT_COL)
-        , prefix(PREFIX) {}
+        , prefix(std::move(PREFIX)) {}
 
     int x;
     int y;
@@ -206,7 +207,7 @@ struct gui_hbar_t : public gui_control_t {
     color_t text_color;
     std::string prefix;
 
-    virtual void render(virtual_terminal* vterm) override;
+    void render(virtual_terminal* vterm) override;
 };
 
 struct gui_vbar_t : public gui_control_t {
@@ -226,7 +227,7 @@ struct gui_vbar_t : public gui_control_t {
         , empty_start(EMPTY_START)
         , empty_end(EMPTY_END)
         , text_color(TEXT_COL)
-        , prefix(PREFIX) {}
+        , prefix(std::move(PREFIX)) {}
 
     int x;
     int y;
@@ -241,7 +242,7 @@ struct gui_vbar_t : public gui_control_t {
     color_t text_color;
     std::string prefix;
 
-    virtual void render(virtual_terminal* vterm) override;
+    void render(virtual_terminal* vterm) override;
 };
 
 struct list_item {
@@ -258,14 +259,14 @@ struct gui_listbox_t : public gui_control_t {
         : x(X)
         , y(Y)
         , selected_value(VAL)
-        , items(options)
+        , items(std::move(options))
         , caption_fg(label_fg)
         , caption_bg(label_bg)
         , item_fg(ITEM_FG)
         , item_bg(ITEM_BG)
         , selected_fg(sel_fg)
         , selected_bg(sel_bg) {
-        caption = label;
+        caption = std::move(label);
         w       = static_cast<int>(caption.size()) + 2;
         for(const list_item& item : items) {
             if(w < static_cast<int>(item.label.size()))
@@ -273,11 +274,11 @@ struct gui_listbox_t : public gui_control_t {
         }
 
         on_mouse_down = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_listbox_t* me = static_cast<gui_listbox_t*>(ctrl);
+            auto* me          = static_cast<gui_listbox_t*>(ctrl);
             me->click_started = true;
         };
         on_mouse_up = [](gui_control_t* ctrl, int tx, int ty) {
-            gui_listbox_t* me = static_cast<gui_listbox_t*>(ctrl);
+            auto* me = static_cast<gui_listbox_t*>(ctrl);
             if(me->click_started) {
                 const int option_number = (ty - me->y) - 1;
                 if(option_number >= 0
@@ -303,8 +304,8 @@ struct gui_listbox_t : public gui_control_t {
     int w              = 0;
     bool click_started = false;
 
-    virtual void render(virtual_terminal* vterm) override;
-    virtual bool mouse_in_control(const int tx, const int ty) override {
+    void render(virtual_terminal* vterm) override;
+    bool mouse_in_control(const int tx, const int ty) override {
         if(tx >= x && tx <= (x + w) && ty >= y
            && ty <= (y + static_cast<int>(items.size()) + 1)) {
             return true;

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "color_t.hpp"
 #include "colors.hpp"

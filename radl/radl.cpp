@@ -78,7 +78,7 @@ void init(const config_advanced& config) {
 // std::function<bool(event)> optional_event_hook = nullptr;
 std::function<void()> optional_display_hook = nullptr;
 
-void run(std::function<void(double)> on_tick) {
+void run(const std::function<void(double)>& on_tick) {
     reset_mouse_state();
     while(!WindowShouldClose()) {
         static auto clock        = std::chrono::steady_clock();

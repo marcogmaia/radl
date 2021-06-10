@@ -121,7 +121,7 @@ void terminate();
  * The main run loop. Calls on_tick each frame. Window can be initially defined
  * with width/height/title, but these have sane defaults to get you started.
  */
-void run(std::function<void(double)> on_tick);
+void run(const std::function<void(double)>& on_tick);
 
 /*
  * For rendering to the console

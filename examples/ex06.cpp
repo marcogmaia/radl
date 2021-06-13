@@ -394,8 +394,8 @@ void tick(double duration_secs) {
         // We're going to show off a bit and "lerp" the color along the path;
         // the red lightens as it approaches the destination. This is a preview
         // of some of the color functions.
-        const float n_steps = static_cast<float>(path.steps.size());
-        float i             = 0;
+        const auto n_steps = static_cast<float>(path.steps.size());
+        float i            = 0;
         for(auto step : path.steps) {
             const float lerp_amount = i / n_steps;
             vchar_t highlight;
@@ -404,14 +404,14 @@ void tick(double duration_secs) {
             // en route.
             if(dude_position == destination) {
                 highlight = {177,
-                             lerp(colors::DARK_GREEN, colors::LIGHTEST_GREEN,
-                                  lerp_amount),
+                             color_t::lerp(colors::DARK_GREEN,
+                                           colors::LIGHTEST_GREEN, lerp_amount),
                              BLACK};
             } else {
-                highlight = {
-                    177,
-                    lerp(colors::DARK_RED, colors::LIGHTEST_RED, lerp_amount),
-                    BLACK};
+                highlight = {177,
+                             color_t::lerp(colors::DARK_RED,
+                                           colors::LIGHTEST_RED, lerp_amount),
+                             BLACK};
             }
             dude_vterm.set_char(step.x, step.y, highlight);
             ++i;

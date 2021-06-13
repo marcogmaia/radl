@@ -8,6 +8,7 @@
 #include <iostream>
 
 // You need to include the RADL header
+#include "color_t.hpp"
 #include "path_finding.hpp"
 #include "radl.hpp"
 
@@ -75,20 +76,20 @@ struct location_t {
         return (x == rhs.x && y == rhs.y);
     }
 
-    location_t() {}
+    location_t() = default;
     location_t(const int X, const int Y)
         : x(X)
         , y(Y) {}
 
-    int get_x() const {
+    [[nodiscard]] int get_x() const {
         return x;
     }
 
-    int get_y() const {
+    [[nodiscard]] int get_y() const {
         return y;
     }
 
-    auto get_xy() const {
+    [[nodiscard]] auto get_xy() const {
         return std::tuple{x, y};
     }
 };
@@ -275,7 +276,7 @@ void tick(double duration_secs) {
         // We're going to show off a bit and "lerp" the color along the
         // path; the red lightens as it approaches the destination. This is
         // a preview of some of the color functions.
-        const float n_steps = static_cast<float>(path.steps.size());
+        const auto n_steps = static_cast<float>(path.steps.size());
         float i             = 0;
         for(const auto& step : path.steps) {
             const float lerp_amount = i / n_steps;
@@ -283,13 +284,13 @@ void tick(double duration_secs) {
             if(dude_position == destination) {
                 highlight = {
                     glyphs::BLOCK2,
-                    lerp(GREEN, color_t{0, 255, 0, 64}, lerp_amount),
+                    color_t::lerp(GREEN, color_t{0, 255, 0, 64}, lerp_amount),
                     BLACK,
                 };
             } else {
                 highlight = {
                     glyphs::BLOCK2,
-                    lerp(RED, color_t{255, 0, 0, 64}, lerp_amount),
+                    color_t::lerp(RED, color_t{255, 0, 0, 64}, lerp_amount),
                     BLACK,
                 };
             }

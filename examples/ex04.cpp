@@ -10,6 +10,7 @@
  */
 
 // You need to include the radl header
+#include "color_t.hpp"
 #include "geometry.hpp"
 #include "path_finding.hpp"
 #include "radl.hpp"
@@ -68,15 +69,15 @@ struct location_t {
         : x(X)
         , y(Y) {}
 
-    int get_x() const {
+    [[nodiscard]] int get_x() const {
         return x;
     }
 
-    int get_y() const {
+    [[nodiscard]] int get_y() const {
         return y;
     }
 
-    auto get_xy() const {
+    [[nodiscard]] auto get_xy() const {
         return std::tuple{x, y};
     }
 
@@ -125,17 +126,17 @@ public:
         }
     }
 
-    bool walkable(int x, int y) const {
+    [[nodiscard]] bool walkable(int x, int y) const {
         return m_walkable[at(x, y)];
     }
 
-    bool walkable(int index) const {
+    [[nodiscard]] bool walkable(int index) const {
         return m_walkable[index];
     }
 
 
     // Calculate the vector offset of a grid location
-    inline int at(const int& x, const int& y) const {
+    [[nodiscard]] inline int at(const int& x, const int& y) const {
         return x + (y * width);
     }
 
@@ -300,7 +301,7 @@ void tick(double duration_secs) {
             const float lerp_amount = i / n_steps;
             auto end_color          = GREEN;
             end_color.a *= 0.25;
-            auto lerp_color = lerp(GREEN, end_color, lerp_amount);
+            auto lerp_color = color_t::lerp(GREEN, end_color, lerp_amount);
             vchar_t highlight{
                 glyphs::BLOCK2,
                 lerp_color,

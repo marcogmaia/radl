@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <memory>
 #include <mutex>
-#include <ranges>
 
 #include "color_t.hpp"
 #include "colors.hpp"

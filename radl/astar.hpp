@@ -399,11 +399,11 @@ public:  // methods
 
     // User calls this to add a successor to a list of successors
     // when expanding the search frontier
-    bool AddSuccessor(UserState& State) {
+    bool AddSuccessor(UserState&& State) {
         Node* node = AllocateNode();
 
         if(node) {
-            node->m_UserState = State;
+            node->m_UserState = std::move(State);
 
             m_Successors.push_back(node);
 

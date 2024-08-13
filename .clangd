@@ -1,0 +1,81 @@
+CompileFlags:
+  Add:
+    - -DRLGL_IMPLEMENTATION
+    - /std:c++latest
+
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: None
+  ClangTidy:
+    Add:
+      - abseil-*
+      - bugprone-*
+      - cert-*
+      - cppcoreguidelines-*
+      - google-*
+      - hicpp-*
+      - misc-*
+      - modernize-*
+      - performance-*
+      - portability-*
+      - readability-*
+    Remove:
+      - bugprone-easily-swappable-parameters
+      - bugprone-implicit-widening-of-multiplication-result
+      - bugprone-narrowing-conversions
+      - cppcoreguidelines-avoid-const-or-ref-data-members
+      - cppcoreguidelines-avoid-magic-numbers
+      - cppcoreguidelines-avoid-non-const-global-variables
+      - cppcoreguidelines-missing-std-forward
+      - cppcoreguidelines-narrowing-conversions
+      - google-readability-braces-around-statements
+      - google-readability-namespace-comments
+      - hicpp-special-member-functions
+      - hicpp-uppercase-literal-suffix
+      - misc-include-cleaner
+      - misc-non-private-member-variables-in-classes
+      - modernize-avoid-c-arrays
+      - modernize-concat-nested-namespaces
+      - modernize-raw-string-literal
+      - modernize-return-braced-init-list
+      # - modernize-use-designated-initializers # TODO(marco): Remove this when using C++20.
+      - modernize-use-nodiscard
+      - modernize-use-ranges
+      - modernize-use-trailing-return-type
+      - performance-enum-size
+      - performance-move-const-arg
+      - readability-braces-around-statements
+      - readability-function-cognitive-complexity
+      - readability-identifier-length
+      - readability-magic-numbers
+      - readability-named-parameter
+      - readability-redundant-declaration
+      - readability-uppercase-literal-suffix
+    FastCheckFilter: None
+
+    CheckOptions:
+      cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+      readability-function-cognitive-complexity.IgnoreMacros: true
+      readability-identifier-naming.ClassCase: CamelCase
+      readability-identifier-naming.ClassMemberCase: lower_case
+      readability-identifier-naming.ClassMemberSuffix: _
+      readability-identifier-naming.ConstexprVariableCase: CamelCase
+      readability-identifier-naming.ConstexprVariablePrefix: k
+      readability-identifier-naming.EnumConstantCase: CamelCase
+      readability-identifier-naming.EnumConstantPrefix: k
+      readability-identifier-naming.FunctionCase: aNy_CasE
+      readability-identifier-naming.GlobalConstantCase: CamelCase
+      readability-identifier-naming.GlobalConstantPrefix: k
+      readability-identifier-naming.NamespaceCase: lower_case
+      readability-identifier-naming.PrivateMemberSuffix: _
+      readability-identifier-naming.ProtectedMemberSuffix: _
+      readability-identifier-naming.StaticConstantCase: CamelCase
+      readability-identifier-naming.StaticConstantPrefix: k
+      readability-identifier-naming.StructCase: CamelCase
+      readability-identifier-naming.TemplateParameterCase: CamelCase
+      readability-identifier-naming.VariableCase: lower_case
+      readability-implicit-bool-conversion.AllowIntegerConditions: true
+      readability-implicit-bool-conversion.AllowPointerConditions: true
+
+Index:
+  Background: Skip

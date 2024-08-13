@@ -8,7 +8,7 @@ namespace radl {
 namespace state {
 
 // bool window_focused = true;
-std::array<bool, MOUSE_BUTTON_MAX> mouse_button_pressed;
+std::array<bool, MOUSE_BUTTON_BACK + 1> mouse_button_pressed;
 int mouse_x = 0;
 int mouse_y = 0;
 

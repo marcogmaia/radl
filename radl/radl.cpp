@@ -36,7 +36,7 @@ void init_common(const T& config, bool use_root_console = false) {
     main_detail::use_root_console = use_root_console;
     InitWindow(config.width, config.height, config.window_title.c_str());
     main_detail::shader_mask
-        = LoadShader(nullptr, "../resources/shaders/mask.frag");
+        = LoadShader(nullptr, "./resources/shaders/mask.frag");
     // Register fonts after OpenGL init (InitWindow), and then resize the window
     // accordingly
     register_font_directory(config.font_path);

@@ -30,6 +30,14 @@
                 "isDefault": true
             },
             "problemMatcher": ["$gcc"]
-        }
+        },
+        {
+          "label": "Create compile_commands.json",
+          "type": "shell",
+          "command": [
+            "ninja -C ${command:cmake.buildDirectory} -t compdb > ${workspaceFolder}/compile_commands.json"
+          ],
+          "problemMatcher": []
+        },
     ]
 }

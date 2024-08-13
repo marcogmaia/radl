@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "mor",
+  "version-string": "0.1.0",
+  "builtin-baseline": "821100d967e1737d96414a308e3f7cbe0d1abf18",
+  "dependencies": [
+    "boost-algorithm",
+    "boost-circular-buffer",
+    "glfw3",
+    "gtest",
+    {
+      "name": "imgui",
+      "features": [
+        "docking-experimental",
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    },
+    "nlohmann-json"
+  ]
+}

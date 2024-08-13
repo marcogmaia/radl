@@ -2,21 +2,19 @@ cmake_minimum_required(VERSION 3.15)
 
 project(radl)
 
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_STANDARD 17)
-set(USER_CXX_FLAGS "-fdiagnostics-color=always")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USER_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og -g -Wall -DDEBUG")
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
 
-if(POLICY CMP0072)
-  cmake_policy(SET CMP0072 NEW)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  set(USER_CXX_FLAGS "-fdiagnostics-color=always")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USER_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og -g -Wall -DDEBUG")
 endif()
-find_package(OpenGL REQUIRED)
 
-include_directories(lib/raylib/src)
-add_subdirectory(lib/raylib)
-include_directories(./radl)
-add_subdirectory(./radl)
+add_subdirectory(external)
+
+include_directories(radl)
+add_subdirectory(radl)
 
 set(COMPILE_MAIN OFF)
 if(COMPILE_MAIN)
@@ -25,7 +23,8 @@ if(COMPILE_MAIN)
 endif()
 
 # compile examples
-if(COMPILE_EXAMPLES)
+set(RADL_BUILD_EXAMPLES OFF CACHE BOOL "Build the examples")
+if(${RADL_BUILD_EXAMPLES})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples")
     add_executable(ex01 examples/ex01.cpp)
     add_executable(ex02 examples/ex02.cpp)

@@ -1,7 +1,7 @@
 #include "virtual_terminal.hpp"
 #include <algorithm>
-#include <boost/range/combine.hpp>
 #include <mutex>
+#include <ranges>
 
 #include "raymath.h"
 #include "rlgl.h"
@@ -127,8 +127,8 @@ void virtual_terminal::render() {
         // clear everything that has changed
         BeginBlendMode(BLEND_SUBTRACT_COLORS);
         Vector2 pos{0.f, static_cast<float>(term_height - 1)};
-        assert(m_buffer_prev.size() == m_buffer.size());
-        for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
+        // assert(m_buffer_prev.size() == m_buffer.size());
+        for(auto&& [prev_vch, vch] : std::views::zip(m_buffer_prev, m_buffer)) {
             const Vector2 pos_bg = Vector2Multiply(pos, font_size);
             if(vch != prev_vch) {  // vch changed
                 if(m_has_background
@@ -155,7 +155,7 @@ void virtual_terminal::render() {
 
         m_tex = radl::get_texture(this->m_font->texture_tag);
         pos   = Vector2{0.f, static_cast<float>(term_height - 1)};
-        for(auto&& [prev_vch, vch] : boost::combine(m_buffer_prev, m_buffer)) {
+        for(auto&& [prev_vch, vch] : std::views::zip(m_buffer_prev, m_buffer)) {
             // if vch has changed
             if(vch != prev_vch) {
                 prev_vch             = vch;

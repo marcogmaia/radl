@@ -48,168 +48,160 @@ binary trees can be used instead to get O(logn) access time.
 #include <cstdio>
 #include <cstring>
 
-
-template <class USER_TYPE>
-class FixedSizeAllocator {
+template <class USER_TYPE> class FixedSizeAllocator {
 public:
-    // Constants
-    enum { FSA_DEFAULT_SIZE = 100 };
+  // Constants
+  enum { FSA_DEFAULT_SIZE = 100 };
 
-    // This class enables us to transparently manage the extra data
-    // needed to enable the user class to form part of the double-linked
-    // list class
-    struct FSA_ELEMENT {
-        USER_TYPE UserType;
+  // This class enables us to transparently manage the extra data
+  // needed to enable the user class to form part of the double-linked
+  // list class
+  struct FSA_ELEMENT {
+    USER_TYPE UserType;
 
-        FSA_ELEMENT* pPrev;
-        FSA_ELEMENT* pNext;
-    };
+    FSA_ELEMENT *pPrev;
+    FSA_ELEMENT *pNext;
+  };
 
-public:  // methods
-    explicit FixedSizeAllocator(unsigned int MaxElements = FSA_DEFAULT_SIZE)
-        : m_pFirstUsed(NULL)
-        , m_MaxElements(MaxElements) {
-        // Allocate enough memory for the maximum number of elements
+  explicit FixedSizeAllocator(unsigned int MaxElements = FSA_DEFAULT_SIZE)
+      : m_pFirstUsed(NULL), m_MaxElements(MaxElements) {
+    // Allocate enough memory for the maximum number of elements
 
-        // initializes with memory cleared
-        char* pMem = new char[m_MaxElements * sizeof(FSA_ELEMENT)]();
+    // initializes with memory cleared
+    char *pMem = new char[m_MaxElements * sizeof(FSA_ELEMENT)]();
 
-        m_pMemory = (FSA_ELEMENT*)pMem;
+    m_pMemory = (FSA_ELEMENT *)pMem;
 
-        // Set the free list first pointer
-        m_pFirstFree = m_pMemory;
+    // Set the free list first pointer
+    m_pFirstFree = m_pMemory;
 
-        // Point at first element
-        FSA_ELEMENT* pElement = m_pFirstFree;
+    // Point at first element
+    FSA_ELEMENT *pElement = m_pFirstFree;
 
-        // Set the double linked free list
-        for(unsigned int i = 0; i < m_MaxElements; i++) {
-            pElement->pPrev = pElement - 1;
-            pElement->pNext = pElement + 1;
+    // Set the double linked free list
+    for (unsigned int i = 0; i < m_MaxElements; i++) {
+      pElement->pPrev = pElement - 1;
+      pElement->pNext = pElement + 1;
 
-            pElement++;
-        }
-
-        // first element should have a null prev
-        m_pFirstFree->pPrev = NULL;
-        // last element should have a null next
-        (pElement - 1)->pNext = NULL;
+      pElement++;
     }
 
+    // first element should have a null prev
+    m_pFirstFree->pPrev = NULL;
+    // last element should have a null next
+    (pElement - 1)->pNext = NULL;
+  }
 
-    ~FixedSizeAllocator() {
-        // Free up the memory
-        delete[](char*) m_pMemory;
+  ~FixedSizeAllocator() {
+    // Free up the memory
+    delete[] (char *)m_pMemory;
+  }
+
+  // Allocate a new USER_TYPE and return a pointer to it
+  USER_TYPE *alloc() {
+    FSA_ELEMENT *pNewNode = NULL;
+
+    if (!m_pFirstFree) {
+      return NULL;
+    }
+    pNewNode = m_pFirstFree;
+    m_pFirstFree = pNewNode->pNext;
+
+    // if the new node points to another free node then
+    // change that nodes prev free pointer...
+    if (pNewNode->pNext) {
+      pNewNode->pNext->pPrev = NULL;
     }
 
-    // Allocate a new USER_TYPE and return a pointer to it
-    USER_TYPE* alloc() {
-        FSA_ELEMENT* pNewNode = NULL;
+    // node is now on the used list
 
-        if(!m_pFirstFree) {
-            return NULL;
-        }
-        pNewNode     = m_pFirstFree;
-        m_pFirstFree = pNewNode->pNext;
+    pNewNode->pPrev = NULL; // the allocated node is always first in the list
 
-        // if the new node points to another free node then
-        // change that nodes prev free pointer...
-        if(pNewNode->pNext) {
-            pNewNode->pNext->pPrev = NULL;
-        }
-
-        // node is now on the used list
-
-        pNewNode->pPrev
-            = NULL;  // the allocated node is always first in the list
-
-        if(m_pFirstUsed == NULL) {
-            pNewNode->pNext = NULL;  // no other nodes
-        } else {
-            m_pFirstUsed->pPrev
-                = pNewNode;  // insert this at the head of the used list
-            pNewNode->pNext = m_pFirstUsed;
-        }
-
-        m_pFirstUsed = pNewNode;
-
-        return reinterpret_cast<USER_TYPE*>(pNewNode);
+    if (m_pFirstUsed == NULL) {
+      pNewNode->pNext = NULL; // no other nodes
+    } else {
+      m_pFirstUsed->pPrev =
+          pNewNode; // insert this at the head of the used list
+      pNewNode->pNext = m_pFirstUsed;
     }
 
-    // Free the given user type
-    // For efficiency I don't check whether the user_data is a valid
-    // pointer that was allocated. I may add some debug only checking
-    // (To add the debug check you'd need to make sure the pointer is in
-    // the m_pMemory area and is pointing at the start of a node)
-    void free(USER_TYPE* user_data) {
-        auto* pNode = reinterpret_cast<FSA_ELEMENT*>(user_data);
+    m_pFirstUsed = pNewNode;
 
-        // manage used list, remove this node from it
-        if(pNode->pPrev) {
-            pNode->pPrev->pNext = pNode->pNext;
-        } else {
-            // this handles the case that we delete the first node in the used
-            // list
-            m_pFirstUsed = pNode->pNext;
-        }
+    return reinterpret_cast<USER_TYPE *>(pNewNode);
+  }
 
-        if(pNode->pNext) {
-            pNode->pNext->pPrev = pNode->pPrev;
-        }
+  // Free the given user type
+  // For efficiency I don't check whether the user_data is a valid
+  // pointer that was allocated. I may add some debug only checking
+  // (To add the debug check you'd need to make sure the pointer is in
+  // the m_pMemory area and is pointing at the start of a node)
+  void free(USER_TYPE *user_data) {
+    auto *pNode = reinterpret_cast<FSA_ELEMENT *>(user_data);
 
-        // add to free list
-        if(m_pFirstFree == NULL) {
-            // free list was empty
-            m_pFirstFree = pNode;
-            pNode->pPrev = NULL;
-            pNode->pNext = NULL;
-        } else {
-            // Add this node at the start of the free list
-            m_pFirstFree->pPrev = pNode;
-            pNode->pNext        = m_pFirstFree;
-            m_pFirstFree        = pNode;
-        }
+    // manage used list, remove this node from it
+    if (pNode->pPrev) {
+      pNode->pPrev->pNext = pNode->pNext;
+    } else {
+      // this handles the case that we delete the first node in the used
+      // list
+      m_pFirstUsed = pNode->pNext;
     }
 
-    // For debugging this displays both lists (using the prev/next list
-    // pointers)
-    void Debug() {
-        printf("free list ");
-
-        FSA_ELEMENT* p = m_pFirstFree;
-        while(p) {
-            printf("%x!%x ", p->pPrev, p->pNext);
-            p = p->pNext;
-        }
-        printf("\n");
-        printf("used list ");
-
-        p = m_pFirstUsed;
-        while(p) {
-            printf("%x!%x ", p->pPrev, p->pNext);
-            p = p->pNext;
-        }
-        printf("\n");
+    if (pNode->pNext) {
+      pNode->pNext->pPrev = pNode->pPrev;
     }
 
-    // Iterators
-
-    USER_TYPE* GetFirst() {
-        return reinterpret_cast<USER_TYPE*>(m_pFirstUsed);
+    // add to free list
+    if (m_pFirstFree == NULL) {
+      // free list was empty
+      m_pFirstFree = pNode;
+      pNode->pPrev = NULL;
+      pNode->pNext = NULL;
+    } else {
+      // Add this node at the start of the free list
+      m_pFirstFree->pPrev = pNode;
+      pNode->pNext = m_pFirstFree;
+      m_pFirstFree = pNode;
     }
+  }
 
-    USER_TYPE* GetNext(USER_TYPE* node) {
-        return reinterpret_cast<USER_TYPE*>(
-            (reinterpret_cast<FSA_ELEMENT*>(node))->pNext);
+  // For debugging this displays both lists (using the prev/next list
+  // pointers)
+  void Debug() {
+    printf("free list ");
+
+    FSA_ELEMENT *p = m_pFirstFree;
+    while (p) {
+      printf("%x!%x ", p->pPrev, p->pNext);
+      p = p->pNext;
     }
+    printf("\n");
+    printf("used list ");
 
-public:   // data
-private:  // methods
-private:  // data
-    FSA_ELEMENT* m_pFirstFree;
-    FSA_ELEMENT* m_pFirstUsed;
-    unsigned int m_MaxElements;
-    FSA_ELEMENT* m_pMemory;
+    p = m_pFirstUsed;
+    while (p) {
+      printf("%x!%x ", p->pPrev, p->pNext);
+      p = p->pNext;
+    }
+    printf("\n");
+  }
+
+  // Iterators
+
+  USER_TYPE *GetFirst() { return reinterpret_cast<USER_TYPE *>(m_pFirstUsed); }
+
+  USER_TYPE *GetNext(USER_TYPE *node) {
+    return reinterpret_cast<USER_TYPE *>(
+        (reinterpret_cast<FSA_ELEMENT *>(node))->pNext);
+  }
+
+public:  // data
+private: // methods
+private: // data
+  FSA_ELEMENT *m_pFirstFree;
+  FSA_ELEMENT *m_pFirstUsed;
+  unsigned int m_MaxElements;
+  FSA_ELEMENT *m_pMemory;
 };
 
-#endif  // defined FSA_H
+#endif // defined FSA_H

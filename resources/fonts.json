@@ -1,0 +1,12 @@
+{
+  "fonts": [
+    { "name": "12x12",          "file": "terminal12x12_gs_ro.png",    "width": 12, "height": 12 },
+    { "name": "16x16",          "file": "terminal16x16_gs_alpha.png", "width": 16, "height": 16 },
+    { "name": "16x16cheepicus", "file": "Cheepicus_16x16.png",        "width": 16, "height": 16 },
+    { "name": "12x12cheepicus", "file": "Cheepicus_12x12.png",        "width": 12, "height": 12 },
+    { "name": "12x18",          "file": "curses_vector_12x18.png",    "width": 12, "height": 18 },
+    { "name": "8x8",            "file": "terminal8x8.png",            "width":  8, "height": 8 },
+    { "name": "32x32",          "file": "terminal32x32.png",          "width": 32, "height": 32 },
+    { "name": "8x16",           "file": "VGA8x16.png",                "width":  8, "height": 16 }
+  ]
+}

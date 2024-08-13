@@ -1,0 +1,102 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "displayName": "Base Config",
+      "description": "Base build using Ninja generator",
+      "generator": "Ninja",
+      "toolchainFile": "$env{GAME_VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": {
+          "type": "PATH",
+          "value": "$env{GAME_VCPKG_ROOT}/installed"
+        },
+        "X_VCPKG_APPLOCAL_DEPS_INSTALL": true
+      },
+      "environment": {
+        "VCPKG_FORCE_DOWNLOADED_BINARIES": "1"
+      }
+    },
+    {
+      "hidden": true,
+      "inherits": "base",
+      "name": "windows-base",
+      "displayName": "Windows Config",
+      "description": "Default build using Ninja generator",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe"
+      }
+    },
+    {
+      "inherits": "windows-base",
+      "name": "windows-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "inherits": "windows-base",
+      "name": "windows-rel-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "inherits": "windows-base",
+      "name": "windows-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "configurePreset": "windows-debug",
+      "name": "windows-debug"
+    },
+    {
+      "configurePreset": "windows-release",
+      "name": "windows-release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test-base",
+      "hidden": true,
+      "execution": {
+        "jobs": 12
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "inherits": "test-base",
+      "configurePreset": "windows-debug",
+      "name": "windows-debug"
+    },
+    {
+      "inherits": "test-base",
+      "configurePreset": "windows-rel-debug",
+      "name": "windows-rel-debug"
+    },
+    {
+      "inherits": "test-base",
+      "configurePreset": "windows-release",
+      "name": "windows-release"
+    }
+  ]
+}

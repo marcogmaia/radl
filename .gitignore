@@ -1,4 +1,7 @@
 build/
+out/
+
+compile_commands.json
 *.pdf
 perf.data*
 .cache

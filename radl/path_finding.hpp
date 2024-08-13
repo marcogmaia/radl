@@ -86,10 +86,10 @@ astar_path_t<Location> path_find(const Location &start, const Location &end,
     if (search_steps > limit_steps) {
       a_star_search.CancelSearch();
     }
-  } while (search_state == AStarSearch<user_node_t>::SEARCH_STATE_SEARCHING);
+  } while (search_state == AStarSearch<user_node_t>::kSearchStateSearching);
 
   auto result = astar_path_t<Location>{false, end};
-  if (search_state == AStarSearch<user_node_t>::SEARCH_STATE_SUCCEEDED) {
+  if (search_state == AStarSearch<user_node_t>::kSearchStateSucceeded) {
     for (auto *node = a_star_search.GetSolutionStart(); node;
          node = a_star_search.GetSolutionNext()) {
       result.steps.push_back(node->pos);

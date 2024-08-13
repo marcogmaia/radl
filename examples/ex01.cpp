@@ -37,7 +37,7 @@ int main() {
     // the window title. The fifth parameter says that we'd like the default
     // vterm to use an 8x16 VGA font. Not so great for games, but easy to read!
     // The final parameter controls whether or not we want to go full screen.
-    init(config_simple("./resources/", 80, 25, "Hello World", "16x16",
+    init(config_simple("./resources/fonts.json", 80, 25, "Hello World", "16x16",
                        false));
 
     // Enter the main loop. "tick" is the function we wrote above.

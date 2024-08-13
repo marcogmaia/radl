@@ -17,22 +17,22 @@ namespace radl {
 /* Helper constants to represent mouse buttons */
 namespace button {
 
-constexpr auto LEFT    = MOUSE_BUTTON_LEFT;
-constexpr auto RIGHT   = MOUSE_BUTTON_RIGHT;
-constexpr auto MIDDLE  = MOUSE_BUTTON_MIDDLE;
-constexpr auto SIDE    = MOUSE_BUTTON_SIDE;
-constexpr auto EXTRA   = MOUSE_BUTTON_EXTRA;
+constexpr auto LEFT = MOUSE_BUTTON_LEFT;
+constexpr auto RIGHT = MOUSE_BUTTON_RIGHT;
+constexpr auto MIDDLE = MOUSE_BUTTON_MIDDLE;
+constexpr auto SIDE = MOUSE_BUTTON_SIDE;
+constexpr auto EXTRA = MOUSE_BUTTON_EXTRA;
 constexpr auto FORWARD = MOUSE_BUTTON_FORWARD;
-constexpr auto BACK    = MOUSE_BUTTON_BACK;
+constexpr auto BACK = MOUSE_BUTTON_BACK;
 
-}  // namespace button
+} // namespace button
 
 /* Does the game window currently have focus? You might want to pause if it
  * doesn't. */
 bool is_window_focused();
 
 /* Setter function for window focus */
-void set_window_focus_state(const bool& s);
+void set_window_focus_state(const bool &s);
 
 /* Mouse state reset: clears all mouse state */
 void reset_mouse_state();
@@ -44,7 +44,7 @@ void set_mouse_state();
 void set_mouse_state(float pos_x, float pos_y);
 
 /* Update the stored mouse position. Does not actually move the mouse. */
-extern void set_mouse_position(const int x, const int y);
+void set_mouse_position(int x, int y);
 
 std::pair<int, int> get_mouse_position();
 
@@ -63,4 +63,4 @@ bool get_mouse_button_state(const MouseButton button);
 //     sf::Event event;
 // };
 
-}  // namespace radl
+} // namespace radl

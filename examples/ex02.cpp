@@ -89,7 +89,7 @@ void tick(double duration_ms) {
 int main() {
     SetTargetFPS(200);
     // Initialize with defaults.
-    init(config_simple_px("../../resources"));
+    init(config_simple_px("./resources/fonts.json"));
 
     // Enter the main loop. "tick" is the function we wrote above.
     run(tick);

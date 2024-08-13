@@ -328,7 +328,7 @@ int main() {
     SetTargetFPS(200);
     // Initialize with advanced configs, so we can use gui to enable textures
     // over another
-    init(config_advanced{"../../resources"});
+    init(config_advanced{"./resources/fonts.json"});
     radl::gui->add_layer(1, 0, 0, map.width * 16, map.height * 16, "16x16");
     radl::gui->add_layer(2, 0, 0, map.width * 16, map.height * 16, "16x16");
     // Enter the main loop. "tick" is the function we wrote above.

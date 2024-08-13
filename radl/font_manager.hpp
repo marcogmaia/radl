@@ -14,19 +14,19 @@ namespace radl {
 
 namespace {
 
-constexpr int default_width  = 8;
+constexpr int default_width = 8;
 constexpr int default_height = 8;
 
-}  // namespace
+} // namespace
 
 struct bitmap_font {
-    const std::string texture_tag;
-    const std::pair<int, int> character_size;
+  const std::string texture_tag;
+  const std::pair<int, int> character_size;
 
-    bitmap_font(const std::string& tag, const int tile_width,
-                const int tile_height)
-        : texture_tag(tag)
-        , character_size(std::make_pair(tile_width, tile_height)) {}
+  bitmap_font(const std::string &tag, const int tile_width,
+              const int tile_height)
+      : texture_tag(tag),
+        character_size(std::make_pair(tile_width, tile_height)) {}
 };
 
 /**
@@ -40,13 +40,11 @@ struct bitmap_font {
  *
  * @param path path where the fonts.txt file is located
  */
-void register_font_directory(std::string path);
+void RegisterFonts(const std::string &filepath);
 
-bitmap_font* get_font(const std::string& font_tag);
+bitmap_font *get_font(const std::string &font_tag);
 
-void register_font(const std::string& font_tag, const std::string& filename,
-                   int tile_width  = default_width,
-                   int tile_height = default_height);
+void register_font(const std::string &font_tag, const std::string &filename,
+                   int tile_width, int tile_height);
 
-
-}  // namespace radl
+} // namespace radl
